@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class Solution {
-	private LinkedList<Map<Integer, String>> solution;
+	private LinkedList<Pair> solution;
 	private double fit;
 	private int T;
 	private boolean fitComputable;
@@ -18,7 +18,7 @@ public class Solution {
 	public Solution(int T) {
 		this.fitComputable = false;
 		this.T = T;
-		solution = new LinkedList<Map<Integer, String>>();
+		solution = new LinkedList<Pair>();
 	}
 	
 	public void set(int b, String B) {
