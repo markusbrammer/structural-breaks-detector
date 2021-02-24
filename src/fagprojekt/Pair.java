@@ -1,5 +1,5 @@
 package fagprojekt;
-
+// Johan
 public class Pair {
 	private int Left;
 	private String Right;
