@@ -4,6 +4,7 @@ import java.util.Random;
 public class Algorithm {
 	private TimeSeries timeSeries;
 	private Random rand;
+	private 
 	
 	public Algorithm(TimeSeries timeSeries) {
 		this.timeSeries = timeSeries;
@@ -22,6 +23,10 @@ public class Algorithm {
 		}
 		return C;
 	}
+	
+	public double SumOfSquaredFitnesses()
+	
+	public double f()
 	
 	public int[] OnePointCrossover(int[] X, int[] Y) {
 		int k = rand.nextInt(timeSeries.getT());

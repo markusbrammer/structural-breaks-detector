@@ -9,7 +9,7 @@ public class Solution {
 	private int T;
 	private boolean fitComputable;
 	
-	public Solution(LinkedList<Map<Integer, String>> solution, int T) {
+	public Solution(LinkedList<Pair> solution, int T) {
 		this.solution = solution;
 		calculateFit();
 	}
