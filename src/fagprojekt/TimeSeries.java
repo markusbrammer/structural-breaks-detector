@@ -31,12 +31,16 @@ public class TimeSeries {
 		 * Data file must have same structure as example files given for the 
 		 * project.  
 		 * 
+		 * Inspiration and code snippets from:
+		 * https://howtodoinjava.com/java/library/json-simple-read-write-json-examples/
+		 * 
 		 * Made by: Markus B. Jensen (s183816)
 		 */
 		
 		JSONParser jsonParser = new JSONParser();
-		try (FileReader reader = new FileReader(filePath)) {
+		try  {
 			
+			FileReader reader = new FileReader(filePath);
 			JSONObject jsonFile = (JSONObject) jsonParser.parse(reader);
 			
 			String timeSeriesName = (String) jsonFile.get("timeseres");
