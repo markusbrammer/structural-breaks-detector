@@ -9,6 +9,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+
 public class TimeSeries {
 	private int[] time;
 	private double[] values;
@@ -74,7 +78,6 @@ public class TimeSeries {
 		 * 
 		 * Made by: Markus B. Jensen (s183816)
 		 */
-		
 		for (int i = 0; i < this.T; i++) {
 			
 			JSONObject observation = (JSONObject) observations.get(i);
@@ -103,7 +106,33 @@ public class TimeSeries {
 		return T;
 	}
 	
-	
+	public LineChart<Integer, Double> drawGraph() {
+		/*
+		 * Generate line chart from time series data for JavaFX. 
+		 * 
+		 * Made by: Markus B. Jensen (s183816)
+		 */
+		
+		NumberAxis xAxis = new NumberAxis();
+		NumberAxis yAxis = new NumberAxis();
+		xAxis.setLabel("Time");
+		yAxis.setLabel("Value");
+		
+		LineChart<Integer,Double> lineChart = 
+				new LineChart(xAxis,yAxis);
+		
+		XYChart.Series<Integer, Double> series = new XYChart.Series<>();
+		series.setName(this.name);
+		for (int i = 0; i < this.T; i++) {
+			int x = time[i];
+			double y = values[i];
+			series.getData().add(new XYChart.Data<Integer,Double>(x, y));
+		}
+		
+		lineChart.getData().add(series);
+		return lineChart;
+		
+	}
 	
 	
 }
