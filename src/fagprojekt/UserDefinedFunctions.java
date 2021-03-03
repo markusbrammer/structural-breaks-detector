@@ -7,7 +7,7 @@ public class UserDefinedFunctions {
 	}
 	
 	public static double g(Solution S, TimeSeries ts) {
-		Rectangle R = new Rectangle(0, ts.getT()+1,ts);
+		Rectangle R = new Rectangle(0, ts.getT(),ts);
 		double areaOfR = R.getArea();
 		
 		int[] breakpoints = S.returnBreakpoints();

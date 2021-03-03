@@ -20,12 +20,12 @@ public class Algorithm {
 		this.timeSeries = timeSeries;
 		this.T = timeSeries.getT();
 		this.k0=k0;
-		Random rand = new Random();
+		this.rand = new Random();
 	}
 	
 	public Solution findBreakPoints(Populations population) {
 		Populations X = new Populations(M,k0,T);
-		if (!population.isEmpty()) {
+		if (population != null) {
 			X = population;
 		}
 		int iter = 0;

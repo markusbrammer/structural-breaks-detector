@@ -34,11 +34,12 @@ public class Solution {
 		// add (b,B) to the correct position
 		for (int i = 0; i < solution.size(); i++) {
 		    if (solution.get(i).getLeft() > b) {
-		    	solution.add(i-1, new Pair(b,B));
+		    	solution.add(i, new Pair(b,B));
 		    	break;
 		    }
 		    else if (solution.get(i).getLeft() == b){
-		    	throw new IllegalArgumentException("Error! This index already exists!");
+		    	solution.set(i, new Pair(b,B));
+		    	break;
 		    }
 		}
 	}

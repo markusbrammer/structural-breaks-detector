@@ -1,4 +1,5 @@
 package fagprojekt;
+import java.util.ArrayList;
 // Johan
 import java.util.List;
 import java.util.Random;
@@ -7,10 +8,6 @@ public class Populations {
 	private List<Solution> population; 
 	private int M;
 	private int T;
-	
-	public boolean isEmpty() {
-		return population.size() == 0;
-	}
 	
 	public double sumOfSquaredFitnesses() {
 		double h = 0.0; 
@@ -66,6 +63,7 @@ public class Populations {
 	
 	// init
 	public Populations(int M, int k0, int T) {
+		this.population = new ArrayList<Solution>();
 		this.M = M;
 		Random rand = new Random();
 		for (int i = 0; i < M; i++) {
@@ -73,7 +71,7 @@ public class Populations {
 			Solution temp = new Solution(T);
 			temp.setBreakpoint(0, UserDefinedFunctions.newB());
 			for (int j = 1; j <= k; j++) {
-				temp.setBreakpoint(rand.nextInt(k-1)+1, UserDefinedFunctions.newB());
+				temp.setBreakpoint(rand.nextInt(T-1)+1, UserDefinedFunctions.newB());
 			}
 			population.add(temp);
 		}

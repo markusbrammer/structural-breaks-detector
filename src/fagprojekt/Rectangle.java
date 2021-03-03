@@ -9,7 +9,7 @@ public class Rectangle {
 	}
 	
 	public Rectangle(int firstBreakpoint, int secondBreakpoint, TimeSeries ts) {
-		// For R use firstBreakpoint = 0 and secondBreakpoint = T+1
+		// For R use firstBreakpoint = 0 and secondBreakpoint = T
 		// find min and max - assuming equidistance
 		this.x0 = firstBreakpoint;
 		this.x1 = secondBreakpoint + 1;
