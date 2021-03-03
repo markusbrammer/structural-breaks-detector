@@ -1,5 +1,5 @@
 package fagprojekt;
-
+// Johan
 import java.util.LinkedList;
 import java.util.List;
 
@@ -7,12 +7,11 @@ public class Solution {
 	private LinkedList<Pair> solution;
 	private double fit;
 	private int T;
-	private boolean fitComputable;
 	
-	public Solution(LinkedList<Pair> solution, int T) {
+	public Solution(LinkedList<Pair> solution, int T, TimeSeries ts, double alpha) {
 		this.solution = solution;
 		this.T = T;
-		calculateFit();
+		calculateFit(alpha,ts);
 	}
 	
 	public int numberOfBreakpoints() {
@@ -21,7 +20,6 @@ public class Solution {
 	
 	// initially empty, fitnesss function should not be computed
 	public Solution(int T) {
-		this.fitComputable = false;
 		this.T = T;
 		solution = new LinkedList<Pair>();
 	}
@@ -62,16 +60,20 @@ public class Solution {
 		return "*";
 	}
 	
-	public void calculateFit() {
-		this.fitComputable = true;
-		this.fit = UserDefinedFunctions.fit(this);
+	public int[] returnBreakpoints() {
+		int[] arr = new int[solution.size()];
+		// måske lidt unødvendigt
+		for (int i = 0; i < solution.size(); i++) {
+			arr[i] = solution.get(i).getLeft();
+		}
+		return arr;
+	}
+	
+	public void calculateFit(double alpha, TimeSeries ts) {
+		this.fit = UserDefinedFunctions.fit(this, alpha, ts);
 	}
 	
 	public double getFit() {
-		if (!fitComputable) {
-			// ændr exceptiotypen
-			throw new IllegalArgumentException();
-		}
 		return fit;
 	}
 }

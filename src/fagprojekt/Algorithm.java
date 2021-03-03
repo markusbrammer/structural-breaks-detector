@@ -4,6 +4,7 @@ import java.util.Random;
 public class Algorithm {
 	private TimeSeries timeSeries;
 	private Random rand;
+	double alpha = 0.25;
 	private double pm;
 	// sat som i artiklen
 	private double pb = 0.6;
@@ -45,7 +46,7 @@ public class Algorithm {
 			}
 			int minIndex = X.leastFitIndex();
 			random = rand.nextDouble();
-			if (random < UserDefinedFunctions.fit(C)/(UserDefinedFunctions.fit(C) + UserDefinedFunctions.fit(X.getIndex(minIndex)))) {
+			if (random < UserDefinedFunctions.fit(C,alpha,timeSeries)/(UserDefinedFunctions.fit(C,alpha,timeSeries) + UserDefinedFunctions.fit(X.getIndex(minIndex),alpha,timeSeries))) {
 				X.removeIndex(minIndex);
 				X.add(C);
 			}
@@ -99,12 +100,12 @@ public class Algorithm {
 	public Solution select(Populations pop) {
 		double S1 = pop.sumOfSquaredFitnesses();
 		double r = rand.nextDouble()*(S1-1)+1;
-		double val = UserDefinedFunctions.fit(pop.getIndex(0));
+		double val = UserDefinedFunctions.fit(pop.getIndex(0),alpha,timeSeries);
 		double h = val*val ;
 		int i = 0;
 		while (h <= r) {
 			i+=1;
-			val = UserDefinedFunctions.fit(pop.getIndex(i));
+			val = UserDefinedFunctions.fit(pop.getIndex(i),alpha,timeSeries);
 			h+= val*val;
 		}
 		return pop.getIndex(i);

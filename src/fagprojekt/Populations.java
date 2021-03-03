@@ -15,7 +15,7 @@ public class Populations {
 	public double sumOfSquaredFitnesses() {
 		double h = 0.0; 
 		for (int i = 0; i < population.size(); i++) {
-			h+=UserDefinedFunctions.fit(population.get(i))*UserDefinedFunctions.fit(population.get(i));
+			h+=population.get(i).getFit()*population.get(i).getFit();
 		}
 		return h;
 	}
@@ -44,9 +44,9 @@ public class Populations {
 	// måske mere effektivt at returnere den minimale værdi sammen med indekset
 	public int leastFitIndex() {
 		int minIndex = 0;
-		double min = UserDefinedFunctions.fit(population.get(minIndex));
+		double min = population.get(minIndex).getFit();
 		for (int i = 1; i < M; i++) {
-			if (UserDefinedFunctions.fit(population.get(i)) < min) {
+			if (population.get(i).getFit() < min) {
 				minIndex = i;
 			}
 		}
@@ -55,9 +55,9 @@ public class Populations {
 	
 	public Solution fittestString() {
 		int maxIndex = 0;
-		double max = UserDefinedFunctions.fit(population.get(0));
+		double max = population.get(0).getFit();
 		for (int i = 1; i < M; i++) {
-			if (UserDefinedFunctions.fit(population.get(i)) > max) {
+			if (population.get(i).getFit() > max) {
 				maxIndex = i;
 			}
 		}
