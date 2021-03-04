@@ -1,4 +1,7 @@
 package fagprojekt;
+
+import timeseries.TimeSeries;
+
 // Johan
 public class Rectangle {
 	private int x0, x1;

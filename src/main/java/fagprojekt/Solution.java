@@ -3,6 +3,8 @@ package fagprojekt;
 import java.util.LinkedList;
 import java.util.List;
 
+import timeseries.TimeSeries;
+
 public class Solution {
 	private LinkedList<Pair> solution;
 	private double fit;
@@ -63,7 +65,7 @@ public class Solution {
 	
 	public int[] returnBreakpoints() {
 		int[] arr = new int[solution.size()];
-		// måske lidt unødvendigt
+		// mï¿½ske lidt unï¿½dvendigt
 		for (int i = 0; i < solution.size(); i++) {
 			arr[i] = solution.get(i).getLeft();
 		}

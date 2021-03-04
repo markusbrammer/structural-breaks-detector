@@ -1,5 +1,7 @@
 package fagprojekt;
 import java.util.Random;
+
+import timeseries.TimeSeries;
 // Johan
 public class Algorithm {
 	private TimeSeries timeSeries;
@@ -59,8 +61,8 @@ public class Algorithm {
 		Solution C = new Solution(T);
 		for (int i = 0; i < T; i++) {
 			if (rand.nextDouble()<0.5) {
-				// genbrugt kode; ikke effektivt; den søger igennem det samme flere gange
-				// finder ud af om X(i) er breakpoint og hvis den er så sætter den det relevante værdi af B
+				// genbrugt kode; ikke effektivt; den sï¿½ger igennem det samme flere gange
+				// finder ud af om X(i) er breakpoint og hvis den er sï¿½ sï¿½tter den det relevante vï¿½rdi af B
 				String B = X.getBreakpoint(i);
 				if (B!="*") {
 					C.setBreakpoint(i, B);
