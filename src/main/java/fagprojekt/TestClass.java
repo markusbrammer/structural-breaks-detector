@@ -3,6 +3,8 @@ package fagprojekt;
 
 import java.util.Arrays;
 
+import timeseries.TimeSeries;
+
 public class TestClass {
 	public static void main(String[] args) {
 		TimeSeries ts = new TimeSeries("./1Breaks_1K.json");

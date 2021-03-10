@@ -1,4 +1,4 @@
-package fagprojekt;// package fagprojekt;
+package timeseries;// package fagprojekt;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

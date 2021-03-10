@@ -1,4 +1,7 @@
 package fagprojekt;
+
+import timeseries.TimeSeries;
+
 // Johan
 // works by the rectangle method
 public class UserDefinedFunctions {
