@@ -1,7 +1,5 @@
 package fagprojekt;
 import java.util.Random;
-
-import timeseries.TimeSeries;
 // Johan
 public class Algorithm {
 	private TimeSeries timeSeries;
@@ -14,7 +12,7 @@ public class Algorithm {
 	private double popc = 0.3;
 	private double pmu = 0.4;
 	private int T;
-	private int M = 200;
+	private int M = 5;
 	private final int max_iter = 500;
 	private int k0;
 	
@@ -26,7 +24,7 @@ public class Algorithm {
 	}
 	
 	public Solution findBreakPoints(Populations population) {
-		Populations X = new Populations(M,k0,T);
+		Populations X = new Populations(M,k0,T,timeSeries,alpha);
 		if (population != null) {
 			X = population;
 		}
@@ -40,15 +38,16 @@ public class Algorithm {
 			if (random < pmu) {
 				C = mutate(Xi);
 			}
-			else if (random >= pmu && random <= popc) {
+			else if (random >= pmu && random <= 1.0-popc) {
 				C = uniformCrossover(Xi,Xj);
 			}
 			else {
 				C = onePointCrossover(Xi,Xj);
 			}
+			C.calculateFit(alpha, timeSeries);
 			int minIndex = X.leastFitIndex();
 			random = rand.nextDouble();
-			if (random < UserDefinedFunctions.fit(C,alpha,timeSeries)/(UserDefinedFunctions.fit(C,alpha,timeSeries) + UserDefinedFunctions.fit(X.getIndex(minIndex),alpha,timeSeries))) {
+			if (random < C.getFit()/(C.getFit() + UserDefinedFunctions.fit(X.getIndex(minIndex),alpha,timeSeries))) {
 				X.removeIndex(minIndex);
 				X.add(C);
 			}
@@ -61,8 +60,8 @@ public class Algorithm {
 		Solution C = new Solution(T);
 		for (int i = 0; i < T; i++) {
 			if (rand.nextDouble()<0.5) {
-				// genbrugt kode; ikke effektivt; den sï¿½ger igennem det samme flere gange
-				// finder ud af om X(i) er breakpoint og hvis den er sï¿½ sï¿½tter den det relevante vï¿½rdi af B
+				// genbrugt kode; ikke effektivt; den søger igennem det samme flere gange
+				// finder ud af om X(i) er breakpoint og hvis den er så sætter den det relevante værdi af B
 				String B = X.getBreakpoint(i);
 				if (B!="*") {
 					C.setBreakpoint(i, B);

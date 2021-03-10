@@ -3,17 +3,14 @@ package fagprojekt;
 import java.util.LinkedList;
 import java.util.List;
 
-import timeseries.TimeSeries;
-
 public class Solution {
 	private LinkedList<Pair> solution;
 	private double fit;
 	private int T;
 	
-	public Solution(LinkedList<Pair> solution, int T, TimeSeries ts, double alpha) {
+	public Solution(LinkedList<Pair> solution, int T, TimeSeries ts) {
 		this.solution = solution;
 		this.T = T;
-		calculateFit(alpha,ts);
 	}
 	
 	public int numberOfBreakpoints() {
@@ -32,18 +29,20 @@ public class Solution {
 		}
 		if (solution.size() == 0) {
 			solution.add(new Pair(b,B));
+			return;
 		}
 		// add (b,B) to the correct position
 		for (int i = 0; i < solution.size(); i++) {
-		    if (solution.get(i).getLeft() > b) {
+			if (solution.get(i).getLeft() > b) {
 		    	solution.add(i, new Pair(b,B));
-		    	break;
+		    	return;
 		    }
 		    else if (solution.get(i).getLeft() == b){
 		    	solution.set(i, new Pair(b,B));
-		    	break;
+		    	return;
 		    }
 		}
+		solution.addLast(new Pair(b,B));
 	}
 	
 	public String getBreakpoint(int b) {
@@ -65,7 +64,7 @@ public class Solution {
 	
 	public int[] returnBreakpoints() {
 		int[] arr = new int[solution.size()];
-		// mï¿½ske lidt unï¿½dvendigt
+		// måske lidt unødvendigt
 		for (int i = 0; i < solution.size(); i++) {
 			arr[i] = solution.get(i).getLeft();
 		}
