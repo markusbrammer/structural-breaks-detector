@@ -62,7 +62,7 @@ public class Populations {
 	}
 	
 	// init
-	public Populations(int M, int k0, int T) {
+	public Populations(int M, int k0, int T, TimeSeries ts, double alpha) {
 		this.population = new ArrayList<Solution>();
 		this.M = M;
 		Random rand = new Random();
@@ -71,9 +71,13 @@ public class Populations {
 			Solution temp = new Solution(T);
 			temp.setBreakpoint(0, UserDefinedFunctions.newB());
 			for (int j = 1; j <= k; j++) {
-				temp.setBreakpoint(rand.nextInt(T-1)+1, UserDefinedFunctions.newB());
+				int random = rand.nextInt(T-1)+1;
+				temp.setBreakpoint(random, UserDefinedFunctions.newB());
 			}
+			temp.calculateFit(alpha, ts);
 			population.add(temp);
+			
 		}
+		
 	}
 }

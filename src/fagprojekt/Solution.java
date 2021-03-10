@@ -8,10 +8,9 @@ public class Solution {
 	private double fit;
 	private int T;
 	
-	public Solution(LinkedList<Pair> solution, int T, TimeSeries ts, double alpha) {
+	public Solution(LinkedList<Pair> solution, int T, TimeSeries ts) {
 		this.solution = solution;
 		this.T = T;
-		calculateFit(alpha,ts);
 	}
 	
 	public int numberOfBreakpoints() {
@@ -30,18 +29,20 @@ public class Solution {
 		}
 		if (solution.size() == 0) {
 			solution.add(new Pair(b,B));
+			return;
 		}
 		// add (b,B) to the correct position
 		for (int i = 0; i < solution.size(); i++) {
-		    if (solution.get(i).getLeft() > b) {
+			if (solution.get(i).getLeft() > b) {
 		    	solution.add(i, new Pair(b,B));
-		    	break;
+		    	return;
 		    }
 		    else if (solution.get(i).getLeft() == b){
 		    	solution.set(i, new Pair(b,B));
-		    	break;
+		    	return;
 		    }
 		}
+		solution.addLast(new Pair(b,B));
 	}
 	
 	public String getBreakpoint(int b) {

@@ -5,8 +5,8 @@ public class Pair {
 	private String Right;
 
 	public Pair(int left, String right) {
-		Left = left;
-		Right = right;
+		this.Left = left;
+		this.Right = right;
 	}
 	
 	public int getLeft() {
