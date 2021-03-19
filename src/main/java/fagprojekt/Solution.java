@@ -3,6 +3,8 @@ package fagprojekt;
 import java.util.LinkedList;
 import java.util.List;
 
+import timeseries.TimeSeries;
+
 public class Solution {
 	private LinkedList<Pair> solution;
 	private double fit;

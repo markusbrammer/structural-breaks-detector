@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import timeseries.TimeSeries;
+import timeseries.TimeSeries;
+
 public class Populations {
 	private List<Solution> population; 
 	private int M;

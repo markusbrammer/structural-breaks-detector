@@ -1,5 +1,7 @@
 package fagprojekt;
 import java.util.Random;
+
+import timeseries.TimeSeries;
 // Johan
 public class Algorithm {
 	private TimeSeries timeSeries;
@@ -38,7 +40,7 @@ public class Algorithm {
 			if (random < pmu) {
 				C = mutate(Xi);
 			}
-			else if (random >= pmu && random <= 1.0-popc) {
+			else if (random <= 1.0-popc) {
 				C = uniformCrossover(Xi,Xj);
 			}
 			else {
@@ -115,19 +117,22 @@ public class Algorithm {
 	public Solution onePointCrossover(Solution X,Solution Y) {
 		int k = rand.nextInt(T);
 		Solution C = new Solution(T);
-		for (int i = 0; i < T; i++) {
-			if (i<k) {
-				String B = X.getBreakpoint(i);
-				if (B!="*") {
-					C.setBreakpoint(i, B);
-				}
-			}
-			else {
-				String B = Y.getBreakpoint(i);
-				if (B!="*") {
-					C.setBreakpoint(i, B);
-				}
-			}
+		int[] breakpointsX = X.returnBreakpoints();
+		int[] breakpointsY = Y.returnBreakpoints();
+		int i = 0;
+		// copy the first k values
+		while (breakpointsX[i] < k) {
+			C.setBreakpoint(breakpointsX[i], UserDefinedFunctions.newB());
+			i++;
+		}
+		i=0;
+		// find the first index where the Y breakpoint is greater than k
+		while (breakpointsY[i] < k) {
+			i++;
+		}
+		// and copy it
+		for (int j = i; j < breakpointsY.length; j++) {
+			C.setBreakpoint(breakpointsY[i], UserDefinedFunctions.newB());
 		}
 		return C;
 	}

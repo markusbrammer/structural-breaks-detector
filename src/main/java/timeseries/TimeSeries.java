@@ -106,6 +106,10 @@ public class TimeSeries {
 		return T;
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
 	public LineChart<Integer, Double> drawGraph() {
 		/*
 		 * Generate line chart from time series data for JavaFX. 
