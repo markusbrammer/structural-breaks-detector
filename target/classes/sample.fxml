@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<?import sample.DataGraph?>
 <GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <columnConstraints>
       <ColumnConstraints />
@@ -20,9 +19,7 @@
          <center>
             <Button alignment="CENTER" mnemonicParsing="false" onAction="#buttonOnAction" text="Hello" BorderPane.alignment="CENTER" />
          </center>
-         <right>
-            <DataGraph alignment="CENTER" />
-         </right>
       </BorderPane>
    </children>
 </GridPane>
+
