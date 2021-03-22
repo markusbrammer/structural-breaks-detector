@@ -1,9 +1,7 @@
-module fagprojekt {
-	requires jdk.compiler;
-	requires json.simple;
-	requires javafx.graphics;
-	requires javafx.controls;
-	opens fagprojekt;
-	exports timeseries to javafx.graphics;
-	exports gui to javafx.graphics;
+module Fagprojekt{
+    requires javafx.controls;
+    requires javafx.fxml;
+    requires json.simple;
+    opens sample to javafx.fxml;
+    exports sample;
 }
