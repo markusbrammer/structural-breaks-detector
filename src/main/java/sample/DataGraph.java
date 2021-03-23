@@ -39,16 +39,16 @@ public class DataGraph extends StackPane {
         xAxis.setLabel("Time");
         yAxis.setLabel("Value");
 
-        LineChart<Integer,Double> lineChart = new LineChart(xAxis,yAxis);
+        LineChart<Double,Double> lineChart = new LineChart(xAxis,yAxis);
 
         // TODO Rename to dataPoints?
-        XYChart.Series<Integer, Double> series = readTimeSeriesPoints();
+        XYChart.Series<Double, Double> series = readTimeSeriesPoints();
 
         lineChart.getData().add(series);
         return lineChart;
     }
 
-    private XYChart.Series<Integer, Double> readTimeSeriesPoints() {
+    private XYChart.Series<Double, Double> readTimeSeriesPoints() {
         /*
          * Read all points from the time series into a XYChart object. Add time
          * series name as legend name for data points.
@@ -59,14 +59,14 @@ public class DataGraph extends StackPane {
          * Made by: Markus B. Jensen (s183816)
          */
 
-        XYChart.Series<Integer, Double> graphPoints = new XYChart.Series<>();
+        XYChart.Series<Double, Double> graphPoints = new XYChart.Series<>();
 
-        int[] timeSeriesTimes = timeSeries.getTime();
+        double[] timeSeriesTimes = timeSeries.getTime();
         int noOfElementsInTimeSeries = timeSeries.getT();
         for (int i = 0; i < noOfElementsInTimeSeries; i++) {
-            int x = timeSeriesTimes[i];
-            double y = timeSeries.getValues(i);
-            graphPoints.getData().add(new XYChart.Data<Integer,Double>(x, y));
+            double x = timeSeriesTimes[i];
+            double y = timeSeries.getValueAtIndex(i);
+            graphPoints.getData().add(new XYChart.Data<Double,Double>(x, y));
         }
 
         String timeSeriesName = timeSeries.getName();

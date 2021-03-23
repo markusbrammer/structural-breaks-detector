@@ -14,20 +14,12 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 
 public class TimeSeries {
-    private int[] time;
+    private double[] time;
     private double[] values;
     private int T;
     private String name;
     private String path;
 
-    public TimeSeries(int[] time, double[] values) {
-        if (time.length != values.length) {
-            throw new IllegalArgumentException("Error!");
-        }
-        this.time = time;
-        this.values = values;
-        this.T =  time.length;
-    }
 
     public TimeSeries(String filePath) {
         /*
@@ -57,7 +49,7 @@ public class TimeSeries {
 
             JSONArray observations = (JSONArray) jsonFile.get("observations");
             this.T = observations.size();
-            this.time = new int[this.T];
+            this.time = new double[this.T];
             this.values = new double[this.T];
             readObservations(observations);
 
@@ -89,17 +81,21 @@ public class TimeSeries {
             JSONArray valuesArray = (JSONArray) observation.get("values");
             double value = (double) valuesArray.get(0);
 
-            this.time[i] = (int) time;
+            this.time[i] = time;
             this.values[i] = value;
         }
     }
 
-    public int[] getTime() {
+    public double[] getTime() {
         return time;
     }
 
-    public double getValues(int i) {
+    public double getValueAtIndex(int i) {
         return values[i];
+    }
+
+    public double[] getValues() {
+        return values;
     }
 
     public int getT() {
@@ -110,33 +106,6 @@ public class TimeSeries {
         return name;
     }
 
-    public LineChart<Integer, Double> drawGraph() {
-        /*
-         * Generate line chart from time series data for JavaFX.
-         *
-         * Made by: Markus B. Jensen (s183816)
-         */
-
-        NumberAxis xAxis = new NumberAxis();
-        NumberAxis yAxis = new NumberAxis();
-        xAxis.setLabel("Time");
-        yAxis.setLabel("Value");
-
-        LineChart<Integer,Double> lineChart =
-                new LineChart(xAxis,yAxis);
-
-        XYChart.Series<Integer, Double> series = new XYChart.Series<>();
-        series.setName(this.name);
-        for (int i = 0; i < this.T; i++) {
-            int x = time[i];
-            double y = values[i];
-            series.getData().add(new XYChart.Data<Integer,Double>(x, y));
-        }
-
-        lineChart.getData().add(series);
-        return lineChart;
-
-    }
 
 
 }
