@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import algorithm.Rectangle;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -18,7 +19,7 @@ public class TimeSeries {
     private double[] values;
     private int T;
     private String name;
-    private String path;
+    private double rectangleArea;
 
 
     public TimeSeries(String filePath) {
@@ -52,6 +53,7 @@ public class TimeSeries {
             this.time = new double[this.T];
             this.values = new double[this.T];
             readObservations(observations);
+            rectangleArea = Rectangle.getTimeSeriesGraphRectangleArea(this);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -106,6 +108,7 @@ public class TimeSeries {
         return name;
     }
 
-
-
+    public double getRectangleArea() {
+        return rectangleArea;
+    }
 }

@@ -13,70 +13,43 @@ public class Population {
     private Random rand = new Random();
 
     public Population(int noOfIndividuals, int maxNoOfBreakPoints,
-                      int timeSeriesLength) {
+                      TimeSeries timeSeries) {
         /*
          * Init-method from pseudo-code.
          */
 
+        int timeSeriesLength = timeSeries.getT();
         this.noOfIndividuals = noOfIndividuals;
         this.individuals = new Individual[noOfIndividuals];
-
-        int noOfBreakPoints;
-        ArrayList<Integer> breakPointIndexes;
         for (int i = 0; i < noOfIndividuals; i++) {
-            noOfBreakPoints = 1 + rand.nextInt(maxNoOfBreakPoints);
-            breakPointIndexes = setBreakPointIndexes(noOfBreakPoints);
-            individuals[i] = new Individual(timeSeriesLength);
-            for (int index : breakPointIndexes) {
-                individuals[i].addBreakPoint(index);
-            }
-
-
+            individuals[i] = new Individual(timeSeries, maxNoOfBreakPoints);
         }
 
     }
 
-    private ArrayList<Integer> setBreakPointIndexes(int noOfBreakPoints) {
-        /*
-         *  Returns a list of noOfBreakPoints unique indexes for which to
-         *  place a break point in the solution/individual string.
-         */
-
-        ArrayList<Integer> breakPointsIndexes = new ArrayList<>();
-        int randomIndex;
-        for (int i = 0; i < noOfBreakPoints; i++) {
-            // Make sure all indexes are unique (not already in list)
-            do {
-                randomIndex = rand.nextInt(1000);
-            } while (breakPointsIndexes.contains(randomIndex));
-            breakPointsIndexes.add(randomIndex);
-        }
-        return breakPointsIndexes;
-
-    }
 
     public Individual randomSelectIndividual(TimeSeries timeSeries) {
         // TODO make more readable - taken directly from pseudocode
-        double sumOfSquaredFitnesses = getSumOfSquaredFitnesses(timeSeries);
+        double sumOfSquaredFitnesses = getSumOfSquaredFitnesses();
         Random rand = new Random();
         double r = rand.nextDouble() * sumOfSquaredFitnesses;
-        double h = (Fitness.getFitness(individuals[0], timeSeries));
+        double h = individuals[0].getFitness();
         h *= h;
         int i = 0;
         while (h < r) {
             i += 1;
-            double fitness = Fitness.getFitness(individuals[i], timeSeries);
+            double fitness = individuals[i].getFitness();
             double squareFitness = fitness * fitness;
             h += squareFitness;
         }
         return individuals[i];
     }
 
-    private double getSumOfSquaredFitnesses(TimeSeries timeSeries) {
+
+    private double getSumOfSquaredFitnesses() {
         double sum = 0;
         for (Individual individual : individuals) {
-            double individualFitness = Fitness.getFitness(individual,
-                    timeSeries);
+            double individualFitness = individual.getFitness();
             sum += individualFitness * individualFitness;
         }
         return sum;
@@ -86,7 +59,7 @@ public class Population {
         double currentLowest = 0;
         int lowestIndex = 0;
         for (int i = 0; i < noOfIndividuals; i++) {
-            double fitness = Fitness.getFitness(individuals[i], timeSeries);
+            double fitness = individuals[i].getFitness();
             if (fitness < currentLowest) {
                 currentLowest = fitness;
                 lowestIndex = i;
@@ -99,7 +72,7 @@ public class Population {
         double currentHighest = 0;
         int highestIndex = 0;
         for (int i = 0; i < noOfIndividuals; i++) {
-            double fitness = Fitness.getFitness(individuals[i], timeSeries);
+            double fitness = individuals[i].getFitness();
             if (fitness > currentHighest) {
                 currentHighest = fitness;
                 highestIndex = i;
@@ -118,5 +91,6 @@ public class Population {
             individuals[lowestFitnessIndex] = replacement;
         }
     }
+
 
 }

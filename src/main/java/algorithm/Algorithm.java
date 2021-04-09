@@ -6,13 +6,14 @@ import java.util.Random;
 
 public class Algorithm {
 
+
     private TimeSeries timeSeries;
     private Population population;
     private Random rand = new Random();
 
-    // TODO All values are corrently final - change to make them non-final
+    // TODO All values are currently final - change to make them non-final
     private final int NO_OF_INDIVIDUALS = 30;
-    private final int NO_OF_BREAK_POINTS = 1;
+    private final int NO_OF_BREAK_POINTS = 3;
     private final double puc = 0.3;
     private final double popc = 0.3;
     private final double pmu = puc - popc;
@@ -26,7 +27,7 @@ public class Algorithm {
 
         if (population == null) {
             population = new Population(NO_OF_INDIVIDUALS, NO_OF_BREAK_POINTS,
-                    timeSeries.getT());
+                    timeSeries);
         }
 
 
@@ -45,6 +46,7 @@ public class Algorithm {
             } else {
                 c = onePointCrossover(xi, xj);
             }
+            c.calcFitness(timeSeries);
             population.replaceXMin(c, timeSeries);
             i++;
         }
@@ -72,6 +74,7 @@ public class Algorithm {
                 }
             }
         }
+        c.calcFitness(timeSeries);
         return c;
     }
 
@@ -87,6 +90,7 @@ public class Algorithm {
                 c.genes[i] = xj.genes[i];
             }
         }
+        c.calcFitness(timeSeries);
         return c;
     }
 
@@ -101,6 +105,7 @@ public class Algorithm {
                 c.genes[i] = xj.genes[i];
             }
         }
+        c.calcFitness(timeSeries);
         return c;
     }
 
