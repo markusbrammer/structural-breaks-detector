@@ -62,7 +62,7 @@ public class DataGraph extends StackPane {
         XYChart.Series<Double, Double> graphPoints = new XYChart.Series<>();
 
         double[] timeSeriesTimes = timeSeries.getTime();
-        int noOfElementsInTimeSeries = timeSeries.getT();
+        int noOfElementsInTimeSeries = timeSeries.getLength();
         for (int i = 0; i < noOfElementsInTimeSeries; i++) {
             double x = timeSeriesTimes[i];
             double y = timeSeries.getValueAtIndex(i);

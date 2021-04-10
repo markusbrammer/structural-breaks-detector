@@ -4,20 +4,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import algorithm.Rectangle;
+import bp.Rectangle;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-
 public class TimeSeries {
     private double[] time;
     private double[] values;
-    private int T;
+    private int length;
     private String name;
     private double rectangleArea;
 
@@ -49,9 +45,9 @@ public class TimeSeries {
             int noOfDimensions = (int) ((long) jsonFile.get("dimension"));
 
             JSONArray observations = (JSONArray) jsonFile.get("observations");
-            this.T = observations.size();
-            this.time = new double[this.T];
-            this.values = new double[this.T];
+            this.length = observations.size();
+            this.time = new double[this.length];
+            this.values = new double[this.length];
             readObservations(observations);
             rectangleArea = Rectangle.getTimeSeriesGraphRectangleArea(this);
 
@@ -72,7 +68,7 @@ public class TimeSeries {
          *
          * Made by: Markus B. Jensen (s183816)
          */
-        for (int i = 0; i < this.T; i++) {
+        for (int i = 0; i < this.length; i++) {
 
             JSONObject observation = (JSONObject) observations.get(i);
 
@@ -100,8 +96,8 @@ public class TimeSeries {
         return values;
     }
 
-    public int getT() {
-        return T;
+    public int getLength() {
+        return length;
     }
 
     public String getName() {

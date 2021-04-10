@@ -1,4 +1,4 @@
-package algorithm;
+package bp;
 
 import data.TimeSeries;
 
@@ -39,7 +39,7 @@ public class Rectangle {
     public static double getTimeSeriesGraphRectangleArea(TimeSeries timeSeries) {
         double[] timeAxis = timeSeries.getTime();
         double[] values = timeSeries.getValues();
-        int timeSeriesLength = timeSeries.getT();
+        int timeSeriesLength = timeSeries.getLength();
 
         double startTime = timeAxis[0];
         double endTime = timeAxis[timeSeriesLength - 1];
