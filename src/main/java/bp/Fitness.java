@@ -2,10 +2,8 @@ package bp;
 
 import data.TimeSeries;
 import ga.Individual;
-import ga.Population;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Fitness {
 
@@ -13,55 +11,52 @@ public class Fitness {
                                     TimeSeries timeSeries) {
         // Fitness function, equation (8) in the paper
 
-        ArrayList<Integer> breakPointIndexes = findBreakPointIndexes(individual);
-        double sum = timeSeries.getRectangleArea();
 
+        double timeSeriesRectangleArea = getTimeSeriesRectangleArea(timeSeries);
+
+        double sum = timeSeriesRectangleArea;
+
+        ArrayList<Integer> breakPointIndexes = findBreakPointIndexes(individual);
         for (int i = 0; i < breakPointIndexes.size() - 1; i++) {
             int startIndex = 1 + breakPointIndexes.get(i);
             int endIndex = breakPointIndexes.get(i + 1);
-            Rectangle smallRectangle = new Rectangle(startIndex, endIndex, timeSeries);
-            sum -= smallRectangle.getArea();
+            double rectangleArea = getSmallRectangleArea(startIndex, endIndex, timeSeries);
+            sum -= rectangleArea;
         }
-        sum /= timeSeries.getRectangleArea();
+        sum /= timeSeriesRectangleArea;
         sum += Statics.alpha * 1 / Math.sqrt(breakPointIndexes.size() - 2);
         return sum;
     }
 
-    public static double sumOfSquaredFitnesses(Population population, TimeSeries timeSeries) {
-        double sum = 0;
-        for (Individual individual : population.getIndividuals()) {
-            double individualFitness = getFitness(individual, timeSeries);
-            sum += (individualFitness * individualFitness);
-        }
-        return sum;
+    private static double getSmallRectangleArea(int startIndex, int endIndex, TimeSeries timeSeries) {
+        // TODO: Make it work with multiple dimensions
+
+        double[] values = timeSeries.getObservations()[1];
+
+        double[] minAndMaxValues = getMinAndMaxInInterval(values, startIndex, endIndex);
+        double minValue = minAndMaxValues[0];
+        double maxValue = minAndMaxValues[1];
+
+        Rectangle rectangle = new Rectangle(startIndex, endIndex, minValue, maxValue);
+        return rectangle.getArea();
+
     }
 
-    public static int lowestFitnessIndex(Population population, TimeSeries timeSeries) {
-        double minimumFitess = getFitness(population.getIndividual(0), timeSeries);
-        int lowestIndex = 0;
-        for (int i = 1; i < population.getNoOfIndividuals(); i++) {
-            Individual individual = population.getIndividual(i);
-            double individualFitness = getFitness(individual, timeSeries);
-            if (individualFitness < minimumFitess) {
-                minimumFitess = individualFitness;
-                lowestIndex = 1;
-            }
-        }
-        return lowestIndex;
-    }
+    private static double getTimeSeriesRectangleArea(TimeSeries timeSeries) {
+        // TODO: Make it work with multiple dimensions
 
-    public static int highestFitnessIndex(Population population, TimeSeries timeSeries) {
-        double topFitness = getFitness(population.getIndividual(0), timeSeries);
-        int fittestIndex = 0;
-        for (int i = 1; i < population.getNoOfIndividuals(); i++) {
-            Individual individual = population.getIndividual(i);
-            double individualFitness = getFitness(individual, timeSeries);
-            if (individualFitness > topFitness) {
-                topFitness = individualFitness;
-                fittestIndex = 1;
-            }
-        }
-        return fittestIndex;
+        int indexZero = 0;
+        int lastIndex = timeSeries.getLength() - 1;
+
+        double[] values = timeSeries.getObservations()[1];
+
+        double[] minAndMaxValues = getMinAndMaxInInterval(values, indexZero, lastIndex);
+        double minValue = minAndMaxValues[0];
+        double maxValue = minAndMaxValues[1];
+
+        Rectangle timeSeriesRectangle = new Rectangle(indexZero, lastIndex, minValue, maxValue);
+        return timeSeriesRectangle.getArea();
+
     }
 
     private static ArrayList<Integer> findBreakPointIndexes(Individual individual) {
@@ -72,6 +67,20 @@ public class Fitness {
                 breakPointIndexes.add(i);
         }
         return breakPointIndexes;
+    }
+
+    private static double[] getMinAndMaxInInterval(double[] array, int lowerBound, int upperBound) {
+        double min = array[lowerBound];
+        double max = array[upperBound];
+        for (int i = lowerBound; i <= upperBound; i++) {
+            double value = array[i];
+            if (value < min) {
+                min = value;
+            } else if (value > max) {
+                max = value;
+            }
+        }
+        return new double[] {min, max};
     }
 
 }
