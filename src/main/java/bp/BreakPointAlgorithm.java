@@ -13,18 +13,28 @@ public class BreakPointAlgorithm {
 
     private TimeSeries timeSeries;
     private Population population;
+
     private double[] populationFitnesses;
+
+    // Statics
+    private int noOfIndividuals = 50;
+    private int maxNoOfBreakPoints = 1;
+    private double alpha;
+    private double uniformCrossoverProb = 0.3;
+    private double onePointCrossoverProb = 0.3;
+    private double mutateProb = 1 - uniformCrossoverProb - onePointCrossoverProb;
 
     private Random rand = new Random();
 
     public BreakPointAlgorithm(TimeSeries timeSeries) {
         this.timeSeries = timeSeries;
-        initializePopulation();
-        populationFitnesses = new double[Statics.NO_OF_INDIVIDUALS];
-        calculateFitnesses();
     }
 
     public Individual findBreakPoints() {
+
+        initializePopulation();
+        populationFitnesses = new double[noOfIndividuals];
+        calculateFitnesses();
 
         for (int i = 0; i < Statics.STOP_CRITERIUM; i++) {
 
@@ -35,12 +45,12 @@ public class BreakPointAlgorithm {
                 parent2 = selectRandomIndividual();
 
             Individual child = geneticAlgorithmProcedure(parent1, parent2);
-
             replaceMinimumFitness(child);
 
         }
 
         int fittestIndividualIndex = getMaximumFitnessIndividualIndex();
+        printBreakPointLocations(population.getIndividual(fittestIndividualIndex));
         return population.getIndividual(fittestIndividualIndex);
 
     }
@@ -96,9 +106,9 @@ public class BreakPointAlgorithm {
 
         Individual child;
         double randomValue = rand.nextDouble();
-        if (randomValue < Statics.pmu) {
+        if (randomValue < mutateProb) {
             child = Procedures.mutate(parent1);
-        } else if (randomValue < Statics.pmu + Statics.puc) {
+        } else if (randomValue < mutateProb + uniformCrossoverProb) {
             child = Procedures.uniformCrossover(parent1, parent2);
         } else {
             child = Procedures.onePointCrossover(parent1, parent2);
@@ -115,10 +125,10 @@ public class BreakPointAlgorithm {
 
     private void initializePopulation() {
 
-        population = new Population(Statics.NO_OF_INDIVIDUALS);
+        population = new Population(noOfIndividuals);
 
         Individual individual;
-        for (int i = 0; i < Statics.NO_OF_INDIVIDUALS; i++) {
+        for (int i = 0; i < noOfIndividuals; i++) {
 
             individual = generateIndividualWithBreakPoints();
             population.setIndividual(i, individual);
@@ -127,15 +137,11 @@ public class BreakPointAlgorithm {
     }
 
     private void calculateFitnesses() {
-
-        for (int i = 0; i < Statics.NO_OF_INDIVIDUALS; i++) {
-
+        for (int i = 0; i < noOfIndividuals; i++) {
             Individual individual = population.getIndividual(i);
             double fitness = Fitness.getFitness(individual, timeSeries);
             populationFitnesses[i] = fitness;
-
         }
-
     }
 
     private Individual selectRandomIndividual() {
@@ -182,7 +188,7 @@ public class BreakPointAlgorithm {
         List<Integer> breakPointIndexes = new ArrayList<>();
 
         // Place unique breakpoints at random locations (not first and last index)
-        int noOfBreakPoints = 1 + rand.nextInt(Statics.MAX_NO_OF_BREAK_POINTS);
+        int noOfBreakPoints = 1 + rand.nextInt(maxNoOfBreakPoints);
         while (breakPointIndexes.size() < noOfBreakPoints) {
 
             int randomIndex = 1 + rand.nextInt(individualSize - 2);
@@ -198,72 +204,46 @@ public class BreakPointAlgorithm {
         return breakPointIndexes;
     }
 
+    public void setAlpha(double alpha) {
+        this.alpha = alpha;
+    }
 
-//    public Individual findBreakPoints() {
-//
-//        population = initPopulation(Statics.NO_OF_INDIVIDUALS, timeSeries.getLength(), Statics.MAX_NO_OF_BREAK_POINTS);
-//
-//        int i = 0;
-//        while (i < Statics.STOP_CRITERIUM) {
-//
-//            Individual individual1 = BreakPointProcedures.selectIndividualIndex(population, timeSeries);
-//            Individual individual2 = BreakPointProcedures.selectIndividualIndex(population, timeSeries);
-//            Individual individual;
-//
-//            double coinToss = rand.nextDouble();
-//            if (coinToss < Statics.pmu) {
-//                individual = Procedures.mutate(individual1);
-//            } else if (coinToss < Statics.pmu + Statics.puc) {
-//                individual = Procedures.uniformCrossover(individual1, individual2);
-//            } else {
-//                individual = Procedures.onePointCrossover(individual1, individual2);
-//            }
-//
-//            int lowestIndividualIndex = Fitness.lowestFitnessIndex(population, timeSeries);
-//            Individual lowestIndividual = population.getIndividual(lowestIndividualIndex);
-//            double individualFitness = Fitness.getFitness(individual, timeSeries);
-//            double lowestIndividualFitness = Fitness.getFitness(lowestIndividual, timeSeries);
-//
-//            if (rand.nextDouble() < individualFitness / (individualFitness + lowestIndividualFitness)) {
-//                population.setIndividual(lowestIndividualIndex, individual);
-//            }
-//
-//            i++;
-//        }
-//
-//        int fittestIndex = Fitness.highestFitnessIndex(population, timeSeries);
-//        return population.getIndividual(fittestIndex);
-//    }
-//
-//    private Population initPopulation(int noOfIndividuals, int individualSize, int maxNoOfBreakPoints) {
-//
-//        Population population = new Population(noOfIndividuals);
-//        for (int i = 0; i < noOfIndividuals; i++) {
-//            int noOfBreakPoints = rand.nextInt(maxNoOfBreakPoints); // TODO understand (or fix) this line
-//            Individual individual = new Individual(individualSize, Statics.nullAllele);
-//            int[] breakPointIndexes = getBreakPointIndexes(noOfBreakPoints, individualSize);
-//            individual.setAllele(0, Statics.breakPointAllele);
-//            individual.setAllele(individualSize - 1, Statics.breakPointAllele);
-//            for (int breakPointIndex : breakPointIndexes) {
-//                individual.setAllele(breakPointIndex, Statics.breakPointAllele);
-//            }
-//            population.setIndividual(i, individual);
-//        }
-//        return population;
-//    }
-//
-//    public int[] getBreakPointIndexes(int noOfBreakPoints, int individualSize) {
-//        int[] indexes = new int[noOfBreakPoints];
-//        int breakPointCount = 0;
-//        while (breakPointCount < noOfBreakPoints) {
-//            int randomIndex = rand.nextInt(individualSize);
-//            if (!intArrayContains(randomIndex, indexes)) {
-//                indexes[breakPointCount] = randomIndex;
-//                breakPointCount++;
-//            }
-//
-//        }
-//        return indexes;
-//    }
+    public void setMaxNoOfBreakPoints(int maxNoOfBreakPoints) {
+        this.maxNoOfBreakPoints = maxNoOfBreakPoints;
+    }
+
+    public void setMutateProb(double mutateProb) {
+        this.mutateProb = mutateProb;
+    }
+
+    public void setNoOfIndividuals(int noOfIndividuals) {
+        this.noOfIndividuals = noOfIndividuals;
+    }
+
+    public void setOnePointCrossoverProb(double onePointCrossoverProb) {
+        this.onePointCrossoverProb = onePointCrossoverProb;
+    }
+
+    public void setPopulationFitnesses(double[] populationFitnesses) {
+        this.populationFitnesses = populationFitnesses;
+    }
+
+    public void setUniformCrossoverProb(double uniformCrossoverProb) {
+        this.uniformCrossoverProb = uniformCrossoverProb;
+    }
+
+    public void setTimeSeries(TimeSeries timeSeries) {
+        this.timeSeries = timeSeries;
+    }
+
+    // ONLY FOR TESTING! Remove!
+    private static void printBreakPointLocations(Individual individual) {
+        String s = "";
+        for (int i = 0; i < individual.getNoOfGenes(); i++) {
+            if (individual.getAllele(i) == Statics.breakPointAllele)
+                s += (i + " ");
+        }
+        System.out.println(s);
+    }
 
 }

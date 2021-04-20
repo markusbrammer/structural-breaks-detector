@@ -24,7 +24,12 @@ public class Procedures {
         double breakPointProb = 0.6;
 
         Individual mutatedIndividual = new Individual(noOfGenes);
-        for (int i = 0; i < noOfGenes; i++) {
+
+        // Individuals must have break points at 0th and last index
+        mutatedIndividual.setAllele(0, Statics.breakPointAllele);
+        mutatedIndividual.setAllele(noOfGenes - 1, Statics.breakPointAllele);
+
+        for (int i = 1; i < noOfGenes - 1; i++) {
             if (rand.nextDouble() < mutateProb) {
                 char allele = BreakPointProcedures.mutateAllele(breakPointProb);
                 mutatedIndividual.setAllele(i, allele);

@@ -1,23 +1,19 @@
-import ga.Individual;
-
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Test {
 
     public static void main(String[] args) {
 
-        Individual i1 = new Individual(10);
-        Individual i2 = new Individual(10);
+        List<Integer> array = new ArrayList<>();
+        array.add(1);
+        // addTwo(array);
+        System.out.println(array.size());
 
-        for (int i = 0; i < 10; i++) {
-            i1.setAllele(i, '*');
-            i2.setAllele(i, '*');
-        }
+    }
 
-        i2.setAllele(0, '-');
-
-        System.out.println(i1.equals(i2));
-
+    public static void addTwo(List<Integer> array) {
+        array.add(2);
     }
 
 }

@@ -1,16 +1,12 @@
 import bp.BreakPointAlgorithm;
 import bp.Statics;
-import ga.Individual;
-import ga.Population;
 import data.TimeSeries;
-import ga.Procedures;
-
-import java.sql.Time;
-import java.util.Random;
+import ga.Individual;
 
 public class TestAlgorithm {
 
     public static void main(String[] args) {
+        // TimeSeries timeSeries = new TimeSeries("src/test/resources/1Breaks_1K.json");
         TimeSeries timeSeries = new TimeSeries("src/test/resources/1Breaks_1K.json");
         BreakPointAlgorithm algorithm = new BreakPointAlgorithm(timeSeries);
         Individual individual = algorithm.findBreakPoints();

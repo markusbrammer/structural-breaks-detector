@@ -33,22 +33,4 @@ public class Individual {
         return s;
     }
 
-    public char[] getGenes() {
-        return genes;
-    }
-
-
-    //    public void fillActiveGenes(int[] activeGenes, char activeAllele) {
-//        /**
-//         * For an array of genes give them an active allele. (Use this for adding break points where activeAllele is
-//         * the symbol for a break point).
-//         */
-//        this.activeAllele = activeAllele;
-//        int genesMaxIndex = genes.length;
-//        for (int gene : activeGenes) {
-//            if (gene <= genesMaxIndex)
-//                genes[gene] = activeAllele;
-//        }
-//    }
-
 }
