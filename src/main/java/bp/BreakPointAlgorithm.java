@@ -44,8 +44,8 @@ public class BreakPointAlgorithm {
             while (parent1 == parent2)
                 parent2 = selectRandomIndividual();
 
-            Individual child = geneticAlgorithmProcedure(parent1, parent2);
-            replaceMinimumFitness(child);
+            Individual offspring = geneticAlgorithmProcedure(parent1, parent2);
+            replaceMinimumFitness(offspring);
 
         }
 
@@ -55,17 +55,17 @@ public class BreakPointAlgorithm {
 
     }
 
-    private void replaceMinimumFitness(Individual child) {
+    private void replaceMinimumFitness(Individual offspring) {
 
         int minimumFitnessIndex = getMinimumFitnessIndividualIndex();
         double minimumFitness = populationFitnesses[minimumFitnessIndex];
 
-        double childFitness = Fitness.getFitness(child, timeSeries);
+        double childFitness = Fitness.getFitness(offspring, timeSeries);
 
         double probabilityOfReplacement = childFitness / (childFitness + minimumFitness);
         double randomValue = rand.nextDouble();
         if (randomValue < probabilityOfReplacement) {
-            population.setIndividual(minimumFitnessIndex, child);
+            population.setIndividual(minimumFitnessIndex, offspring);
             populationFitnesses[minimumFitnessIndex] = childFitness;
         }
 
@@ -104,17 +104,17 @@ public class BreakPointAlgorithm {
 
     private Individual geneticAlgorithmProcedure(Individual parent1, Individual parent2) {
 
-        Individual child;
+        Individual offspring;
         double randomValue = rand.nextDouble();
         if (randomValue < mutateProb) {
-            child = Procedures.mutate(parent1);
+            offspring = Procedures.mutate(parent1);
         } else if (randomValue < mutateProb + uniformCrossoverProb) {
-            child = Procedures.uniformCrossover(parent1, parent2);
+            offspring = Procedures.uniformCrossover(parent1, parent2);
         } else {
-            child = Procedures.onePointCrossover(parent1, parent2);
+            offspring = Procedures.onePointCrossover(parent1, parent2);
         }
 
-        return child;
+        return offspring;
 
 
     }

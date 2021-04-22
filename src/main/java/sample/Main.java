@@ -26,8 +26,11 @@ public class Main extends Application {
         algorithm = new BreakPointAlgorithm(timeSeries);
 
         controller.addObserver(new AlgorithmObserver(algorithm));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 900, 900));
+
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 

@@ -1,6 +1,7 @@
 package sample;
 
 import data.TimeSeries;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
@@ -25,24 +26,9 @@ public class Controller {
         support.addPropertyChangeListener(listener);
     }
 
-    // TODO Taken from StackOverflow, link in Notion
-    // TODO Make custom IntegerFilter class that extends UnaryOperator or something
-    // Add to textformatter - only allows integers
-    UnaryOperator<TextFormatter.Change> integerFilter = change -> {
-        String newText = change.getControlNewText();
-        if (newText.matches("[1-9]?[0-9]{0,3}")) {
-            return change;
-        }
-        return null;
-    };
-
     private File dataFile;
     private FileChooser fileChooser;
 
-
-    private TextFormatter<Integer> intFormatter = new TextFormatter<Integer>(
-            new IntegerStringConverter(), 50, integerFilter
-    );
 
     @FXML private LineChart<Double, Double> timeSeriesGraph;
     @FXML private Text currentDataFile;
@@ -60,7 +46,9 @@ public class Controller {
         // Initialises nodes in the FXML file.
         currentDataFile.setText("No file loaded.");
         // populationSizeInput.setTextFormatter(intFormatter);
-        maxNoOfBreakPoints.setTextFormatter(intFormatter);
+
+        assignIntegerFilter(populationSizeInput, "[1-9]?[0-9]{0,2}", 50);
+        assignIntegerFilter(maxNoOfBreakPoints, "[1-9]?[0-9]{0,1}", 3);
 
         maxNoOfBreakPoints.textProperty().addListener((support, oldValue, newValue) -> {
             System.out.println("Textfield changed from " + oldValue + " to " + newValue);
@@ -95,6 +83,44 @@ public class Controller {
         support.firePropertyChange("onePointCrossoverProb", null, null);
         support.firePropertyChange("mutationProb", null, null);
         support.firePropertyChange("run", null, null);
+
+    }
+
+    private void assignIntegerFilter(TextField textField, String regex, int initValue) {
+
+        // TODO Taken from StackOverflow, link in Notion
+        // TODO Make custom IntegerFilter class that extends UnaryOperator or something
+        // Add to textformatter - only allows integers
+        UnaryOperator<TextFormatter.Change> integerFilter = change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches(regex)) {
+                return change;
+            }
+            return null;
+        };
+
+        textField.setTextFormatter(new TextFormatter<Integer>(
+                new IntegerStringConverter(), initValue, integerFilter
+        ));
+
+        addErrorListener("[^1-9]*", textField);
+
+    }
+
+    private void addErrorListener(String regex, TextField textField) {
+
+        // Source: https://edencoding.com/javafx-textfield/
+        PseudoClass errorClass = PseudoClass.getPseudoClass("error");
+        textField.textProperty().addListener(event -> {
+            boolean matchesRegex = textField.getText().matches(regex);
+            textField.pseudoClassStateChanged(PseudoClass.getPseudoClass("error"),
+                    matchesRegex);
+//            runAlgorithmBtn.pseudoClassStateChanged(PseudoClass.getPseudoClass("error"),
+//                    textField.getText().matches("[^1-9]*"));
+
+            // TODO FIX - this does not work! If two fields are wrong, correcting one enables button
+            runAlgorithmBtn.setDisable(matchesRegex);
+        });
 
     }
 
