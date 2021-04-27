@@ -11,6 +11,7 @@ import java.beans.PropertyChangeListener;
 public class AlgorithmObserver implements PropertyChangeListener {
 
     private BreakPointAlgorithm algorithm;
+    private TimeSeries timeSeries;
 
     public AlgorithmObserver(BreakPointAlgorithm algorithm) {
         this.algorithm = algorithm;
@@ -21,40 +22,40 @@ public class AlgorithmObserver implements PropertyChangeListener {
         // Values get updates from controller
         Controller controller = (Controller) event.getSource();
         String propertyName = event.getPropertyName();
-        if (!propertyName.equals("run")) {
+        if (propertyName.equals("runAlgorithm")) {
             updateValues(controller, propertyName);
-        } else {
             Individual test = algorithm.findBreakPoints();
             printBreakPointLocations(test);
+            controller.showFitness(test, timeSeries);
         }
-
     }
 
     private void updateValues(Controller controller, String propertyName) {
+        /**
+         * Update all algorithm values/parameters.
+         * This class assumes that no value is null, thus a check must be implemented beforehand. (In the GUI, no
+         * fields can be left empty when pressing "Run")
+         */
 
-        if (propertyName.equals("populationSize")) {
-            algorithm.setNoOfIndividuals(controller.getPopulationSize());
-        } else if (propertyName.equals("maxNoOfBreakPoints")) {
-            algorithm.setMaxNoOfBreakPoints(controller.getMaxNoOfBreakPoints());
-        } else if (propertyName.equals("alphaParameter")) {
-            algorithm.setAlpha(controller.getAlphaParameter());
-        } else if (propertyName.equals("uniformCrossoverProb")) {
-            double newValue = controller.getUniformCrossoverProb();
-            algorithm.setUniformCrossoverProb(newValue);
-        } else if (propertyName.equals("onePointCrossOverProb")) {
-            double newValue = controller.getOnePointCrossoverProb();
-            algorithm.setOnePointCrossoverProb(newValue);
-        } else if (propertyName.equals("mutationProb")) {
-            double newValue = controller.getMutationProb();
-            algorithm.setMutateProb(newValue);
-        } else if (propertyName.equals("dataFile")) {
-            TimeSeries timeSeries = new TimeSeries(controller.getDataFilePath());
-            algorithm.setTimeSeries(timeSeries);
-        }
+        algorithm.setNoOfIndividuals(controller.getPopulationSize());
+        algorithm.setMaxNoOfBreakPoints(controller.getMaxNoOfBreakPoints());
+
+        algorithm.setAlpha(controller.getAlphaParameter());
+
+        algorithm.setUniformCrossoverProb(controller.getUniformCrossoverProb());
+        algorithm.setOnePointCrossoverProb(controller.getOnePointCrossoverProb());
+        algorithm.setMutateProb(controller.getMutationProb());
+
+        timeSeries = new TimeSeries(controller.getDataFilePath());
+        algorithm.setTimeSeries(timeSeries);
 
     }
 
     private static void printBreakPointLocations(Individual individual) {
+        /**
+         * A temporary class to print break points. This will be obsolete when the GUI is able to display the
+         * rectangles by itself.
+         */
         String s = "";
         for (int i = 0; i < individual.getNoOfGenes(); i++) {
             if (individual.getAllele(i) == Statics.breakPointAllele)

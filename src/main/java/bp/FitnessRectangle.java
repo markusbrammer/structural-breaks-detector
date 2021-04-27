@@ -1,10 +1,10 @@
 package bp;
 
-public class Rectangle {
+public class FitnessRectangle {
 
     private double xMin, xMax, yMin, yMax;
 
-    public Rectangle (double xMin, double xMax, double yMin, double yMax) {
+    public FitnessRectangle(double xMin, double xMax, double yMin, double yMax) {
 
         this.xMin = xMin;
         this.xMax = xMax;
@@ -17,8 +17,23 @@ public class Rectangle {
         return (xMax - xMin) * (yMax - yMin);
     }
 
+    public double getxMax() {
+        return xMax;
+    }
 
-//    public Rectangle(int breakPointIndex0, int breakPointIndex1,
+    public double getxMin() {
+        return xMin;
+    }
+
+    public double getyMax() {
+        return yMax;
+    }
+
+    public double getyMin() {
+        return yMin;
+    }
+
+    //    public Rectangle(int breakPointIndex0, int breakPointIndex1,
 //                     TimeSeries timeSeries) {
 //        /*
 //         * Draw rectangle between break point interval (BPI) in timeseries

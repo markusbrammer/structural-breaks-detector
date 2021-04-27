@@ -16,12 +16,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <right>
-      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <StackPane fx:id="graphStackPane" alignment="TOP_LEFT" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <LineChart fx:id="timeSeriesGraph" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="319.0">
+            <LineChart fx:id="timeSeriesGraph" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="753.0" prefWidth="979.0" StackPane.alignment="TOP_LEFT">
               <xAxis>
                 <NumberAxis side="BOTTOM" />
               </xAxis>
@@ -33,7 +32,7 @@
       </StackPane>
    </right>
    <left>
-      <GridPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="539.0" prefWidth="265.0">
+      <GridPane fx:id="settingsPane" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="539.0" prefWidth="265.0" BorderPane.alignment="CENTER_LEFT">
         <columnConstraints>
           <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="150.0" minWidth="10.0" prefWidth="150.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="50.0" />

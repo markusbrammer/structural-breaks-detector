@@ -1,21 +1,30 @@
 package sample;
 
+import bp.FitnessRectangle;
+import bp.Statics;
 import data.TimeSeries;
+import ga.Individual;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.UnaryOperator;
 
 public class Controller {
@@ -29,16 +38,23 @@ public class Controller {
     private File dataFile;
     private FileChooser fileChooser;
 
+    private DataGraph<Number, Number> dataGraph;
 
-    @FXML private LineChart<Double, Double> timeSeriesGraph;
+    @FXML private LineChart<Number, Number> timeSeriesGraph;
     @FXML private Text currentDataFile;
+
+    @FXML private GridPane settingsPane;
+
     @FXML private TextField populationSizeInput;
     @FXML private TextField maxNoOfBreakPoints;
     @FXML private TextField alphaParameter;
     @FXML private TextField uniformCrossoverProb;
     @FXML private TextField onePointCrossoverProb;
     @FXML private TextField mutationProb;
+
     @FXML private Button runAlgorithmBtn;
+
+    @FXML private StackPane graphStackPane;
 
 
     @FXML
@@ -46,13 +62,18 @@ public class Controller {
         // Initialises nodes in the FXML file.
         currentDataFile.setText("No file loaded.");
         // populationSizeInput.setTextFormatter(intFormatter);
+        initTextFields();
 
-        assignIntegerFilter(populationSizeInput, "[1-9]?[0-9]{0,2}", 50);
-        assignIntegerFilter(maxNoOfBreakPoints, "[1-9]?[0-9]{0,1}", 3);
+        StackPane stackPane = (StackPane) timeSeriesGraph.getParent();
+        stackPane.getChildren().clear();
 
-        maxNoOfBreakPoints.textProperty().addListener((support, oldValue, newValue) -> {
-            System.out.println("Textfield changed from " + oldValue + " to " + newValue);
-        });
+
+        dataGraph = new DataGraph<>(new NumberAxis(), new NumberAxis());
+        stackPane.getChildren().add(dataGraph);
+
+        // dataGraph.addRectangle(0, 100, 0, 3);
+        // dataGraph.addVerticalRangeMarker(new XYChart.Data<>(0, 500));
+
     }
 
     @FXML
@@ -72,18 +93,42 @@ public class Controller {
 
     @FXML
     public void runAlgorithm(MouseEvent mouseEvent) {
+        /**
+         * When pressing a button, the algorithm must run.
+         */
 
-        // TODO / idea: Send update as hashmap in stead of like this.
-        // HashMap<String, Number> ...
+        support.firePropertyChange("runAlgorithm", null, null);
 
-        support.firePropertyChange("populationSize", null, null);
-        support.firePropertyChange("maxNoOfBreakPoints", null, null);
-        support.firePropertyChange("alphaParameter", null, null);
-        support.firePropertyChange("uniformCrossoverProb", null, null);
-        support.firePropertyChange("onePointCrossoverProb", null, null);
-        support.firePropertyChange("mutationProb", null, null);
-        support.firePropertyChange("run", null, null);
+    }
 
+
+    private void initTextFields() {
+
+        assignIntegerFilter(populationSizeInput, "[1-9]?[0-9]{0,2}", 50);
+        assignIntegerFilter(maxNoOfBreakPoints, "[1-9]?[0-9]{0,1}", 3);
+
+        assignDoubleFilter(alphaParameter, 0.25);
+
+        assignDoubleFilter(uniformCrossoverProb, 0.3);
+        assignDoubleFilter(onePointCrossoverProb, 0.3);
+        assignDoubleFilter(mutationProb, 0.4);
+
+    }
+
+    private void assignDoubleFilter(TextField textField, double initValue) {
+        String regex = "[0]?\\.[0-9]*";
+        UnaryOperator<TextFormatter.Change> doubleFilter = change -> {
+            String newText = change.getControlNewText();
+
+            if (newText.matches(regex))
+                return change;
+
+            return null;
+        };
+
+        textField.setTextFormatter(new TextFormatter<Double>(
+                new DoubleStringConverter(), initValue, doubleFilter
+        ));
     }
 
     private void assignIntegerFilter(TextField textField, String regex, int initValue) {
@@ -115,14 +160,12 @@ public class Controller {
             boolean matchesRegex = textField.getText().matches(regex);
             textField.pseudoClassStateChanged(PseudoClass.getPseudoClass("error"),
                     matchesRegex);
-//            runAlgorithmBtn.pseudoClassStateChanged(PseudoClass.getPseudoClass("error"),
-//                    textField.getText().matches("[^1-9]*"));
-
-            // TODO FIX - this does not work! If two fields are wrong, correcting one enables button
             runAlgorithmBtn.setDisable(matchesRegex);
         });
 
     }
+
+
 
     public String getDataFilePath() {
         if (dataFile != null) {
@@ -163,13 +206,14 @@ public class Controller {
         // ((LineChart<Double, Double>) Main.getPrimaryStage().getScene().lookup("#tsgraph"))
 
         TimeSeries timeSeries = new TimeSeries(dataFile.getAbsolutePath());
-        XYChart.Series<Double, Double> coordinates = readTimeSeriesPoints(timeSeries);
-        timeSeriesGraph.getData().add(coordinates);
+//        XYChart.Series<Number, Number> coordinates = readTimeSeriesPoints(timeSeries);
+//        timeSeriesGraph.getData().add(coordinates);
+        dataGraph.setTimeSeries(timeSeries);
         currentDataFile.setText("Current: " + dataFile.getName());
 
     }
 
-    private XYChart.Series<Double, Double> readTimeSeriesPoints(TimeSeries timeSeries) {
+    private XYChart.Series<Number, Number> readTimeSeriesPoints(TimeSeries timeSeries) {
         // TODO: From DataGraph.java, temporary fix
         /*
          * Read all points from the time series into a XYChart object. Add time
@@ -181,19 +225,64 @@ public class Controller {
          * Made by: Markus B. Jensen (s183816)
          */
 
-        XYChart.Series<Double, Double> graphPoints = new XYChart.Series<>();
+        XYChart.Series<Number, Number> graphPoints = new XYChart.Series<>();
 
         double[] timeSeriesTimes = timeSeries.getTimes();
         int noOfElementsInTimeSeries = timeSeries.getLength();
         for (int i = 0; i < noOfElementsInTimeSeries; i++) {
             double x = timeSeriesTimes[i];
             double y = timeSeries.getObservations()[1][i];
-            graphPoints.getData().add(new XYChart.Data<Double,Double>(x, y));
+            graphPoints.getData().add(new XYChart.Data<Number,Number>(x, y));
         }
 
         String timeSeriesName = timeSeries.getName();
         graphPoints.setName(timeSeriesName);
         return graphPoints;
 
+    }
+
+    public void showFitness(Individual individual, TimeSeries timeSeries) {
+
+        List<Integer> breakPointIndexes = findBreakPointIndexes(individual);
+        for (int i = 0; i < breakPointIndexes.size() - 1; i++) {
+            int startIndex = 1 + breakPointIndexes.get(i);
+            int endIndex = breakPointIndexes.get(i + 1);
+
+            double[] values = timeSeries.getObservations()[1];
+
+            double[] minAndMaxValues = getMinAndMaxInInterval(values, startIndex, endIndex);
+            double minValue = minAndMaxValues[0];
+            double maxValue = minAndMaxValues[1];
+
+            FitnessRectangle fitnessRectangle = new FitnessRectangle(startIndex, endIndex, minValue, maxValue);
+            dataGraph.addRectangle(fitnessRectangle.getxMin(), fitnessRectangle.getxMax(), fitnessRectangle.getyMin()
+                    , fitnessRectangle.getyMax());
+
+        }
+
+    }
+
+    private static ArrayList<Integer> findBreakPointIndexes(Individual individual) {
+        ArrayList<Integer> breakPointIndexes = new ArrayList<>();
+        for (int i = 0; i < individual.getNoOfGenes(); i++) {
+            char allele = individual.getAllele(i);
+            if (allele == Statics.breakPointAllele)
+                breakPointIndexes.add(i);
+        }
+        return breakPointIndexes;
+    }
+
+    private static double[] getMinAndMaxInInterval(double[] array, int lowerBound, int upperBound) {
+        double min = array[lowerBound];
+        double max = array[upperBound];
+        for (int i = lowerBound; i <= upperBound; i++) {
+            double value = array[i];
+            if (value < min) {
+                min = value;
+            } else if (value > max) {
+                max = value;
+            }
+        }
+        return new double[] {min, max};
     }
 }

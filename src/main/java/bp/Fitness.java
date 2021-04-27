@@ -37,8 +37,8 @@ public class Fitness {
         double minValue = minAndMaxValues[0];
         double maxValue = minAndMaxValues[1];
 
-        Rectangle rectangle = new Rectangle(startIndex, endIndex, minValue, maxValue);
-        return rectangle.getArea();
+        FitnessRectangle fitnessRectangle = new FitnessRectangle(startIndex, endIndex, minValue, maxValue);
+        return fitnessRectangle.getArea();
 
     }
 
@@ -54,8 +54,8 @@ public class Fitness {
         double minValue = minAndMaxValues[0];
         double maxValue = minAndMaxValues[1];
 
-        Rectangle timeSeriesRectangle = new Rectangle(indexZero, lastIndex, minValue, maxValue);
-        return timeSeriesRectangle.getArea();
+        FitnessRectangle timeSeriesFitnessRectangle = new FitnessRectangle(indexZero, lastIndex, minValue, maxValue);
+        return timeSeriesFitnessRectangle.getArea();
 
     }
 
