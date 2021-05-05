@@ -1,16 +1,18 @@
-package bp;
+package fitness;
 
+import bp.Statics;
 import data.TimeSeries;
 import ga.Individual;
 
 import java.util.ArrayList;
 
-public class Fitness {
+public class RectangleFitness extends FitnessCalculator {
 
-    public static double getFitness(Individual individual,
-                                    TimeSeries timeSeries) {
+    @Override
+    public double getFitnessOfIndividual(Individual individual) {
         // Fitness function, equation (8) in the paper
 
+        TimeSeries timeSeries = this.getTimeSeries();
 
         double timeSeriesRectangleArea = getTimeSeriesRectangleArea(timeSeries);
 

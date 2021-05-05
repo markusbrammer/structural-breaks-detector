@@ -12,10 +12,10 @@ public class Procedures {
 
     private static Random rand = new Random();
 
+    /**
+     * Takes an individual and returns a mutated individual.
+     */
     public static Individual mutate(Individual individual) {
-        /**
-         * Takes an individual and returns a mutated individual.
-         */
 
         int noOfGenes = individual.getNoOfGenes();
         int noOfBreakPoints = BreakPointProcedures.noOfBreakPoints(individual);
@@ -39,12 +39,12 @@ public class Procedures {
         return offspring;
     }
 
+    /**
+     * Performs a uniform crossover between two parent individuals and returns the offspring individual.
+     *
+     * Length of the individuals and the character for null-allele must be the same for both parents.
+     */
     public static Individual uniformCrossover(Individual parent1, Individual parent2) {
-        /**
-         * Performs a uniform crossover between two parent individuals and returns the offspring individual.
-         *
-         * Length of the individuals and the character for null-allele must be the same for both parents.
-         */
 
         int noOfGenes = parent1.getNoOfGenes();
 
@@ -59,12 +59,13 @@ public class Procedures {
         return offspring;
     }
 
+    /**
+     * Performs one-point crossover between two parent individuals and returns the offspring individual.
+     *
+     * Length of the individuals and the character for null-allele must be the same for both parents.
+     */
     public static Individual onePointCrossover(Individual parent1, Individual parent2) {
-        /**
-         * Performs one-point crossover between two parent individuals and returns the offspring individual.
-         *
-         * Length of the individuals and the character for null-allele must be the same for both parents.
-         */
+
         int noOfGenes = parent1.getNoOfGenes();
 
         int crossoverIndex = rand.nextInt(noOfGenes);

@@ -1,6 +1,6 @@
 package sample;
 
-import bp.FitnessRectangle;
+import fitness.FitnessRectangle;
 import bp.Statics;
 import data.TimeSeries;
 import ga.Individual;

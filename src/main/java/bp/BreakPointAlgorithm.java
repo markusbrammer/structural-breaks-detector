@@ -1,6 +1,7 @@
 package bp;
 
 import data.TimeSeries;
+import fitness.RectangleFitness;
 import ga.Individual;
 import ga.Population;
 import ga.Procedures;
@@ -13,6 +14,8 @@ public class BreakPointAlgorithm {
 
     private TimeSeries timeSeries;
     private Population population;
+
+    private RectangleFitness rectangleFitness = new RectangleFitness();
 
     private double[] populationFitnesses;
 
@@ -28,6 +31,7 @@ public class BreakPointAlgorithm {
 
     public BreakPointAlgorithm(TimeSeries timeSeries) {
         this.timeSeries = timeSeries;
+        rectangleFitness.setTimeSeries(timeSeries);
     }
 
     public Individual findBreakPoints() {
@@ -60,7 +64,7 @@ public class BreakPointAlgorithm {
         int minimumFitnessIndex = getMinimumFitnessIndividualIndex();
         double minimumFitness = populationFitnesses[minimumFitnessIndex];
 
-        double childFitness = Fitness.getFitness(offspring, timeSeries);
+        double childFitness = rectangleFitness.getFitnessOfIndividual(offspring);
 
         double probabilityOfReplacement = childFitness / (childFitness + minimumFitness);
         double randomValue = rand.nextDouble();
@@ -139,7 +143,7 @@ public class BreakPointAlgorithm {
     private void calculateFitnesses() {
         for (int i = 0; i < noOfIndividuals; i++) {
             Individual individual = population.getIndividual(i);
-            double fitness = Fitness.getFitness(individual, timeSeries);
+            double fitness = rectangleFitness.getFitnessOfIndividual(individual);
             populationFitnesses[i] = fitness;
         }
     }
@@ -234,6 +238,7 @@ public class BreakPointAlgorithm {
 
     public void setTimeSeries(TimeSeries timeSeries) {
         this.timeSeries = timeSeries;
+        rectangleFitness.setTimeSeries(timeSeries);
     }
 
     // ONLY FOR TESTING! Remove!
