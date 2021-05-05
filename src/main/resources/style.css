@@ -82,3 +82,12 @@ https://stackoverflow.com/questions/50184756/remove-border-around-javafx-scrollp
 .button:error {
     -fx-background-color: black;
 }
+
+#fitness-box {
+    -fx-background-color: red;
+    -fx-border-color: blue;
+}
+
+.rectangle {
+    -fx-background-color: red;
+}

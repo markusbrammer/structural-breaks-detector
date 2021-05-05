@@ -14,7 +14,6 @@ import javafx.scene.shape.Shape;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class DataGraph<X, Y> extends LineChart {
 
@@ -30,6 +29,8 @@ public class DataGraph<X, Y> extends LineChart {
     private TimeSeries timeSeries;
 
     private List<Shape> shapes = new ArrayList<>();
+
+    private final int MAX_NO_OF_PLOT_POINTS = 1000;
 
     public DataGraph(Axis<X> xAxis, Axis<Y> yAxis) {
         super(xAxis, yAxis);
@@ -50,26 +51,19 @@ public class DataGraph<X, Y> extends LineChart {
         Data<X, Y> lowerRight = (Data<X, Y>) new Data<>(xMax, yMin);
         Data<Data<X, Y>, Data<X,Y>> marker = (Data<Data<X, Y>, Data<X,Y>>) new Data<>(upperLeft, lowerRight);
 
+        // I would have prefered if I could just use .setId(...) to modify look in CSS but that does not seem
+        // possible at the moment.
+        rectangle.setFill(Color.TRANSPARENT);
+        rectangle.getStrokeDashArray().add(10d);
+        rectangle.setStroke(Color.BLACK);
+        rectangle.setStrokeWidth(4);
+
         marker.setNode(rectangle);
         shapes.add(rectangle);
 
         getPlotChildren().add(rectangle);
         fitnessNodeMarkers.add(marker);
 
-    }
-
-    public void addVerticalRangeMarker(Data<X, Y> marker) {
-        Objects.requireNonNull(marker, "the marker must not be null");
-        if (fitnessNodeMarkersBackup.contains(marker)) return;
-
-        Rectangle rectangle = new Rectangle(0,0,0,0);
-        rectangle.setStroke(Color.TRANSPARENT);
-        rectangle.setFill(Color.BLUE.deriveColor(1, 1, 1, 0.2));
-
-        marker.setNode( rectangle);
-
-        getPlotChildren().add(rectangle);
-        fitnessNodeMarkersBackup.add(marker);
     }
 
     @Override
@@ -90,61 +84,59 @@ public class DataGraph<X, Y> extends LineChart {
             double width = getXAxis().getDisplayPosition(xMax) - getXAxis().getDisplayPosition(xMin);
             double height = getYAxis().getDisplayPosition(yMin) - getYAxis().getDisplayPosition(yMax);
 
+            // System.out.println("Height: " + height);
+            // System.out.println("Width: " + width);
+
             rectangle.setWidth(width);
             rectangle.setHeight(height);
 
         }
 
-//        for (int i = 0; i < fitnessNodeMarkers.size(); i++) {
-//            Data<X, Y> marker = fitnessNodeMarkers.get(i);
-//            Rectangle rectangle = (Rectangle) marker.getNode();
-//            Rectangle rectangle1 = (Rectangle) shapes.get(i);
-//
-//            double width =
-//                    getXAxis().getDisplayPosition(rectangle1.getX() + rectangle1.getWidth()) - getXAxis().getDisplayPosition(rectangle1.getX());
-//
-//            System.out.println(getXAxis().getDisplayPosition(100));
-//
-//            rectangle.setWidth(width);
-//            rectangle.setHeight(500);
-//            rectangle.setX(getXAxis().getDisplayPosition(marker.getXValue()));
-//            rectangle.setY(getYAxis().getDisplayPosition(marker.getYValue()));
-//
-//        }
-
-        for (Data<X, Y> verticalRangeMarker : fitnessNodeMarkersBackup) {
-
-            Rectangle rectangle = (Rectangle) verticalRangeMarker.getNode();
-            rectangle.setX( getXAxis().getDisplayPosition(verticalRangeMarker.getXValue()) + 0.5);  // 0.5 for crispness
-            rectangle.setWidth( getXAxis().getDisplayPosition(verticalRangeMarker.getYValue()) - getXAxis().getDisplayPosition(verticalRangeMarker.getXValue()));
-            rectangle.setY(0d);
-            rectangle.setHeight(getBoundsInLocal().getHeight());
-            rectangle.toBack();
-
-        }
-
     }
 
+    /**
+     * Read all points from the time series into a XYChart object. Add time
+     * series name as legend name for data points.
+     *
+     * Important: This can only be called, when the TimeSeries field for a
+     * DataGraph is not null.
+     *
+     * Made by: Markus B. Jensen (s183816)
+     */
     private void readTimeSeriesPoints() {
-        // TODO: From DataGraph.java, temporary fix
-        /*
-         * Read all points from the time series into a XYChart object. Add time
-         * series name as legend name for data points.
-         *
-         * Important: This can only be called, when the TimeSeries field for a
-         * DataGraph is not null.
-         *
-         * Made by: Markus B. Jensen (s183816)
-         */
 
         XYChart.Series<Number, Number> graphPoints = new XYChart.Series<>();
 
         double[] timeSeriesTimes = timeSeries.getTimes();
         int noOfElementsInTimeSeries = timeSeries.getLength();
+
+        // JavaFX' LineGraph becomes slow when showing too many points. With a lot of values, the average of a
+        // number of values is plotted.
+        int noOfValuesPerPoint;
+        if (noOfElementsInTimeSeries > MAX_NO_OF_PLOT_POINTS) {
+            noOfValuesPerPoint = noOfElementsInTimeSeries / MAX_NO_OF_PLOT_POINTS;
+        } else {
+            noOfValuesPerPoint = 1;
+        }
+
+
+        int z = 0;
+        double x = 0;
+        double y = 0;
         for (int i = 0; i < noOfElementsInTimeSeries; i++) {
-            double x = timeSeriesTimes[i];
-            double y = timeSeries.getObservations()[1][i];
-            graphPoints.getData().add(new XYChart.Data<Number, Number>(x, y));
+            if (z < noOfValuesPerPoint) {
+                x += timeSeriesTimes[i];
+                y += timeSeries.getObservations()[1][i];
+                z++;
+            } else {
+                x /= noOfValuesPerPoint;
+                y /= noOfValuesPerPoint;
+                graphPoints.getData().add(new XYChart.Data<Number, Number>(x, y));
+                x = 0;
+                y = 0;
+                z = 0;
+                i--;
+            }
         }
 
         String timeSeriesName = timeSeries.getName();

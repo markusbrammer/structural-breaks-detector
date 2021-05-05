@@ -6,6 +6,8 @@ import data.TimeSeries;
 import ga.Individual;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -13,10 +15,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
@@ -38,7 +43,13 @@ public class Controller {
     private File dataFile;
     private FileChooser fileChooser;
 
+    private Stage primaryStage = Main.getPrimaryStage();
+
+    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample.fxml"));
+
     private DataGraph<Number, Number> dataGraph;
+
+    @FXML private BorderPane borderPane;
 
     @FXML private LineChart<Number, Number> timeSeriesGraph;
     @FXML private Text currentDataFile;
@@ -59,6 +70,8 @@ public class Controller {
 
     @FXML
     public void initialize() {
+
+
         // Initialises nodes in the FXML file.
         currentDataFile.setText("No file loaded.");
         // populationSizeInput.setTextFormatter(intFormatter);
@@ -68,11 +81,13 @@ public class Controller {
         stackPane.getChildren().clear();
 
 
+
         dataGraph = new DataGraph<>(new NumberAxis(), new NumberAxis());
+        dataGraph.setPrefWidth(1000);
+        dataGraph.getStylesheets().add(stackPane.getStylesheets().get(0));
         stackPane.getChildren().add(dataGraph);
 
-        // dataGraph.addRectangle(0, 100, 0, 3);
-        // dataGraph.addVerticalRangeMarker(new XYChart.Data<>(0, 500));
+        System.out.println("");
 
     }
 
@@ -255,6 +270,8 @@ public class Controller {
             double maxValue = minAndMaxValues[1];
 
             FitnessRectangle fitnessRectangle = new FitnessRectangle(startIndex, endIndex, minValue, maxValue);
+            Rectangle rectangle = new Rectangle();
+            rectangle.setId("fitness-box");
             dataGraph.addRectangle(fitnessRectangle.getxMin(), fitnessRectangle.getxMax(), fitnessRectangle.getyMin()
                     , fitnessRectangle.getyMax());
 
@@ -285,4 +302,9 @@ public class Controller {
         }
         return new double[] {min, max};
     }
+
+    public Node getRoot() {
+        return borderPane;
+    }
+
 }
