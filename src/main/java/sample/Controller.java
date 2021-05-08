@@ -1,23 +1,19 @@
 package sample;
 
-import fitness.FitnessRectangle;
 import bp.Statics;
 import data.TimeSeries;
+import fitness.FitnessRectangle;
 import ga.Individual;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -45,11 +41,9 @@ public class Controller {
 
     private Stage primaryStage = Main.getPrimaryStage();
 
-    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample.fxml"));
-
     private DataGraph<Number, Number> dataGraph;
 
-    @FXML private BorderPane borderPane;
+    @FXML private AnchorPane anchorPaneRoot;
 
     @FXML private LineChart<Number, Number> timeSeriesGraph;
     @FXML private Text currentDataFile;
@@ -65,7 +59,7 @@ public class Controller {
 
     @FXML private Button runAlgorithmBtn;
 
-    @FXML private StackPane graphStackPane;
+    @FXML private LineChart graphPlaceHolder;
 
 
     @FXML
@@ -77,17 +71,16 @@ public class Controller {
         // populationSizeInput.setTextFormatter(intFormatter);
         initTextFields();
 
-        StackPane stackPane = (StackPane) timeSeriesGraph.getParent();
-        stackPane.getChildren().clear();
-
 
 
         dataGraph = new DataGraph<>(new NumberAxis(), new NumberAxis());
-        dataGraph.setPrefWidth(1000);
-        dataGraph.getStylesheets().add(stackPane.getStylesheets().get(0));
-        stackPane.getChildren().add(dataGraph);
+        AnchorPane.setLeftAnchor(dataGraph, AnchorPane.getLeftAnchor(graphPlaceHolder));
+        AnchorPane.setTopAnchor(dataGraph, 0.);
+        AnchorPane.setBottomAnchor(dataGraph, 0.);
+        AnchorPane.setRightAnchor(dataGraph, 0.);
+        anchorPaneRoot.getChildren().add(dataGraph);
+        anchorPaneRoot.getChildren().remove(graphPlaceHolder);
 
-        System.out.println("");
 
     }
 
@@ -112,6 +105,7 @@ public class Controller {
          * When pressing a button, the algorithm must run.
          */
 
+        dataGraph.clearFitnessMarkers();
         support.firePropertyChange("runAlgorithm", null, null);
 
     }
@@ -223,36 +217,10 @@ public class Controller {
         TimeSeries timeSeries = new TimeSeries(dataFile.getAbsolutePath());
 //        XYChart.Series<Number, Number> coordinates = readTimeSeriesPoints(timeSeries);
 //        timeSeriesGraph.getData().add(coordinates);
+        dataGraph.getData().clear();
+        dataGraph.clearFitnessMarkers();
         dataGraph.setTimeSeries(timeSeries);
         currentDataFile.setText("Current: " + dataFile.getName());
-
-    }
-
-    private XYChart.Series<Number, Number> readTimeSeriesPoints(TimeSeries timeSeries) {
-        // TODO: From DataGraph.java, temporary fix
-        /*
-         * Read all points from the time series into a XYChart object. Add time
-         * series name as legend name for data points.
-         *
-         * Important: This can only be called, when the TimeSeries field for a
-         * DataGraph is not null.
-         *
-         * Made by: Markus B. Jensen (s183816)
-         */
-
-        XYChart.Series<Number, Number> graphPoints = new XYChart.Series<>();
-
-        double[] timeSeriesTimes = timeSeries.getTimes();
-        int noOfElementsInTimeSeries = timeSeries.getLength();
-        for (int i = 0; i < noOfElementsInTimeSeries; i++) {
-            double x = timeSeriesTimes[i];
-            double y = timeSeries.getObservations()[1][i];
-            graphPoints.getData().add(new XYChart.Data<Number,Number>(x, y));
-        }
-
-        String timeSeriesName = timeSeries.getName();
-        graphPoints.setName(timeSeriesName);
-        return graphPoints;
 
     }
 
@@ -303,8 +271,8 @@ public class Controller {
         return new double[] {min, max};
     }
 
-    public Node getRoot() {
-        return borderPane;
-    }
+//    // public Node getRoot() {
+//        return borderPane;
+//    }
 
 }

@@ -3,6 +3,22 @@ Scroll bar code from here:
 https://stackoverflow.com/questions/50184756/remove-border-around-javafx-scrollpane-scroll-bar-when-not-focused
 */
 
+.scroll-pane > .viewport {
+    -fx-background-color: #E5E5E5;
+}
+
+#settings-pane-outer {
+    -fx-background-color: #E5E5E5;
+    -fx-border-width: 0;
+    /*-fx-border-radius: 0.5em;*/
+    /*-fx-border-color: #E5E5E5;*/
+    -fx-background-radius: 0.5em;
+}
+
+#settings-pane-inner {
+    -fx-background-color: #E5E5E5;
+}
+
 .scroll-bar:horizontal .track,
 .scroll-bar:vertical .track{
     -fx-background-color :transparent;
@@ -20,7 +36,7 @@ https://stackoverflow.com/questions/50184756/remove-border-around-javafx-scrollp
 
 .scroll-bar:vertical .track-background,
 .scroll-bar:horizontal .track-background {
-    -fx-background-color: transparent;
+    -fx-background-color: transparent; /*Changed from transparent*/
     -fx-background-insets: 0;
     -fx-background-radius: 2em;
 }
@@ -81,13 +97,4 @@ https://stackoverflow.com/questions/50184756/remove-border-around-javafx-scrollp
 
 .button:error {
     -fx-background-color: black;
-}
-
-#fitness-box {
-    -fx-background-color: red;
-    -fx-border-color: blue;
-}
-
-.rectangle {
-    -fx-background-color: red;
 }

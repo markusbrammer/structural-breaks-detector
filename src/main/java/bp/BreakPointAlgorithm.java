@@ -22,7 +22,7 @@ public class BreakPointAlgorithm {
     // Statics
     private int noOfIndividuals = 50;
     private int maxNoOfBreakPoints = 1;
-    private double alpha;
+    private double alpha = 0.25;
     private double uniformCrossoverProb = 0.3;
     private double onePointCrossoverProb = 0.3;
     private double mutateProb = 1 - uniformCrossoverProb - onePointCrossoverProb;
@@ -36,6 +36,7 @@ public class BreakPointAlgorithm {
 
     public Individual findBreakPoints() {
 
+        rectangleFitness.setAlphaValue(alpha);
         initializePopulation();
         populationFitnesses = new double[noOfIndividuals];
         calculateFitnesses();

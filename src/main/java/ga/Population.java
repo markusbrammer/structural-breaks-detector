@@ -1,17 +1,13 @@
 package ga;
 
-import ga.Individual;
-
-import java.util.ArrayList;
-
 public class Population {
 
     private Individual[] individuals;
 
+    /**
+     * Initialize a population of null-individuals
+     */
     public Population(int noOfIndividuals) {
-        /**
-         * Initialize a population of null-individuals
-         */
         individuals = new Individual[noOfIndividuals];
     }
 

@@ -25,8 +25,12 @@ public class RectangleFitness extends FitnessCalculator {
             double rectangleArea = getSmallRectangleArea(startIndex, endIndex, timeSeries);
             sum -= rectangleArea;
         }
+
         sum /= timeSeriesRectangleArea;
-        sum += Statics.alpha * 1 / Math.sqrt(breakPointIndexes.size() - 2);
+
+        double alphaValue = this.getAlphaValue();
+        sum += alphaValue * 1 / Math.sqrt(breakPointIndexes.size() - 2);
+
         return sum;
     }
 

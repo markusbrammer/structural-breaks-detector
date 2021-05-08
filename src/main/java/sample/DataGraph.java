@@ -5,6 +5,7 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
@@ -36,11 +37,20 @@ public class DataGraph<X, Y> extends LineChart {
         super(xAxis, yAxis);
         fitnessNodeMarkers.addListener((InvalidationListener) observable -> layoutPlotChildren());
         fitnessNodeMarkersBackup.addListener((InvalidationListener) observable -> layoutPlotChildren());
+        this.setAnimated(false);
     }
 
     public void setTimeSeries(TimeSeries timeSeries) {
         this.timeSeries = timeSeries;
         readTimeSeriesPoints();
+    }
+
+    public void clearFitnessMarkers() {
+        for (Data<Data<X, Y>, Data<X,Y>> fitnessMarker : fitnessNodeMarkers) {
+            Node node = fitnessMarker.getNode();
+            getPlotChildren().remove(node);
+        }
+        fitnessNodeMarkers.clear();
     }
 
     public void addRectangle(double xMin, double xMax, double yMin, double yMax) {
