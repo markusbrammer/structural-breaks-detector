@@ -4,19 +4,16 @@ https://stackoverflow.com/questions/50184756/remove-border-around-javafx-scrollp
 */
 
 .scroll-pane > .viewport {
-    -fx-background-color: #E5E5E5;
+    -fx-background-color: #dfdfdf;
 }
 
 #settings-pane-outer {
-    -fx-background-color: #E5E5E5;
+    -fx-background-color: #dfdfdf;
     -fx-border-width: 0;
-    /*-fx-border-radius: 0.5em;*/
-    /*-fx-border-color: #E5E5E5;*/
-    -fx-background-radius: 0.5em;
 }
 
 #settings-pane-inner {
-    -fx-background-color: #E5E5E5;
+    -fx-background-color: #dfdfdf;
 }
 
 .scroll-bar:horizontal .track,
@@ -97,4 +94,71 @@ https://stackoverflow.com/questions/50184756/remove-border-around-javafx-scrollp
 
 .button:error {
     -fx-background-color: black;
+}
+
+.button {
+    -fx-background-color: transparent;
+    -fx-border-width: 2;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-border-color: grey;
+    /*-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);*/
+}
+
+.button:pressed {
+    -fx-background-color: green;
+}
+
+
+.left-menu-button {
+    -fx-background-color: transparent;
+    -fx-background-size: 25 25;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-border-width: 0;
+}
+
+.left-menu-button:pressed {
+    -fx-background-color: rgba(255,255,255,0.1)
+}
+
+#small-run-menu-button {
+    -fx-background-image: url("icons/run-60.png");
+}
+
+#small-run-menu-button:hover {
+    -fx-background-image: url("icons/run-100.png");
+}
+
+#settings-menu-button{
+    -fx-background-image: url("icons/sliders-60.png");
+}
+
+#settings-menu-button:hover {
+    -fx-background-image: url("icons/sliders-100.png");
+}
+
+#info-menu-button {
+    -fx-background-image: url("icons/info-60.png");
+}
+
+#info-menu-button:hover {
+    -fx-background-image: url("icons/info-100.png");
+}
+
+#left-menu-background {
+    -fx-fill: #383838;
+    -fx-background-color: #383838;
+}
+
+.text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: grey;
+    -fx-border-width: 2;
+    -fx-alignment: center;
+}
+
+
+.text-field:focused {
+    -fx-border-color: blue;
 }

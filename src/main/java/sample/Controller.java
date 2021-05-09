@@ -9,11 +9,11 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -43,12 +43,14 @@ public class Controller {
 
     private DataGraph<Number, Number> dataGraph;
 
+    private boolean settingsShows = false;
+
     @FXML private AnchorPane anchorPaneRoot;
 
     @FXML private LineChart<Number, Number> timeSeriesGraph;
     @FXML private Text currentDataFile;
 
-    @FXML private GridPane settingsPane;
+    @FXML private ScrollPane scrollPaneSettings;
 
     @FXML private TextField populationSizeInput;
     @FXML private TextField maxNoOfBreakPoints;
@@ -65,6 +67,9 @@ public class Controller {
     @FXML
     public void initialize() {
 
+
+        scrollPaneSettings.setVisible(false);
+        scrollPaneSettings.setManaged(false);
 
         // Initialises nodes in the FXML file.
         currentDataFile.setText("No file loaded.");
@@ -108,6 +113,27 @@ public class Controller {
         dataGraph.clearFitnessMarkers();
         support.firePropertyChange("runAlgorithm", null, null);
 
+    }
+
+    /**
+     * Help from here: https://stackoverflow.com/questions/28558165/javafx-setvisible-hides-the-element-but-doesnt-rearrange-adjacent-nodes
+     * @param mouseEvent
+     */
+    @FXML
+    public void toggleSettingsMenu(MouseEvent mouseEvent) {
+
+        boolean toggleBool;
+        if (!settingsShows) {
+            toggleBool = true;
+        } else {
+            toggleBool = false;
+        }
+
+        // Hide or shown settings depending on current visibility
+        scrollPaneSettings.setVisible(toggleBool);
+        scrollPaneSettings.setManaged(toggleBool);
+        scrollPaneSettings.toFront();
+        settingsShows = toggleBool;
     }
 
 

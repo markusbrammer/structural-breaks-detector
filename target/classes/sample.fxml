@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXHamburger?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
@@ -14,17 +13,37 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane fx:id="anchorPaneRoot" stylesheets="@style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
-      <ScrollPane id="settings-pane-outer" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="290.0" AnchorPane.bottomAnchor="42.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane id="left-menu-background" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox spacing="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+               <children>
+                  <Button id="settings-menu-button" fx:id="btnSettingsPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#toggleSettingsMenu" prefHeight="40.0" prefWidth="40.0" styleClass="left-menu-button" />
+                  <Button id="small-run-menu-button" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="left-menu-button" />
+               </children>
+            </VBox>
+            <Button id="info-menu-button" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="left-menu-button" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
+         </children>
+      </AnchorPane>
+      <LineChart fx:id="graphPlaceHolder" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <xAxis>
+          <NumberAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </LineChart>
+      <ScrollPane id="settings-pane-outer" fx:id="scrollPaneSettings" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="290.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="0.0">
          <content>
-            <GridPane id="settings-pane-inner" fx:id="settingsPane" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefWidth="265.0" scaleShape="false">
+            <GridPane id="settings-pane-inner" fx:id="settingsPane" alignment="CENTER" hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="240.0" scaleShape="false" vgap="5.0">
               <columnConstraints>
-                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" percentWidth="60.0" prefWidth="156.47654724121094" />
-                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" percentWidth="40.0" />
+                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" percentWidth="50.0" prefWidth="156.47654724121094" />
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" percentWidth="50.0" />
               </columnConstraints>
               <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -34,60 +53,64 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time series" wrappingWidth="172.6796875" GridPane.columnSpan="2147483647" GridPane.halignment="LEFT" GridPane.valignment="TOP">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time series" wrappingWidth="172.6796875" GridPane.columnSpan="2147483647" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Text>
-                  <Button alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#openFileChooser" text="Load Time Series" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
-                  <Text fx:id="currentDataFile" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
-                  <Separator layoutX="10.0" layoutY="156.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="General algorithm parameters" GridPane.rowIndex="4" GridPane.valignment="TOP">
+                  <Button alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#openFileChooser" text="Load Time Series" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+                  <Text fx:id="currentDataFile" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+                  <Separator layoutX="10.0" layoutY="156.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="General algorithm parameters" GridPane.rowIndex="5" GridPane.valignment="TOP">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Population size" GridPane.rowIndex="5" />
-                  <TextField fx:id="populationSizeInput" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Max no. of break points" GridPane.rowIndex="6" />
-                  <TextField fx:id="maxNoOfBreakPoints" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                  <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Probability values" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" GridPane.valignment="TOP">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Population size" GridPane.rowIndex="6" />
+                  <TextField id="text-field-test" fx:id="populationSizeInput" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Max no. of break points" wrappingWidth="100.0" GridPane.rowIndex="7" />
+                  <TextField fx:id="maxNoOfBreakPoints" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                  <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Probability values" GridPane.columnSpan="2147483647" GridPane.rowIndex="9" GridPane.valignment="TOP">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Prob. mutation" GridPane.rowIndex="9" GridPane.valignment="CENTER" />
-                  <TextField fx:id="mutationProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="9" GridPane.valignment="CENTER" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Prob. one-point crossover" GridPane.rowIndex="10" />
-                  <TextField fx:id="onePointCrossoverProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Prob. uniform crossover" GridPane.rowIndex="11" />
-                  <TextField fx:id="uniformCrossoverProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-                  <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="12" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fitness" GridPane.columnSpan="2147483647" GridPane.rowIndex="13" GridPane.valignment="TOP">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mutation" GridPane.rowIndex="10" GridPane.valignment="CENTER" />
+                  <TextField fx:id="mutationProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="10" GridPane.valignment="CENTER" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="One-point crossover" wrappingWidth="100.0" GridPane.rowIndex="11" />
+                  <TextField fx:id="onePointCrossoverProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Uniform crossover" wrappingWidth="100.0" GridPane.rowIndex="12" />
+                  <TextField fx:id="uniformCrossoverProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                  <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="13" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fitness" GridPane.columnSpan="2147483647" GridPane.rowIndex="14" GridPane.valignment="TOP">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fitness method" GridPane.rowIndex="14" />
-                  <MenuButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="26.0" prefWidth="77.0" text="MenuButton" GridPane.columnIndex="1" GridPane.rowIndex="14">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fitness method" GridPane.rowIndex="15" />
+                  <MenuButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="26.0" prefWidth="77.0" text="MenuButton" GridPane.columnIndex="1" GridPane.rowIndex="15">
                     <items>
                       <MenuItem mnemonicParsing="false" text="Rectangle" />
                     </items>
                   </MenuButton>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="α-parameter" GridPane.rowIndex="15" />
-                  <TextField fx:id="alphaParameter" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="α-parameter" GridPane.rowIndex="16" />
+                  <TextField fx:id="alphaParameter" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+                  <Button fx:id="runAlgorithmBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#runAlgorithm" prefHeight="25.0" prefWidth="270.0" text="Run algorithm" GridPane.columnSpan="2147483647" GridPane.rowIndex="17" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm parameter settings" />
                </children>
             </GridPane>
          </content>
@@ -95,18 +118,5 @@
             <Insets bottom="12.0" left="11.0" top="12.0" />
          </padding>
       </ScrollPane>
-      <Button fx:id="runAlgorithmBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#runAlgorithm" prefHeight="25.0" prefWidth="270.0" text="Run algorithm" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
-      <LineChart fx:id="graphPlaceHolder" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <xAxis>
-          <NumberAxis side="BOTTOM" />
-        </xAxis>
-        <yAxis>
-          <NumberAxis side="LEFT" />
-        </yAxis>
-      </LineChart>
-      <JFXHamburger layoutX="298.0" layoutY="148.0" />
    </children>
-   <padding>
-      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-   </padding>
 </AnchorPane>
