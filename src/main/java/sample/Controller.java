@@ -8,10 +8,7 @@ import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
@@ -37,7 +34,7 @@ public class Controller {
     }
 
     private File dataFile;
-    private FileChooser fileChooser;
+    private FileChooser fileChooser = new FileChooser();
 
     private Stage primaryStage = Main.getPrimaryStage();
 
@@ -63,6 +60,8 @@ public class Controller {
 
     @FXML private LineChart graphPlaceHolder;
 
+    @FXML private ChoiceBox<String> fitnessMethodChooser;
+
 
     @FXML
     public void initialize() {
@@ -76,22 +75,21 @@ public class Controller {
         // populationSizeInput.setTextFormatter(intFormatter);
         initTextFields();
 
-
-
         dataGraph = new DataGraph<>(new NumberAxis(), new NumberAxis());
         AnchorPane.setLeftAnchor(dataGraph, AnchorPane.getLeftAnchor(graphPlaceHolder));
         AnchorPane.setTopAnchor(dataGraph, 0.);
         AnchorPane.setBottomAnchor(dataGraph, 0.);
         AnchorPane.setRightAnchor(dataGraph, 0.);
+
         anchorPaneRoot.getChildren().add(dataGraph);
         anchorPaneRoot.getChildren().remove(graphPlaceHolder);
 
+        fitnessMethodChooser.getItems().add("Hello");
 
     }
 
     @FXML
     public void openFileChooser(MouseEvent mouseEvent) {
-        fileChooser = new FileChooser();
         fileChooser.setTitle("Select time series data file");
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("JSON", "*.json")
@@ -241,8 +239,6 @@ public class Controller {
         // ((LineChart<Double, Double>) Main.getPrimaryStage().getScene().lookup("#tsgraph"))
 
         TimeSeries timeSeries = new TimeSeries(dataFile.getAbsolutePath());
-//        XYChart.Series<Number, Number> coordinates = readTimeSeriesPoints(timeSeries);
-//        timeSeriesGraph.getData().add(coordinates);
         dataGraph.getData().clear();
         dataGraph.clearFitnessMarkers();
         dataGraph.setTimeSeries(timeSeries);
@@ -297,8 +293,5 @@ public class Controller {
         return new double[] {min, max};
     }
 
-//    // public Node getRoot() {
-//        return borderPane;
-//    }
 
 }

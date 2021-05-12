@@ -9,7 +9,6 @@ import javafx.scene.Node;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
@@ -35,9 +34,12 @@ public class DataGraph<X, Y> extends LineChart {
 
     public DataGraph(Axis<X> xAxis, Axis<Y> yAxis) {
         super(xAxis, yAxis);
+        getXAxis().setAutoRanging(true);
+        getYAxis().setAutoRanging(true);
         fitnessNodeMarkers.addListener((InvalidationListener) observable -> layoutPlotChildren());
         fitnessNodeMarkersBackup.addListener((InvalidationListener) observable -> layoutPlotChildren());
         this.setAnimated(false);
+        this.setCreateSymbols(false);
     }
 
     public void setTimeSeries(TimeSeries timeSeries) {
@@ -55,18 +57,12 @@ public class DataGraph<X, Y> extends LineChart {
 
     public void addRectangle(double xMin, double xMax, double yMin, double yMax) {
 
-
         Rectangle rectangle = new Rectangle();
         Data<X, Y> upperLeft = (Data<X, Y>) new Data<>(xMin, yMax);
         Data<X, Y> lowerRight = (Data<X, Y>) new Data<>(xMax, yMin);
         Data<Data<X, Y>, Data<X,Y>> marker = (Data<Data<X, Y>, Data<X,Y>>) new Data<>(upperLeft, lowerRight);
 
-        // I would have prefered if I could just use .setId(...) to modify look in CSS but that does not seem
-        // possible at the moment.
-        rectangle.setFill(Color.TRANSPARENT);
-        rectangle.getStrokeDashArray().add(10d);
-        rectangle.setStroke(Color.BLACK);
-        rectangle.setStrokeWidth(4);
+        rectangle.setId("chart-rectangle");
 
         marker.setNode(rectangle);
         shapes.add(rectangle);
@@ -94,9 +90,6 @@ public class DataGraph<X, Y> extends LineChart {
             double width = getXAxis().getDisplayPosition(xMax) - getXAxis().getDisplayPosition(xMin);
             double height = getYAxis().getDisplayPosition(yMin) - getYAxis().getDisplayPosition(yMax);
 
-            // System.out.println("Height: " + height);
-            // System.out.println("Width: " + width);
-
             rectangle.setWidth(width);
             rectangle.setHeight(height);
 
@@ -111,24 +104,25 @@ public class DataGraph<X, Y> extends LineChart {
      * Important: This can only be called, when the TimeSeries field for a
      * DataGraph is not null.
      *
-     * Made by: Markus B. Jensen (s183816)
+     * @author Markus B. Jensen (s183816)
      */
     private void readTimeSeriesPoints() {
+
+        assert timeSeries != null;
 
         XYChart.Series<Number, Number> graphPoints = new XYChart.Series<>();
 
         double[] timeSeriesTimes = timeSeries.getTimes();
         int noOfElementsInTimeSeries = timeSeries.getLength();
 
-        // JavaFX' LineGraph becomes slow when showing too many points. With a lot of values, the average of a
-        // number of values is plotted.
+        // JavaFX' LineGraph becomes slow when showing too many points. With a
+        // lot of values, the average of a number of values is plotted.
         int noOfValuesPerPoint;
         if (noOfElementsInTimeSeries > MAX_NO_OF_PLOT_POINTS) {
             noOfValuesPerPoint = noOfElementsInTimeSeries / MAX_NO_OF_PLOT_POINTS;
         } else {
             noOfValuesPerPoint = 1;
         }
-
 
         int z = 0;
         double x = 0;

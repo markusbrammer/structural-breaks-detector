@@ -16,6 +16,10 @@ https://stackoverflow.com/questions/50184756/remove-border-around-javafx-scrollp
     -fx-background-color: #dfdfdf;
 }
 
+/* -----------------------------------------------------------------------------
+SCROLL PANE
+----------------------------------------------------------------------------- */
+
 .scroll-bar:horizontal .track,
 .scroll-bar:vertical .track{
     -fx-background-color :transparent;
@@ -60,7 +64,7 @@ https://stackoverflow.com/questions/50184756/remove-border-around-javafx-scrollp
 
 .scroll-bar:horizontal .thumb,
 .scroll-bar:vertical .thumb {
-    -fx-background-color : #dddddd;
+    -fx-background-color : derive(grey, 50%);
     -fx-background-insets : 2.0, 0.0, 0.0;
     -fx-background-radius : 2.0em;
 }
@@ -83,6 +87,21 @@ https://stackoverflow.com/questions/50184756/remove-border-around-javafx-scrollp
     -fx-background-color: transparent;
 }
 
+/* -----------------------------------------------------------------------------
+TEXT FIELD
+----------------------------------------------------------------------------- */
+
+.text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: grey;
+    -fx-border-width: 2;
+    -fx-alignment: center;
+}
+
+.text-field:focused {
+    -fx-border-color: mediumslateblue;
+}
+
 .text-input:error {
     -fx-text-fill: white;
     -fx-border-insets: 0;
@@ -92,23 +111,34 @@ https://stackoverflow.com/questions/50184756/remove-border-around-javafx-scrollp
     -fx-background-color: derive(red, 99%);
 }
 
-.button:error {
-    -fx-background-color: black;
-}
+/* -----------------------------------------------------------------------------
+BUTTON
+----------------------------------------------------------------------------- */
 
 .button {
-    -fx-background-color: transparent;
     -fx-border-width: 2;
     -fx-border-radius: 10;
     -fx-background-radius: 10;
     -fx-border-color: grey;
+    -fx-background-color: derive(#dfdfdf, 40%);
+    -fx-background-insets: 2 2 2 2;
     /*-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);*/
 }
 
 .button:pressed {
-    -fx-background-color: green;
+    -fx-background-color: white;
 }
 
+/* -----------------------------------------------------------------------------
+LEFT MENU BAR
+----------------------------------------------------------------------------- */
+
+#left-menu-background {
+    -fx-fill: #383838;
+    -fx-background-color: #383838;
+}
+
+/* ----- General behaviour for a button in the left menu ---- */
 
 .left-menu-button {
     -fx-background-color: transparent;
@@ -122,13 +152,7 @@ https://stackoverflow.com/questions/50184756/remove-border-around-javafx-scrollp
     -fx-background-color: rgba(255,255,255,0.1)
 }
 
-#small-run-menu-button {
-    -fx-background-image: url("icons/run-60.png");
-}
-
-#small-run-menu-button:hover {
-    -fx-background-image: url("icons/run-100.png");
-}
+/* ----- The settings/tweaks button ----- */
 
 #settings-menu-button{
     -fx-background-image: url("icons/sliders-60.png");
@@ -138,6 +162,22 @@ https://stackoverflow.com/questions/50184756/remove-border-around-javafx-scrollp
     -fx-background-image: url("icons/sliders-100.png");
 }
 
+/* ----- The run button ----- */
+
+#small-run-menu-button {
+    -fx-background-image: url("icons/run-60.png");
+}
+
+#small-run-menu-button:hover {
+    -fx-background-image: url("icons/run-100.png");
+}
+
+#small-run-menu-button:disabled {
+    -fx-background-image: url("icons/run-60.png");
+}
+
+/* ----- The info button ----- */
+
 #info-menu-button {
     -fx-background-image: url("icons/info-60.png");
 }
@@ -146,19 +186,44 @@ https://stackoverflow.com/questions/50184756/remove-border-around-javafx-scrollp
     -fx-background-image: url("icons/info-100.png");
 }
 
-#left-menu-background {
-    -fx-fill: #383838;
-    -fx-background-color: #383838;
-}
 
-.text-field {
-    -fx-background-color: transparent;
-    -fx-border-color: grey;
+/* -----------------------------------------------------------------------------
+CHOICE BOX
+----------------------------------------------------------------------------- */
+
+.choice-box {
     -fx-border-width: 2;
-    -fx-alignment: center;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-border-color: grey;
+    -fx-background-color: derive(#dfdfdf, 40%);
+    -fx-background-insets: 2 2 2 2;
 }
 
+.choice-box:showing {
+    -fx-background-color: white;
+}
 
-.text-field:focused {
-    -fx-border-color: mediumslateblue;
+.choice-box .context-menu {
+    -fx-alignment: center;
+    -fx-background-color: black;
+    /*-fx-background-insets: */
+    /*    -fx-padding: 0.666667em 0.083333em 0.666667em 0.083333em;  8 1 8 1 */
+    -fx-padding: 0.333333em 0.083333em 0.666667em 0.083333em; /* 4 1 8 1 */
+}
+
+/* -----------------------------------------------------------------------------
+LINE CHART
+----------------------------------------------------------------------------- */
+
+.default-color0.chart-series-line { -fx-stroke: #e9967a; }
+
+/* Help from here: https://stackoverflow.com/q/30408470 (see answer from jewelsea) */
+#chart-rectangle {
+    -fx-stroke: black;
+    -fx-stroke-width: 4;
+    -fx-stroke-dash-offset: 0;
+    -fx-stroke-dash-array: 10;
+    -fx-background-color: transparent;
+    -fx-fill: transparent;
 }

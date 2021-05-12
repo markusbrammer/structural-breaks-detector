@@ -6,4 +6,5 @@ module Fagprojekt{
     requires com.jfoenix;
     opens sample to javafx.fxml;
     exports sample;
+    exports data;
 }
