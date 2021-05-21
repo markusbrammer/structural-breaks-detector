@@ -1,5 +1,7 @@
 package data;
 
+import javafx.util.Pair;
+
 public class MinMax {
 
     private double min;
@@ -10,19 +12,19 @@ public class MinMax {
         this.max = max;
     }
 
-    public MinMax() {
-        min = Double.MAX_VALUE;
-        max = Double.MIN_VALUE;
-    }
-
-    public void merge(MinMax otherMinMax) {
-        this.setMin(Math.min(this.min, otherMinMax.getMin()));
-        this.setMax(Math.max(this.max, otherMinMax.getMax()));
+    public static MinMax combine(MinMax a, MinMax b) {
+        double min = Math.min(a.getMin(), b.getMin());
+        double max = Math.max(a.getMax(), b.getMax());
+        return new MinMax(min, max);
     }
 
     @Override
     public String toString() {
         return "Min: " + min + ", max: " + max;
+    }
+
+    public Pair<Double, Double> toPair() {
+        return new Pair<>(min, max);
     }
 
     public double getMin() {

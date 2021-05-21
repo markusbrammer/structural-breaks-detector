@@ -17,25 +17,27 @@ public class AlgorithmObserver implements PropertyChangeListener {
         this.algorithm = algorithm;
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent event) {
 
         // Values get updates from controller
         Controller controller = (Controller) event.getSource();
         String propertyName = event.getPropertyName();
         if (propertyName.equals("runAlgorithm")) {
-            updateValues(controller, propertyName);
+            updateValues(controller);
             Individual test = algorithm.findBreakPoints();
             printBreakPointLocations(test);
             controller.showFitness(test, timeSeries);
         }
     }
 
-    private void updateValues(Controller controller, String propertyName) {
-        /**
-         * Update all algorithm values/parameters.
-         * This class assumes that no value is null, thus a check must be implemented beforehand. (In the GUI, no
-         * fields can be left empty when pressing "Run")
-         */
+    /**
+     * Update all algorithm values/parameters.
+     * This class assumes that no value is null, thus a check must be implemented beforehand. (In the GUI, no
+     * fields can be left empty when pressing "Run")
+     */
+    private void updateValues(Controller controller) {
+
 
         algorithm.setNoOfIndividuals(controller.getPopulationSize());
         algorithm.setMaxNoOfBreakPoints(controller.getMaxNoOfBreakPoints());
@@ -51,11 +53,12 @@ public class AlgorithmObserver implements PropertyChangeListener {
 
     }
 
+    /**
+     * A temporary class to print break points. This will be obsolete when the GUI is able to display the
+     * rectangles by itself.
+     */
     private static void printBreakPointLocations(Individual individual) {
-        /**
-         * A temporary class to print break points. This will be obsolete when the GUI is able to display the
-         * rectangles by itself.
-         */
+
         String s = "";
         for (int i = 0; i < individual.getNoOfGenes(); i++) {
             if (individual.getAllele(i) == Statics.breakPointAllele)
@@ -65,3 +68,5 @@ public class AlgorithmObserver implements PropertyChangeListener {
     }
 
 }
+
+
