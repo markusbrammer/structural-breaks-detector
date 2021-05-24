@@ -11,12 +11,14 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
+import org.controlsfx.control.RangeSlider;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -62,6 +64,13 @@ public class Controller {
 
     @FXML private ChoiceBox<String> fitnessMethodChooser;
 
+    @FXML private AnchorPane leftMenuPane;
+
+    @FXML private Button btnSettingsPane;
+
+    @FXML private Slider tempProbSlider;
+
+    @FXML private GridPane settingsPane;
 
     @FXML
     public void initialize() {
@@ -85,6 +94,15 @@ public class Controller {
         anchorPaneRoot.getChildren().remove(graphPlaceHolder);
 
         fitnessMethodChooser.getItems().add("Hello");
+
+        btnSettingsPane.setTooltip(new Tooltip("Parameter settings"));
+
+        int col = GridPane.getColumnIndex(tempProbSlider);
+        int row = GridPane.getRowIndex(tempProbSlider);
+        RangeSlider probRangeSlider = new RangeSlider(0, 1, 0.3, 0.6);
+        settingsPane.getChildren().remove(tempProbSlider);
+        settingsPane.add(probRangeSlider, col, row);
+
 
     }
 
@@ -118,21 +136,24 @@ public class Controller {
      * @param mouseEvent
      */
     @FXML
-    public void toggleSettingsMenu(MouseEvent mouseEvent) {
+    public void toggleSettingsMenu(MouseEvent mouseEvent) throws InterruptedException {
 
-        boolean toggleBool;
-        if (!settingsShows) {
-            toggleBool = true;
-        } else {
-            toggleBool = false;
-        }
-
-        // Hide or shown settings depending on current visibility
+        // Hide or show Settings Panel depending on current visibility
+        boolean toggleBool = !settingsShows;
         scrollPaneSettings.setVisible(toggleBool);
         scrollPaneSettings.setManaged(toggleBool);
         scrollPaneSettings.toFront();
+
+        // Match left edge of data graph to the left edge of the program
+        double chartAnchor = leftMenuPane.getWidth();
+        if (toggleBool)
+            chartAnchor += scrollPaneSettings.getPrefWidth();
+        AnchorPane.setLeftAnchor(dataGraph, chartAnchor);
+
+        // Update the status-boolean
         settingsShows = toggleBool;
     }
+
 
 
     private void initTextFields() {

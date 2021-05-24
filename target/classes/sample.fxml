@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -18,15 +19,16 @@
 
 <AnchorPane fx:id="anchorPaneRoot" stylesheets="@style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
-      <AnchorPane id="left-menu-background" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane id="left-menu-background" fx:id="leftMenuPane" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox spacing="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+            <VBox AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Button id="settings-menu-button" fx:id="btnSettingsPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#toggleSettingsMenu" prefHeight="40.0" prefWidth="40.0" styleClass="left-menu-button" />
-                  <Button id="small-run-menu-button" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="left-menu-button" />
+                  <Button id="small-load-button" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="left-menu-button" />
+                  <Button id="settings-menu-button" fx:id="btnSettingsPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#toggleSettingsMenu" prefHeight="50.0" prefWidth="50.0" styleClass="left-menu-button" />
+                  <Button id="small-run-menu-button" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="left-menu-button" />
                </children>
             </VBox>
-            <Button id="info-menu-button" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="left-menu-button" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
+            <Button id="info-menu-button" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="left-menu-button" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
          </children>
       </AnchorPane>
       <LineChart fx:id="graphPlaceHolder" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -53,6 +55,7 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -89,25 +92,26 @@
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mutation" GridPane.rowIndex="10" GridPane.valignment="CENTER" />
-                  <TextField fx:id="mutationProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="10" GridPane.valignment="CENTER" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="One-point crossover" wrappingWidth="100.0" GridPane.rowIndex="11" />
-                  <TextField fx:id="onePointCrossoverProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Uniform crossover" wrappingWidth="100.0" GridPane.rowIndex="12" />
-                  <TextField fx:id="uniformCrossoverProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-                  <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="13" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fitness" GridPane.columnSpan="2147483647" GridPane.rowIndex="14" GridPane.valignment="TOP">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mutation" GridPane.rowIndex="11" GridPane.valignment="CENTER" />
+                  <TextField fx:id="mutationProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="11" GridPane.valignment="CENTER" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="One-point crossover" wrappingWidth="100.0" GridPane.rowIndex="12" />
+                  <TextField fx:id="onePointCrossoverProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Uniform crossover" wrappingWidth="100.0" GridPane.rowIndex="13" />
+                  <TextField fx:id="uniformCrossoverProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                  <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="14" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fitness" GridPane.columnSpan="2147483647" GridPane.rowIndex="15" GridPane.valignment="TOP">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fitness method" GridPane.rowIndex="15" />
-                  <ChoiceBox fx:id="fitnessMethodChooser" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="15" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="α-parameter" GridPane.rowIndex="16" />
-                  <TextField fx:id="alphaParameter" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="16" />
-                  <Button fx:id="runAlgorithmBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#runAlgorithm" prefHeight="25.0" prefWidth="270.0" text="Run algorithm" GridPane.columnSpan="2147483647" GridPane.rowIndex="18" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fitness method" GridPane.rowIndex="16" />
+                  <ChoiceBox fx:id="fitnessMethodChooser" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="α-parameter" GridPane.rowIndex="17" />
+                  <TextField fx:id="alphaParameter" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="17" />
+                  <Button fx:id="runAlgorithmBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#runAlgorithm" prefHeight="25.0" prefWidth="270.0" text="Run algorithm" GridPane.columnSpan="2147483647" GridPane.rowIndex="19" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm parameter settings" />
-                  <Separator layoutX="10.0" layoutY="304.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="17" />
+                  <Separator layoutX="10.0" layoutY="304.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="18" />
+                  <Slider fx:id="tempProbSlider" GridPane.columnSpan="2147483647" GridPane.rowIndex="10" />
                </children>
             </GridPane>
          </content>
