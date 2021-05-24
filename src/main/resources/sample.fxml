@@ -7,11 +7,13 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
@@ -22,9 +24,9 @@
          <children>
             <VBox AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Button id="small-load-button" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="left-menu-button" />
+                  <Button id="small-load-button" fx:id="loadTimeSeriesSmallBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#openFileChooser" prefHeight="50.0" prefWidth="50.0" styleClass="left-menu-button" />
                   <Button id="settings-menu-button" fx:id="btnSettingsPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#toggleSettingsMenu" prefHeight="50.0" prefWidth="50.0" styleClass="left-menu-button" />
-                  <Button id="small-run-menu-button" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="left-menu-button" />
+                  <Button id="small-run-menu-button" fx:id="runSmallBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#runAlgorithm" prefHeight="50.0" prefWidth="50.0" styleClass="left-menu-button" />
                </children>
             </VBox>
             <Button id="info-menu-button" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="left-menu-button" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
@@ -37,13 +39,16 @@
         <yAxis>
           <NumberAxis side="LEFT" />
         </yAxis>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
       </LineChart>
       <ScrollPane id="settings-pane-outer" fx:id="scrollPaneSettings" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="290.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="0.0">
          <content>
             <GridPane id="settings-pane-inner" fx:id="settingsPane" alignment="CENTER" hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="240.0" scaleShape="false" vgap="5.0">
               <columnConstraints>
-                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" percentWidth="50.0" prefWidth="156.47654724121094" />
-                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" percentWidth="50.0" />
+                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" percentWidth="41.0" prefWidth="156.47654724121094" />
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" percentWidth="59.0" />
               </columnConstraints>
               <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -73,7 +78,7 @@
                      </font>
                   </Text>
                   <Button alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#openFileChooser" text="Load Time Series" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
-                  <Text fx:id="currentDataFile" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+                  <Text fx:id="currentDataFile" strokeType="OUTSIDE" strokeWidth="0.0" text="No file loaded." GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
                   <Separator layoutX="10.0" layoutY="156.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="General algorithm parameters" GridPane.rowIndex="5" GridPane.valignment="TOP">
                      <font>
@@ -81,9 +86,7 @@
                      </font>
                   </Text>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Population size" GridPane.rowIndex="6" />
-                  <TextField id="text-field-test" fx:id="populationSizeInput" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Max no. of break points" wrappingWidth="100.0" GridPane.rowIndex="7" />
-                  <TextField fx:id="maxNoOfBreakPoints" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                   <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Probability values" GridPane.columnSpan="2147483647" GridPane.rowIndex="9" GridPane.valignment="TOP">
                      <font>
@@ -91,11 +94,8 @@
                      </font>
                   </Text>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mutation" GridPane.rowIndex="10" GridPane.valignment="CENTER" />
-                  <TextField fx:id="mutationProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="10" GridPane.valignment="CENTER" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="One-point crossover" wrappingWidth="100.0" GridPane.rowIndex="11" />
-                  <TextField fx:id="onePointCrossoverProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Uniform crossover" wrappingWidth="100.0" GridPane.rowIndex="12" />
-                  <TextField fx:id="uniformCrossoverProb" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="One-point crossover" wrappingWidth="90.0" GridPane.rowIndex="11" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Uniform crossover" wrappingWidth="90.0" GridPane.rowIndex="12" />
                   <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="13" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fitness" GridPane.columnSpan="2147483647" GridPane.rowIndex="14" GridPane.valignment="TOP">
                      <font>
@@ -105,10 +105,69 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fitness method" GridPane.rowIndex="15" />
                   <ChoiceBox fx:id="fitnessMethodChooser" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="15" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="α-parameter" GridPane.rowIndex="16" />
-                  <TextField fx:id="alphaParameter" prefHeight="26.0" prefWidth="71.0" GridPane.columnIndex="1" GridPane.rowIndex="16" />
                   <Button fx:id="runAlgorithmBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#runAlgorithm" prefHeight="25.0" prefWidth="270.0" text="Run algorithm" GridPane.columnSpan="2147483647" GridPane.rowIndex="18" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm parameter settings" />
                   <Separator layoutX="10.0" layoutY="304.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="17" />
+                  <HBox alignment="CENTER" layoutX="111.0" layoutY="220.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="10">
+                     <children>
+                        <Slider fx:id="mutationProbInput" blockIncrement="1.0" prefHeight="16.0" prefWidth="100.0" value="33.0" />
+                        <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Text fx:id="mutationProbVal" strokeType="OUTSIDE" strokeWidth="0.0" text="33%" StackPane.alignment="CENTER" />
+                           </children>
+                        </StackPane>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="111.0" layoutY="360.0" GridPane.columnIndex="1" GridPane.rowIndex="11">
+                     <children>
+                        <Slider fx:id="onePointCrossInput" blockIncrement="1.0" prefHeight="16.0" prefWidth="100.0" value="33.0" />
+                        <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Text fx:id="onePointCrossVal" strokeType="OUTSIDE" strokeWidth="0.0" text="33%" StackPane.alignment="CENTER" />
+                           </children>
+                        </StackPane>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="111.0" layoutY="395.0" GridPane.columnIndex="1" GridPane.rowIndex="12">
+                     <children>
+                        <Slider fx:id="uniCrossInput" blockIncrement="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="100.0" value="34.0" />
+                        <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Text fx:id="uniCrossVal" strokeType="OUTSIDE" strokeWidth="0.0" text="34%" StackPane.alignment="CENTER" />
+                           </children>
+                        </StackPane>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="111.0" layoutY="360.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                     <children>
+                        <Slider fx:id="popSz" blockIncrement="1.0" majorTickUnit="1.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="100.0" snapToTicks="true" value="50.0" />
+                        <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Text fx:id="popSizeVal" strokeType="OUTSIDE" strokeWidth="0.0" text="50" StackPane.alignment="CENTER" />
+                           </children>
+                        </StackPane>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="111.0" layoutY="220.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                     <children>
+                        <Slider fx:id="maxBPSlider" blockIncrement="1.0" majorTickUnit="2.0" max="10.0" minorTickCount="1" prefHeight="16.0" prefWidth="100.0" value="3.0" />
+                        <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Text fx:id="maxBPVal" strokeType="OUTSIDE" strokeWidth="0.0" text="3" StackPane.alignment="CENTER" />
+                           </children>
+                        </StackPane>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="111.0" layoutY="255.0" GridPane.columnIndex="1" GridPane.rowIndex="16">
+                     <children>
+                        <Slider fx:id="alphaInput" blockIncrement="0.05" majorTickUnit="0.25" max="1.0" minorTickCount="0" prefHeight="16.0" prefWidth="100.0" value="0.25" />
+                        <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Text fx:id="alphaVal" strokeType="OUTSIDE" strokeWidth="0.0" text="0.25" StackPane.alignment="CENTER" />
+                           </children>
+                        </StackPane>
+                     </children>
+                  </HBox>
                </children>
             </GridPane>
          </content>

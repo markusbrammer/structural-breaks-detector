@@ -244,3 +244,28 @@ LINE CHART
     -fx-background-color: transparent;
     -fx-fill: transparent;
 }
+
+/* -----------------------------------------------------------------------------
+SLIDERS
+----------------------------------------------------------------------------- */
+
+.slider > .track {
+    -fx-background-color: grey;
+    -fx-pref-height: 5;
+}
+
+.slider > .thumb {
+    -fx-cursor: hand;
+    -fx-background-color: lightgrey;
+    -fx-border-radius: 10;
+    -fx-border-color: black;
+}
+
+.slider:focused > .thumb {
+    -fx-background-color: white;
+}
+
+.slider > .thumb:pressed {
+    -fx-background-color: white;
+}
+

@@ -11,20 +11,18 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
-import org.controlsfx.control.RangeSlider;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.UnaryOperator;
 
 public class Controller {
@@ -35,79 +33,127 @@ public class Controller {
         support.addPropertyChangeListener(listener);
     }
 
-    private File dataFile;
-    private FileChooser fileChooser = new FileChooser();
-
-    private Stage primaryStage = Main.getPrimaryStage();
-
-    private DataGraph<Number, Number> dataGraph;
-
-    private boolean settingsShows = false;
+    /* ====================================================================== */
+    /* FXML elements                                                          */
+    /* ====================================================================== */
 
     @FXML private AnchorPane anchorPaneRoot;
 
-    @FXML private LineChart<Number, Number> timeSeriesGraph;
-    @FXML private Text currentDataFile;
+    /* ----- Left Button-Menu ----- */
+
+    @FXML private AnchorPane leftMenuPane;
+    @FXML private Button loadTimeSeriesSmallBtn;
+    @FXML private Button btnSettingsPane;
+    @FXML private Button runSmallBtn;
+
+
+    /* ----- Settings Pane ----- */
 
     @FXML private ScrollPane scrollPaneSettings;
-
-    @FXML private TextField populationSizeInput;
-    @FXML private TextField maxNoOfBreakPoints;
-    @FXML private TextField alphaParameter;
-    @FXML private TextField uniformCrossoverProb;
-    @FXML private TextField onePointCrossoverProb;
-    @FXML private TextField mutationProb;
-
+    @FXML private Text currentDataFile;
+    @FXML private ChoiceBox<String> fitnessMethodChooser;
     @FXML private Button runAlgorithmBtn;
+
+    // Sliders
+    @FXML private Slider popSz;
+    @FXML private Slider maxBPSlider;
+    @FXML private Slider mutationProbInput;
+    @FXML private Slider onePointCrossInput;
+    @FXML private Slider uniCrossInput;
+    @FXML private Slider alphaInput;
+
+    // Text fields showing the values of their respective sliders
+    @FXML private Text popSizeVal;
+    @FXML private Text maxBPVal;
+    @FXML private Text mutationProbVal;
+    @FXML private Text onePointCrossVal;
+    @FXML private Text uniCrossVal;
+    @FXML private Text alphaVal;
+
+
+    /* ----- Line Chart / Data Graph ----- */
 
     @FXML private LineChart graphPlaceHolder;
 
-    @FXML private ChoiceBox<String> fitnessMethodChooser;
 
-    @FXML private AnchorPane leftMenuPane;
+    /* ====================================================================== */
+    /* Other Controller Class Fields                                          */
+    /* ====================================================================== */
 
-    @FXML private Button btnSettingsPane;
+    private File dataFile;
+    private FileChooser fileChooser;
 
-    @FXML private Slider tempProbSlider;
-
-    @FXML private GridPane settingsPane;
+    // The actual Object which will show the time series and fitness
+    private DataGraph<Number, Number> dataGraph;
 
     @FXML
     public void initialize() {
 
-
+        // Hide settings panel on launch
         scrollPaneSettings.setVisible(false);
         scrollPaneSettings.setManaged(false);
 
-        // Initialises nodes in the FXML file.
-        currentDataFile.setText("No file loaded.");
-        // populationSizeInput.setTextFormatter(intFormatter);
-        initTextFields();
-
+        // Replace "Place holder graph" with actual Data Graph Object
         dataGraph = new DataGraph<>(new NumberAxis(), new NumberAxis());
         AnchorPane.setLeftAnchor(dataGraph, AnchorPane.getLeftAnchor(graphPlaceHolder));
         AnchorPane.setTopAnchor(dataGraph, 0.);
         AnchorPane.setBottomAnchor(dataGraph, 0.);
         AnchorPane.setRightAnchor(dataGraph, 0.);
-
         anchorPaneRoot.getChildren().add(dataGraph);
         anchorPaneRoot.getChildren().remove(graphPlaceHolder);
 
-        fitnessMethodChooser.getItems().add("Hello");
+        // Add fitness methods to drop-down menu.
+        fitnessMethodChooser.getItems().add("Rectangle");
 
-        btnSettingsPane.setTooltip(new Tooltip("Parameter settings"));
+        // Add tooltips to buttons in the Left Menu.
+        loadTimeSeriesSmallBtn.setTooltip(new Tooltip("Load time series data file"));
+        btnSettingsPane.setTooltip(new Tooltip("Parameter settings (open/close)"));
+        runSmallBtn.setTooltip(new Tooltip("Run algorithm"));
 
-        int col = GridPane.getColumnIndex(tempProbSlider);
-        int row = GridPane.getRowIndex(tempProbSlider);
-        RangeSlider probRangeSlider = new RangeSlider(0, 1, 0.3, 0.6);
-        settingsPane.getChildren().remove(tempProbSlider);
-        settingsPane.add(probRangeSlider, col, row);
+
+        addListenerIntSlider(popSz, popSizeVal);
+        addListenerIntSlider(maxBPSlider, maxBPVal);
+
+        mutationProbInput.valueProperty().addListener((obs, oldVal, newVal) -> {
+            mutationProbVal.setText(newVal.intValue() + "%");
+            int diff = 100 - newVal.intValue();
+            int newOp = (int) Math.ceil(diff / 2.);
+            int newUni = diff / 2;
+            onePointCrossInput.adjustValue(newOp);
+            uniCrossInput.adjustValue(newUni);
+            onePointCrossInput.setDisable(diff == 0);
+        });
+
+        onePointCrossInput.valueProperty().addListener((obs, oldVal, newVal) -> {
+            onePointCrossVal.setText(newVal.intValue() + "%");
+            int diff = 100 - ((int) mutationProbInput.getValue()) - newVal.intValue();
+            int maxValue = (int) (100 - mutationProbInput.getValue());
+            onePointCrossInput.adjustValue(diff >= 0 ? newVal.intValue() : maxValue);
+            uniCrossInput.adjustValue(Math.max(diff, 0));
+        });
+
+        uniCrossInput.valueProperty().addListener((obs, oldVal, newVal) -> {
+            uniCrossVal.setText(newVal.intValue() + "%");
+        });
+
+        uniCrossInput.setDisable(true);
+
+        alphaInput.valueProperty().addListener((obs, oldVal, newVal) ->
+            alphaVal.setText(String.format(Locale.US, "%.2f", newVal)));
 
 
     }
 
+    private void addListenerIntSlider(Slider slider, Text text) {
+        slider.valueProperty().addListener((obs, oldVal, newVal) ->
+                text.setText(String.valueOf(newVal.intValue())));
+    }
+
     @FXML
     public void openFileChooser(MouseEvent mouseEvent) {
+        if (fileChooser == null)
+            fileChooser = new FileChooser();
+
         fileChooser.setTitle("Select time series data file");
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("JSON", "*.json")
@@ -139,7 +185,7 @@ public class Controller {
     public void toggleSettingsMenu(MouseEvent mouseEvent) throws InterruptedException {
 
         // Hide or show Settings Panel depending on current visibility
-        boolean toggleBool = !settingsShows;
+        boolean toggleBool = !scrollPaneSettings.isVisible();
         scrollPaneSettings.setVisible(toggleBool);
         scrollPaneSettings.setManaged(toggleBool);
         scrollPaneSettings.toFront();
@@ -150,24 +196,9 @@ public class Controller {
             chartAnchor += scrollPaneSettings.getPrefWidth();
         AnchorPane.setLeftAnchor(dataGraph, chartAnchor);
 
-        // Update the status-boolean
-        settingsShows = toggleBool;
     }
 
 
-
-    private void initTextFields() {
-
-        assignIntegerFilter(populationSizeInput, "[1-9]?[0-9]{0,2}", 50);
-        assignIntegerFilter(maxNoOfBreakPoints, "[1-9]?[0-9]{0,1}", 3);
-
-        assignDoubleFilter(alphaParameter, 0.25);
-
-        assignDoubleFilter(uniformCrossoverProb, 0.3);
-        assignDoubleFilter(onePointCrossoverProb, 0.3);
-        assignDoubleFilter(mutationProb, 0.4);
-
-    }
 
     private void assignDoubleFilter(TextField textField, double initValue) {
         String regex = "[0]?\\.[0-9]*";
@@ -230,27 +261,27 @@ public class Controller {
     }
 
     public int getPopulationSize() {
-        return Integer.parseInt(populationSizeInput.getText());
+        return 50;
     }
 
     public int getMaxNoOfBreakPoints() {
-        return Integer.parseInt(maxNoOfBreakPoints.getText());
+        return 3;
     }
 
     public double getAlphaParameter() {
-        return Double.parseDouble(alphaParameter.getText());
+        return 0.25;
     }
 
     public double getUniformCrossoverProb() {
-        return Double.parseDouble(uniformCrossoverProb.getText());
+        return 0.3;
     }
 
     public double getOnePointCrossoverProb() {
-        return Double.parseDouble(onePointCrossoverProb.getText());
+        return 0.3;
     }
 
     public double getMutationProb() {
-        return Double.parseDouble(mutationProb.getText());
+        return 0.4;
     }
 
 
