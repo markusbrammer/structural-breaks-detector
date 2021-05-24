@@ -4,7 +4,6 @@ import bp.Statics;
 import data.TimeSeries;
 import fitness.FitnessRectangle;
 import ga.Individual;
-import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -14,8 +13,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.util.converter.DoubleStringConverter;
-import javafx.util.converter.IntegerStringConverter;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -23,7 +20,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.UnaryOperator;
 
 public class Controller {
 
@@ -110,10 +106,17 @@ public class Controller {
         btnSettingsPane.setTooltip(new Tooltip("Parameter settings (open/close)"));
         runSmallBtn.setTooltip(new Tooltip("Run algorithm"));
 
+        // Update value next to sliders for Population Size and Maximum Number
+        // of Break Points.
+        popSz.valueProperty().addListener((obs, oldVal, newVal) ->
+                popSizeVal.setText("" + newVal.intValue()));
 
-        addListenerIntSlider(popSz, popSizeVal);
-        addListenerIntSlider(maxBPSlider, maxBPVal);
+        maxBPSlider.valueProperty().addListener((obs, oldVal, newVal) ->
+                maxBPVal.setText("" + newVal.intValue()));
 
+        // When moving the slider for Mutation Probability, the text showing the
+        // value changes, and the slider for the two other probabilities becomes
+        // half of the Mutation Probability.
         mutationProbInput.valueProperty().addListener((obs, oldVal, newVal) -> {
             mutationProbVal.setText(newVal.intValue() + "%");
             int diff = 100 - newVal.intValue();
@@ -124,6 +127,9 @@ public class Controller {
             onePointCrossInput.setDisable(diff == 0);
         });
 
+        // When moving the slider for One Point Crossover Probability, the text
+        // showing the value is updated, and the slider for Uniform Crossover
+        // Probability is moved in the reverse direction.
         onePointCrossInput.valueProperty().addListener((obs, oldVal, newVal) -> {
             onePointCrossVal.setText(newVal.intValue() + "%");
             int diff = 100 - ((int) mutationProbInput.getValue()) - newVal.intValue();
@@ -132,16 +138,20 @@ public class Controller {
             uniCrossInput.adjustValue(Math.max(diff, 0));
         });
 
+        // The slider for Uniform Crossover Probability is never enabled and can
+        // thus only be updated through the two other Probability Sliders. When
+        // the slider moves (from the other slider), the text with the value is
+        // updated.
+        uniCrossInput.setDisable(true);
         uniCrossInput.valueProperty().addListener((obs, oldVal, newVal) -> {
             uniCrossVal.setText(newVal.intValue() + "%");
         });
 
-        uniCrossInput.setDisable(true);
-
+        // Update the value text for the alpha parameter when the slider is
+        // moved. Show two decimal places.
         alphaInput.valueProperty().addListener((obs, oldVal, newVal) ->
             alphaVal.setText(String.format(Locale.US, "%.2f", newVal)));
-
-
+        
     }
 
     private void addListenerIntSlider(Slider slider, Text text) {
@@ -197,59 +207,6 @@ public class Controller {
         AnchorPane.setLeftAnchor(dataGraph, chartAnchor);
 
     }
-
-
-
-    private void assignDoubleFilter(TextField textField, double initValue) {
-        String regex = "[0]?\\.[0-9]*";
-        UnaryOperator<TextFormatter.Change> doubleFilter = change -> {
-            String newText = change.getControlNewText();
-
-            if (newText.matches(regex))
-                return change;
-
-            return null;
-        };
-
-        textField.setTextFormatter(new TextFormatter<Double>(
-                new DoubleStringConverter(), initValue, doubleFilter
-        ));
-    }
-
-    private void assignIntegerFilter(TextField textField, String regex, int initValue) {
-
-        // TODO Taken from StackOverflow, link in Notion
-        // TODO Make custom IntegerFilter class that extends UnaryOperator or something
-        // Add to textformatter - only allows integers
-        UnaryOperator<TextFormatter.Change> integerFilter = change -> {
-            String newText = change.getControlNewText();
-            if (newText.matches(regex)) {
-                return change;
-            }
-            return null;
-        };
-
-        textField.setTextFormatter(new TextFormatter<Integer>(
-                new IntegerStringConverter(), initValue, integerFilter
-        ));
-
-        addErrorListener("[^1-9]*", textField);
-
-    }
-
-    private void addErrorListener(String regex, TextField textField) {
-
-        // Source: https://edencoding.com/javafx-textfield/
-        PseudoClass errorClass = PseudoClass.getPseudoClass("error");
-        textField.textProperty().addListener(event -> {
-            boolean matchesRegex = textField.getText().matches(regex);
-            textField.pseudoClassStateChanged(PseudoClass.getPseudoClass("error"),
-                    matchesRegex);
-            runAlgorithmBtn.setDisable(matchesRegex);
-        });
-
-    }
-
 
 
     public String getDataFilePath() {
