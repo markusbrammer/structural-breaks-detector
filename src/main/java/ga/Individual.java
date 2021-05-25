@@ -24,13 +24,13 @@ public class Individual {
     }
 
     public String toString() {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         int maxCharsInString = 20;
-        int limit = (genes.length < maxCharsInString ? genes.length : maxCharsInString);
+        int limit = (Math.min(genes.length, maxCharsInString));
         for (int i = 0; i < limit; i++) {
-            s += (genes[i] + " ");
+            s.append(genes[i]).append(" ");
         }
-        return s;
+        return s.toString();
     }
 
 }

@@ -20,7 +20,6 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample.fxml"));
         Parent root = loader.load();
         Controller controller = loader.getController();
-        controller.addObserver(new DataFileObserver());
 
         TimeSeries timeSeries = new TimeSeries("src/test/resources/3Breaks_21.json");
         algorithm = new BreakPointAlgorithm(timeSeries);

@@ -2,6 +2,7 @@ package sample;
 
 import bp.BreakPointAlgorithm;
 import bp.Statics;
+import data.InvalidDimensionException;
 import data.TimeSeries;
 import ga.Individual;
 
@@ -24,7 +25,11 @@ public class AlgorithmObserver implements PropertyChangeListener {
         Controller controller = (Controller) event.getSource();
         String propertyName = event.getPropertyName();
         if (propertyName.equals("runAlgorithm")) {
-            updateValues(controller);
+            try {
+                updateValues(controller);
+            } catch (InvalidDimensionException e) {
+                e.printStackTrace();
+            }
             Individual test = algorithm.findBreakPoints();
             printBreakPointLocations(test);
             controller.showFitness(test, timeSeries);
@@ -36,7 +41,7 @@ public class AlgorithmObserver implements PropertyChangeListener {
      * This class assumes that no value is null, thus a check must be implemented beforehand. (In the GUI, no
      * fields can be left empty when pressing "Run")
      */
-    private void updateValues(Controller controller) {
+    private void updateValues(Controller controller) throws InvalidDimensionException {
 
 
         algorithm.setNoOfIndividuals(controller.getPopulationSize());

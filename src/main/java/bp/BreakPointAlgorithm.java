@@ -1,6 +1,7 @@
 package bp;
 
 import data.TimeSeries;
+import fitness.FitnessCalculator;
 import fitness.RectangleFitness;
 import ga.Individual;
 import ga.Population;
@@ -15,7 +16,7 @@ public class BreakPointAlgorithm {
     private TimeSeries timeSeries;
     private Population population;
 
-    private RectangleFitness rectangleFitness = new RectangleFitness();
+    private FitnessCalculator fitness;
 
     private double[] populationFitnesses;
 
@@ -30,13 +31,16 @@ public class BreakPointAlgorithm {
     private Random rand = new Random();
 
     public BreakPointAlgorithm(TimeSeries timeSeries) {
+        fitness = new RectangleFitness();
         this.timeSeries = timeSeries;
-        rectangleFitness.setTimeSeries(timeSeries);
+        fitness.setTimeSeries(timeSeries);
     }
+
+    public BreakPointAlgorithm() {}
 
     public Individual findBreakPoints() {
 
-        rectangleFitness.setAlphaValue(alpha);
+        fitness.setAlphaValue(alpha);
         initializePopulation();
         populationFitnesses = new double[noOfIndividuals];
         calculateFitnesses();
@@ -65,7 +69,7 @@ public class BreakPointAlgorithm {
         int minimumFitnessIndex = getMinimumFitnessIndividualIndex();
         double minimumFitness = populationFitnesses[minimumFitnessIndex];
 
-        double childFitness = rectangleFitness.getFitnessOfIndividual(offspring);
+        double childFitness = fitness.getFitnessOfIndividual(offspring);
 
         double probabilityOfReplacement = childFitness / (childFitness + minimumFitness);
         double randomValue = rand.nextDouble();
@@ -144,7 +148,7 @@ public class BreakPointAlgorithm {
     private void calculateFitnesses() {
         for (int i = 0; i < noOfIndividuals; i++) {
             Individual individual = population.getIndividual(i);
-            double fitness = rectangleFitness.getFitnessOfIndividual(individual);
+            double fitness = this.fitness.getFitnessOfIndividual(individual);
             populationFitnesses[i] = fitness;
         }
     }
@@ -239,7 +243,7 @@ public class BreakPointAlgorithm {
 
     public void setTimeSeries(TimeSeries timeSeries) {
         this.timeSeries = timeSeries;
-        rectangleFitness.setTimeSeries(timeSeries);
+        fitness.setTimeSeries(timeSeries);
     }
 
     // ONLY FOR TESTING! Remove!

@@ -7,8 +7,9 @@ public abstract class FitnessCalculator {
 
     private TimeSeries timeSeries;
     private double alphaValue;
+    private char nonBPAllele = '*';
 
-    abstract double getFitnessOfIndividual(Individual individual);
+    public abstract double getFitnessOfIndividual(Individual individual);
 
     public void setTimeSeries(TimeSeries timeSeries) {
         this.timeSeries = timeSeries;

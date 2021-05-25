@@ -269,3 +269,21 @@ SLIDERS
     -fx-background-color: white;
 }
 
+/* -----------------------------------------------------------------------------
+POPUP
+----------------------------------------------------------------------------- */
+
+.popup {
+    -fx-background-color: red;
+}
+
+#popup-label {
+    -fx-text-fill: white;
+}
+
+#popup-hbox {
+    -fx-padding: 7;
+    -fx-spacing: 5;
+    -fx-alignment: center;
+}
+

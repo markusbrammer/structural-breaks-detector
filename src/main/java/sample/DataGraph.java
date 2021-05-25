@@ -130,7 +130,7 @@ public class DataGraph<X, Y> extends LineChart {
         for (int i = 0; i < noOfElementsInTimeSeries; i++) {
             if (z < noOfValuesPerPoint) {
                 x += timeSeriesTimes[i];
-                y += timeSeries.getObservations()[1][i];
+                y += timeSeries.getObservations()[i];
                 z++;
             } else {
                 x /= noOfValuesPerPoint;

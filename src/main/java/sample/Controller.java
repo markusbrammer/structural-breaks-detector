@@ -1,6 +1,7 @@
 package sample;
 
 import bp.Statics;
+import data.InvalidDimensionException;
 import data.TimeSeries;
 import fitness.FitnessRectangle;
 import ga.Individual;
@@ -10,9 +11,11 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Popup;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -82,14 +85,19 @@ public class Controller {
     // The actual Object which will show the time series and fitness
     private DataGraph<Number, Number> dataGraph;
 
+    // Choices in Fitness ChoiceBox
+    private final String RECT_FIT_CHOICE = "Rectangle";
+
     @FXML
     public void initialize() {
 
-        // Hide settings panel on launch
+        // Hide settings panel on launch. Disable run buttons (until file is loaded)
         scrollPaneSettings.setVisible(false);
         scrollPaneSettings.setManaged(false);
+        runSmallBtn.setDisable(true);
+        runAlgorithmBtn.setDisable(true);
 
-        // Replace "Place holder graph" with actual Data Graph Object
+        // Replace "Placeholder graph" with actual Data Graph Object
         dataGraph = new DataGraph<>(new NumberAxis(), new NumberAxis());
         AnchorPane.setLeftAnchor(dataGraph, AnchorPane.getLeftAnchor(graphPlaceHolder));
         AnchorPane.setTopAnchor(dataGraph, 0.);
@@ -99,7 +107,8 @@ public class Controller {
         anchorPaneRoot.getChildren().remove(graphPlaceHolder);
 
         // Add fitness methods to drop-down menu.
-        fitnessMethodChooser.getItems().add("Rectangle");
+        fitnessMethodChooser.getItems().add(RECT_FIT_CHOICE);
+        fitnessMethodChooser.setValue(RECT_FIT_CHOICE);
 
         // Add tooltips to buttons in the Left Menu.
         loadTimeSeriesSmallBtn.setTooltip(new Tooltip("Load time series data file"));
@@ -150,38 +159,63 @@ public class Controller {
         // Update the value text for the alpha parameter when the slider is
         // moved. Show two decimal places.
         alphaInput.valueProperty().addListener((obs, oldVal, newVal) ->
-            alphaVal.setText(String.format(Locale.US, "%.2f", newVal)));
-        
-    }
+            alphaVal.setText(String.format(Locale.US, "%.2f", newVal.doubleValue())));
 
-    private void addListenerIntSlider(Slider slider, Text text) {
-        slider.valueProperty().addListener((obs, oldVal, newVal) ->
-                text.setText(String.valueOf(newVal.intValue())));
-    }
-
-    @FXML
-    public void openFileChooser(MouseEvent mouseEvent) {
-        if (fileChooser == null)
-            fileChooser = new FileChooser();
-
+        // Setup file chooser to look for JSON files (time series data files)
+        fileChooser = new FileChooser();
         fileChooser.setTitle("Select time series data file");
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("JSON", "*.json")
         );
+    }
+
+
+    @FXML
+    public void openFileChooser(MouseEvent mouseEvent) {
+
         File tempDataFile = fileChooser.showOpenDialog(Main.getPrimaryStage());
         if (tempDataFile != null) {
             dataFile = tempDataFile;
-            support.firePropertyChange("dataFile", null, dataFile);
             displayTimeSeries();
+            try {
+                TimeSeries timeSeries = new TimeSeries(dataFile.getAbsolutePath());
+                dataGraph.getData().clear();
+                dataGraph.clearFitnessMarkers();
+                dataGraph.setTimeSeries(timeSeries);
+                currentDataFile.setText("Current: " + dataFile.getName());
+
+                // Activate Run Algorithm buttons
+                runAlgorithmBtn.setDisable(false);
+                runSmallBtn.setDisable(false);
+            } catch (InvalidDimensionException e) {
+                showPopup(e.getMessage());
+            }
+
+
         }
     }
 
+    private void showPopup(String message) {
+        Popup popup = new Popup();
+        HBox hBox = new HBox();
+        Label label = new Label(message);
+        label.setId("popup-label");
+        Button button = new Button();
+        button.setText("Close");
+        hBox.getChildren().addAll(label, button);
+        popup.getContent().add(hBox);
+        hBox.setId("popup-hbox");
+        popup.setHideOnEscape(true);
+        button.setOnMouseClicked(e -> popup.hide());
+        popup.show(Main.getPrimaryStage());
+    }
+
+    /**
+     * Run the algorithm on press of a button.
+     * @param mouseEvent
+     */
     @FXML
     public void runAlgorithm(MouseEvent mouseEvent) {
-        /**
-         * When pressing a button, the algorithm must run.
-         */
-
         dataGraph.clearFitnessMarkers();
         support.firePropertyChange("runAlgorithm", null, null);
 
@@ -247,11 +281,21 @@ public class Controller {
         // How to find nodes (in this case the line chart with fx:id "tsgraph"
         // ((LineChart<Double, Double>) Main.getPrimaryStage().getScene().lookup("#tsgraph"))
 
-        TimeSeries timeSeries = new TimeSeries(dataFile.getAbsolutePath());
-        dataGraph.getData().clear();
-        dataGraph.clearFitnessMarkers();
-        dataGraph.setTimeSeries(timeSeries);
-        currentDataFile.setText("Current: " + dataFile.getName());
+        TimeSeries timeSeries = null;
+//        try {
+//            timeSeries = new TimeSeries(dataFile.getAbsolutePath());
+//            dataGraph.getData().clear();
+//            dataGraph.clearFitnessMarkers();
+//            dataGraph.setTimeSeries(timeSeries);
+//            currentDataFile.setText("Current: " + dataFile.getName());
+//        } catch (InvalidDimensionException e) {
+//            Popup popup = new Popup();
+//            popup.setAutoHide(true);
+//            popup.getContent().add(new Label(e.getMessage()));
+//            popup.show(Main.getPrimaryStage());
+//            System.out.println("hello");
+//        }
+
 
     }
 
@@ -262,7 +306,7 @@ public class Controller {
             int startIndex = 1 + breakPointIndexes.get(i);
             int endIndex = breakPointIndexes.get(i + 1);
 
-            double[] values = timeSeries.getObservations()[1];
+            double[] values = timeSeries.getObservations();
 
             double[] minAndMaxValues = getMinAndMaxInInterval(values, startIndex, endIndex);
             double minValue = minAndMaxValues[0];

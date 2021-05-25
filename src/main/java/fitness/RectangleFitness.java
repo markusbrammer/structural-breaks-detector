@@ -37,7 +37,7 @@ public class RectangleFitness extends FitnessCalculator {
     private static double getSmallRectangleArea(int startIndex, int endIndex, TimeSeries timeSeries) {
         // TODO: Make it work with multiple dimensions
 
-        double[] values = timeSeries.getObservations()[1];
+        double[] values = timeSeries.getObservations();
 
         double[] minAndMaxValues = getMinAndMaxInInterval(values, startIndex, endIndex);
         double minValue = minAndMaxValues[0];
@@ -54,7 +54,7 @@ public class RectangleFitness extends FitnessCalculator {
         int indexZero = 0;
         int lastIndex = timeSeries.getLength() - 1;
 
-        double[] values = timeSeries.getObservations()[1];
+        double[] values = timeSeries.getObservations();
 
         double[] minAndMaxValues = getMinAndMaxInInterval(values, indexZero, lastIndex);
         double minValue = minAndMaxValues[0];
