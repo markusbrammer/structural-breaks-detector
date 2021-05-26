@@ -88,30 +88,6 @@ SCROLL PANE
 }
 
 /* -----------------------------------------------------------------------------
-TEXT FIELD
------------------------------------------------------------------------------ */
-
-.text-field {
-    -fx-background-color: transparent;
-    -fx-border-color: grey;
-    -fx-border-width: 2;
-    -fx-alignment: center;
-}
-
-.text-field:focused {
-    -fx-border-color: mediumslateblue;
-}
-
-.text-input:error {
-    -fx-text-fill: white;
-    -fx-border-insets: 0;
-    -fx-border-width: 2px;
-    -fx-border-color: red;
-    -fx-border-style: hidden hidden solid hidden;
-    -fx-background-color: derive(red, 99%);
-}
-
-/* -----------------------------------------------------------------------------
 BUTTON
 ----------------------------------------------------------------------------- */
 
@@ -273,17 +249,42 @@ SLIDERS
 POPUP
 ----------------------------------------------------------------------------- */
 
-.popup {
-    -fx-background-color: red;
+#popup-hbox {
+    -fx-background-radius: 10;
+    -fx-padding: 12;
+    -fx-spacing: 12;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
 }
 
-#popup-label {
+.error-popup-hbox {
+    -fx-background-color: #DA5D57;
+}
+
+#error-popup-label {
     -fx-text-fill: white;
 }
 
-#popup-hbox {
-    -fx-padding: 7;
-    -fx-spacing: 5;
-    -fx-alignment: center;
+#popup-button {
+    -fx-background-size: 16 16;
+    -fx-background-color: transparent;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-border-width: 0;
 }
 
+.error-popup-button {
+    -fx-background-image: url("icons/close-100.png");
+}
+
+#warning-popup-label {
+    -fx-text-fill: black;
+}
+
+.warning-popup-hbox {
+    -fx-background-color: #ffcc00;
+}
+
+.warning-popup-button {
+    -fx-background-image: url("icons/close-0.png");
+}

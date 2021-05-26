@@ -175,10 +175,9 @@ public class Controller {
 
         File tempDataFile = fileChooser.showOpenDialog(Main.getPrimaryStage());
         if (tempDataFile != null) {
-            dataFile = tempDataFile;
-            displayTimeSeries();
             try {
-                TimeSeries timeSeries = new TimeSeries(dataFile.getAbsolutePath());
+                TimeSeries timeSeries = new TimeSeries(tempDataFile.getAbsolutePath());
+                dataFile = tempDataFile;
                 dataGraph.getData().clear();
                 dataGraph.clearFitnessMarkers();
                 dataGraph.setTimeSeries(timeSeries);
@@ -188,26 +187,42 @@ public class Controller {
                 runAlgorithmBtn.setDisable(false);
                 runSmallBtn.setDisable(false);
             } catch (InvalidDimensionException e) {
-                showPopup(e.getMessage());
+                showPopup("error", e.getMessage());
             }
 
 
         }
     }
 
-    private void showPopup(String message) {
+    /**
+     * Display a popup with a given style and message. Disables the root node
+     * when the popup is showing; enables root node when popup is closed.
+     * @param popupStyle A string representing the style of the popup. Currently
+     *                  only "warning" or "error" are allowed
+     * @param message A string of the message in the popup
+     */
+    private void showPopup(String popupStyle, String message) {
         Popup popup = new Popup();
-        HBox hBox = new HBox();
-        Label label = new Label(message);
-        label.setId("popup-label");
-        Button button = new Button();
-        button.setText("Close");
-        hBox.getChildren().addAll(label, button);
-        popup.getContent().add(hBox);
-        hBox.setId("popup-hbox");
         popup.setHideOnEscape(true);
+        popup.setOnHidden(e -> anchorPaneRoot.setDisable(false));
+
+        Label label = new Label(message);
+        label.setId(popupStyle + "-popup-label");
+
+        Button button = new Button();
+        button.setId("popup-button");
+        button.getStyleClass().add(popupStyle + "-popup-button");
         button.setOnMouseClicked(e -> popup.hide());
+
+        HBox hBox = new HBox();
+        hBox.setId("popup-hbox");
+        hBox.getStyleClass().add(popupStyle + "-popup-hbox");
+        hBox.getChildren().addAll(label, button);
+
+        popup.getContent().add(hBox);
         popup.show(Main.getPrimaryStage());
+
+        anchorPaneRoot.setDisable(true);
     }
 
     /**
@@ -275,29 +290,6 @@ public class Controller {
         return 0.4;
     }
 
-
-    private void displayTimeSeries() {
-
-        // How to find nodes (in this case the line chart with fx:id "tsgraph"
-        // ((LineChart<Double, Double>) Main.getPrimaryStage().getScene().lookup("#tsgraph"))
-
-        TimeSeries timeSeries = null;
-//        try {
-//            timeSeries = new TimeSeries(dataFile.getAbsolutePath());
-//            dataGraph.getData().clear();
-//            dataGraph.clearFitnessMarkers();
-//            dataGraph.setTimeSeries(timeSeries);
-//            currentDataFile.setText("Current: " + dataFile.getName());
-//        } catch (InvalidDimensionException e) {
-//            Popup popup = new Popup();
-//            popup.setAutoHide(true);
-//            popup.getContent().add(new Label(e.getMessage()));
-//            popup.show(Main.getPrimaryStage());
-//            System.out.println("hello");
-//        }
-
-
-    }
 
     public void showFitness(Individual individual, TimeSeries timeSeries) {
 
