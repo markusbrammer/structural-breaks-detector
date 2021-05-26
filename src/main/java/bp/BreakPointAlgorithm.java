@@ -2,6 +2,7 @@ package bp;
 
 import data.TimeSeries;
 import fitness.FitnessCalculator;
+import fitness.FitnessStringCodes;
 import fitness.RectangleFitness;
 import ga.Individual;
 import ga.Population;
@@ -22,7 +23,7 @@ public class BreakPointAlgorithm {
 
     // Statics
     private int noOfIndividuals = 50;
-    private int maxNoOfBreakPoints = 1;
+    private int maxNoOfBreakPoints = 3;
     private double alpha = 0.25;
     private double uniformCrossoverProb = 0.3;
     private double onePointCrossoverProb = 0.3;
@@ -59,7 +60,6 @@ public class BreakPointAlgorithm {
         }
 
         int fittestIndividualIndex = getMaximumFitnessIndividualIndex();
-        printBreakPointLocations(population.getIndividual(fittestIndividualIndex));
         return population.getIndividual(fittestIndividualIndex);
 
     }
@@ -246,14 +246,31 @@ public class BreakPointAlgorithm {
         fitness.setTimeSeries(timeSeries);
     }
 
-    // ONLY FOR TESTING! Remove!
-    private static void printBreakPointLocations(Individual individual) {
-        String s = "";
-        for (int i = 0; i < individual.getNoOfGenes(); i++) {
-            if (individual.getAllele(i) == Statics.breakPointAllele)
-                s += (i + " ");
-        }
-        System.out.println(s);
+
+
+    public TimeSeries getTimeSeries() {
+        return timeSeries;
     }
 
+    /**
+     *
+     * @param fitnessCode A String code for a given fitness. See file
+     *                    FitnessStringCodes.java.
+     */
+    public void setFitness(String fitnessCode) {
+        if (FitnessStringCodes.RECTANGLE_FITNESS_CODE.equals(fitnessCode)) {
+            fitness = new RectangleFitness();
+        }
+        fitness.setTimeSeries(timeSeries);
+    }
 }
+
+//    // ONLY FOR TESTING! Remove!
+//    private static void printBreakPointLocations(Individual individual) {
+//        String s = "";
+//        for (int i = 0; i < individual.getNoOfGenes(); i++) {
+//            if (individual.getAllele(i) == Statics.breakPointAllele)
+//                s += (i + " ");
+//        }
+//        System.out.println(s);
+//    }

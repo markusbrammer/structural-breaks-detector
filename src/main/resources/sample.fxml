@@ -58,6 +58,8 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -78,37 +80,37 @@
                      </font>
                   </Text>
                   <Button alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#openFileChooser" text="Load Time Series" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
-                  <Text fx:id="currentDataFile" strokeType="OUTSIDE" strokeWidth="0.0" text="No file loaded." GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
-                  <Separator layoutX="10.0" layoutY="156.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="General algorithm parameters" GridPane.rowIndex="5" GridPane.valignment="TOP">
+                  <Text fx:id="currentDataFile" strokeType="OUTSIDE" strokeWidth="0.0" text="No file loaded." textAlignment="CENTER" wrappingWidth="240.1875" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+                  <Separator layoutX="10.0" layoutY="156.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="General algorithm parameters" GridPane.rowIndex="7" GridPane.valignment="TOP">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Population size" GridPane.rowIndex="6" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Max no. of break points" wrappingWidth="100.0" GridPane.rowIndex="7" />
-                  <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Probability values" GridPane.columnSpan="2147483647" GridPane.rowIndex="9" GridPane.valignment="TOP">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Population size" GridPane.rowIndex="8" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Max no. of break points" wrappingWidth="100.0" GridPane.rowIndex="9" />
+                  <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="10" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Probability values" GridPane.columnSpan="2147483647" GridPane.rowIndex="11" GridPane.valignment="TOP">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mutation" GridPane.rowIndex="10" GridPane.valignment="CENTER" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="One-point crossover" wrappingWidth="90.0" GridPane.rowIndex="11" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Uniform crossover" wrappingWidth="90.0" GridPane.rowIndex="12" />
-                  <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="13" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fitness" GridPane.columnSpan="2147483647" GridPane.rowIndex="14" GridPane.valignment="TOP">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mutation" GridPane.rowIndex="12" GridPane.valignment="CENTER" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="One-point crossover" wrappingWidth="90.0" GridPane.rowIndex="13" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Uniform crossover" wrappingWidth="90.0" GridPane.rowIndex="14" />
+                  <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="15" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fitness" GridPane.columnSpan="2147483647" GridPane.rowIndex="16" GridPane.valignment="TOP">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fitness method" GridPane.rowIndex="15" />
-                  <ChoiceBox fx:id="fitnessMethodChooser" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="15" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="α-parameter" GridPane.rowIndex="16" />
-                  <Button fx:id="runAlgorithmBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#runAlgorithm" prefHeight="25.0" prefWidth="270.0" text="Run algorithm" GridPane.columnSpan="2147483647" GridPane.rowIndex="18" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fitness method" GridPane.rowIndex="17" />
+                  <ChoiceBox fx:id="fitnessMethodChooser" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="17" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="α-parameter" GridPane.rowIndex="18" />
+                  <Button fx:id="runAlgorithmBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#runAlgorithm" prefHeight="25.0" prefWidth="270.0" text="Run algorithm" GridPane.columnSpan="2147483647" GridPane.rowIndex="20" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm parameter settings" />
-                  <Separator layoutX="10.0" layoutY="304.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="17" />
-                  <HBox alignment="CENTER" layoutX="111.0" layoutY="220.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="10">
+                  <Separator layoutX="10.0" layoutY="304.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="19" />
+                  <HBox alignment="CENTER" layoutX="111.0" layoutY="220.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12">
                      <children>
                         <Slider fx:id="mutationProbInput" blockIncrement="1.0" prefHeight="16.0" prefWidth="100.0" value="33.0" />
                         <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
@@ -118,7 +120,7 @@
                         </StackPane>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" layoutX="111.0" layoutY="360.0" GridPane.columnIndex="1" GridPane.rowIndex="11">
+                  <HBox alignment="CENTER" layoutX="111.0" layoutY="360.0" GridPane.columnIndex="1" GridPane.rowIndex="13">
                      <children>
                         <Slider fx:id="onePointCrossInput" blockIncrement="1.0" prefHeight="16.0" prefWidth="100.0" value="33.0" />
                         <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
@@ -128,7 +130,7 @@
                         </StackPane>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" layoutX="111.0" layoutY="395.0" GridPane.columnIndex="1" GridPane.rowIndex="12">
+                  <HBox alignment="CENTER" layoutX="111.0" layoutY="395.0" GridPane.columnIndex="1" GridPane.rowIndex="14">
                      <children>
                         <Slider fx:id="uniCrossInput" blockIncrement="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="100.0" value="34.0" />
                         <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
@@ -138,7 +140,7 @@
                         </StackPane>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" layoutX="111.0" layoutY="360.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                  <HBox alignment="CENTER" layoutX="111.0" layoutY="360.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
                      <children>
                         <Slider fx:id="popSz" blockIncrement="1.0" majorTickUnit="1.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="100.0" snapToTicks="true" value="50.0" />
                         <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
@@ -148,7 +150,7 @@
                         </StackPane>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" layoutX="111.0" layoutY="220.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                  <HBox alignment="CENTER" layoutX="111.0" layoutY="220.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
                      <children>
                         <Slider fx:id="maxBPSlider" blockIncrement="1.0" majorTickUnit="2.0" max="10.0" minorTickCount="1" prefHeight="16.0" prefWidth="100.0" value="3.0" />
                         <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
@@ -158,7 +160,7 @@
                         </StackPane>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" layoutX="111.0" layoutY="255.0" GridPane.columnIndex="1" GridPane.rowIndex="16">
+                  <HBox alignment="CENTER" layoutX="111.0" layoutY="255.0" GridPane.columnIndex="1" GridPane.rowIndex="18">
                      <children>
                         <Slider fx:id="alphaInput" blockIncrement="0.05" majorTickUnit="0.25" max="1.0" minorTickCount="0" prefHeight="16.0" prefWidth="100.0" value="0.25" />
                         <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
@@ -168,6 +170,9 @@
                         </StackPane>
                      </children>
                   </HBox>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Display big data sets with" wrappingWidth="100.0" GridPane.rowIndex="5" />
+                  <ChoiceBox fx:id="displayModeChooser" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
                </children>
             </GridPane>
          </content>

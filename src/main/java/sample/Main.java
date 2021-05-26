@@ -1,7 +1,6 @@
 package sample;
 
 import bp.BreakPointAlgorithm;
-import data.TimeSeries;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,14 +16,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         setPrimaryStage(primaryStage);
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample.fxml"));
         Parent root = loader.load();
-        Controller controller = loader.getController();
-
-        TimeSeries timeSeries = new TimeSeries("src/test/resources/3Breaks_21.json");
-        algorithm = new BreakPointAlgorithm(timeSeries);
-
-        controller.addObserver(new AlgorithmObserver(algorithm));
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());

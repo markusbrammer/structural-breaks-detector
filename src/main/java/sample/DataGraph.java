@@ -32,6 +32,9 @@ public class DataGraph<X, Y> extends LineChart {
 
     private final int MAX_NO_OF_PLOT_POINTS = 1000;
 
+    public static final String[] DISPLAY_MODES = {"Average", "Min and Max"};
+    private String displayMode = DISPLAY_MODES[0];
+
     public DataGraph(Axis<X> xAxis, Axis<Y> yAxis) {
         super(xAxis, yAxis);
         getXAxis().setAutoRanging(true);
@@ -150,6 +153,13 @@ public class DataGraph<X, Y> extends LineChart {
 
     }
 
+    public void setDisplayMode(String mode) {
+        if (!displayMode.equals(mode)) {
+            displayMode = mode;
+            if (timeSeries != null)
+                readTimeSeriesPoints();
+        }
+    }
 }
 
 

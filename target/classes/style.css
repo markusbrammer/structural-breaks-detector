@@ -199,26 +199,46 @@ CHOICE BOX
 
 .choice-box .context-menu {
     -fx-alignment: center;
-    -fx-background-color: black;
-    /*-fx-background-insets: */
-    /*    -fx-padding: 0.666667em 0.083333em 0.666667em 0.083333em;  8 1 8 1 */
+    -fx-background-color: white;
+    -fx-border-color: #383838;
+    -fx-background-radius: 3;
+    -fx-border-width: 2;
+    -fx-border-radius: 3;
     -fx-padding: 0.333333em 0.083333em 0.666667em 0.083333em; /* 4 1 8 1 */
+}
+
+.choice-box .menu-item:hover {
+    -fx-cursor: hand;
 }
 
 /* -----------------------------------------------------------------------------
 LINE CHART
 ----------------------------------------------------------------------------- */
 
-.default-color0.chart-series-line { -fx-stroke: #e9967a; }
+/* TODO Design .chart:disabled*/
+.axis:disabled {
+    -fx-tick-label-fill: lightgrey;
+}
+
+.default-color0.chart-series-line { -fx-stroke: #5C9BFF; }
+.default-color0.chart-series-line:disabled {-fx-stroke: derive(#5C9BFF, 80%)}
+
+.default-color1.chart-series-line { -fx-stroke: #72C774; }
+.default-color1.chart-series-line:disabled {-fx-stroke: derive(#72C774, 80%)}
 
 /* Help from here: https://stackoverflow.com/q/30408470 (see answer from jewelsea) */
 #chart-rectangle {
     -fx-stroke: black;
-    -fx-stroke-width: 4;
+    -fx-stroke-width: 3;
     -fx-stroke-dash-offset: 0;
     -fx-stroke-dash-array: 10;
     -fx-background-color: transparent;
     -fx-fill: transparent;
+}
+
+#chart-rectangle:disabled {
+    -fx-stroke: lightgrey;
+    -fx-stroke-width: 2;
 }
 
 /* -----------------------------------------------------------------------------
