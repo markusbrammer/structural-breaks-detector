@@ -3,16 +3,19 @@ package fitness;
 import data.TimeSeries;
 import ga.Individual;
 
-public abstract class FitnessCalculator {
+public abstract class Fitness {
 
-    private TimeSeries timeSeries;
+    private TimeSeries ts;
     private double alphaValue;
     private char nonBPAllele = '*';
+    private int maxNoOfBreakPoints;
 
-    public abstract double getFitnessOfIndividual(Individual individual);
+    public abstract double getFitnessOfIndividual(Individual individual) throws Exception;
+
+    protected abstract char getBPAllele();
 
     public void setTimeSeries(TimeSeries timeSeries) {
-        this.timeSeries = timeSeries;
+        this.ts = timeSeries;
     }
 
     public void setAlphaValue(double alphaValue) {
@@ -24,6 +27,10 @@ public abstract class FitnessCalculator {
     }
 
     protected TimeSeries getTimeSeries() {
-        return timeSeries;
+        return ts;
+    }
+
+    protected int getMaxNoOfBreakPoints() {
+        return maxNoOfBreakPoints;
     }
 }

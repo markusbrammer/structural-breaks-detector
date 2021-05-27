@@ -1,4 +1,6 @@
-package data;
+package data_structures;
+
+import data.MinMax;
 
 /**
  * Trees in Java, see this: https://stackoverflow.com/questions/8480284/storing-a-tree-structure-in-java
@@ -8,40 +10,39 @@ package data;
  */
 public class RangeTree {
 
-    Node root;
+    Vertex root;
     double[] values;
 
     public RangeTree(double[] values) {
-        // changed from RangeTree(double[] keys, double[] values) because keys are now their index in stead
         this.values = values;
-        root = new Node();
+        root = new Vertex();
         generateTree(root, 0, values.length - 1);
     }
 
-    private void generateTree(Node node, int leftIndex, int rightIndex) {
+    private void generateTree(Vertex vertex, int leftIndex, int rightIndex) {
 
-        node.leftKey = leftIndex;
-        node.rightKey = rightIndex;
+        vertex.leftKey = leftIndex;
+        vertex.rightKey = rightIndex;
 
-        if (!node.isLeaf()) {
+        if (!vertex.isLeaf()) {
 
             int separatorIndex = (leftIndex + rightIndex) / 2;
 
-            Node leftChild = new Node();
-            node.left = leftChild;
+            Vertex leftChild = new Vertex();
+            vertex.left = leftChild;
             generateTree(leftChild, leftIndex, separatorIndex);
 
-            Node rightChild = new Node();;
-            node.right = rightChild;
+            Vertex rightChild = new Vertex();;
+            vertex.right = rightChild;
             generateTree(rightChild, separatorIndex + 1, rightIndex);
 
             // Min and max is calculated from the children
-            node.minMax = MinMax.combine(leftChild.minMax, rightChild.minMax);
+            vertex.minMax = MinMax.combine(leftChild.minMax, rightChild.minMax);
 
         } else {
 
             double value = values[leftIndex];
-            node.minMax = new MinMax(value, value);
+            vertex.minMax = new MinMax(value, value);
 
         }
 
@@ -51,7 +52,7 @@ public class RangeTree {
         return getMinAndMaxHelper(leftKey, rightKey, root);
     }
 
-    private MinMax getMinAndMaxHelper(int a, int b, Node x) throws Exception {
+    private MinMax getMinAndMaxHelper(int a, int b, Vertex x) throws Exception {
 
         if (x.isLeaf())
             return x.minMax;
@@ -69,8 +70,9 @@ public class RangeTree {
                                   getMinAndMaxHelper(a, b, x.right));
         }
 
-        // The two paths have already split apart. This means that the current node is only on the path to ONE of the
-        // two endpoints, either the left path or the right path.
+        // The two paths have already split apart. This means that the current
+        // node is only on the path to ONE of the two endpoints, either the left
+        // path or the right path.
         if (x.left.inInterval(a)) {
             return MinMax.combine(getMinAndMaxHelper(a, b, x.left), x.right.minMax);
         } else if (x.right.inInterval(a)) {
@@ -87,10 +89,10 @@ public class RangeTree {
         throw new Exception("The interval is not valid");
     }
 
-    private class Node {
+    private class Vertex {
 
-        Node left;
-        Node right;
+        Vertex left;
+        Vertex right;
 
         int leftKey;
         int rightKey;

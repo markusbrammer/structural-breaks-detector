@@ -1,7 +1,7 @@
 package bp;
 
 import data.TimeSeries;
-import fitness.FitnessCalculator;
+import fitness.Fitness;
 import fitness.FitnessStringCodes;
 import fitness.RectangleFitness;
 import ga.Individual;
@@ -17,7 +17,7 @@ public class BreakPointAlgorithm {
     private TimeSeries timeSeries;
     private Population population;
 
-    private FitnessCalculator fitness;
+    private Fitness fitness;
 
     private double[] populationFitnesses;
 
@@ -39,7 +39,7 @@ public class BreakPointAlgorithm {
 
     public BreakPointAlgorithm() {}
 
-    public Individual findBreakPoints() {
+    public Individual findBreakPoints() throws Exception {
 
         fitness.setAlphaValue(alpha);
         initializePopulation();
@@ -64,7 +64,7 @@ public class BreakPointAlgorithm {
 
     }
 
-    private void replaceMinimumFitness(Individual offspring) {
+    private void replaceMinimumFitness(Individual offspring) throws Exception {
 
         int minimumFitnessIndex = getMinimumFitnessIndividualIndex();
         double minimumFitness = populationFitnesses[minimumFitnessIndex];
@@ -145,7 +145,7 @@ public class BreakPointAlgorithm {
         }
     }
 
-    private void calculateFitnesses() {
+    private void calculateFitnesses() throws Exception {
         for (int i = 0; i < noOfIndividuals; i++) {
             Individual individual = population.getIndividual(i);
             double fitness = this.fitness.getFitnessOfIndividual(individual);

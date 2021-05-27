@@ -3,6 +3,7 @@ package sample;
 import bp.BreakPointAlgorithm;
 import bp.Statics;
 import data.InvalidDimensionException;
+import data.MinMax;
 import data.TimeSeries;
 import fitness.FitnessRectangle;
 import fitness.FitnessStringCodes;
@@ -258,7 +259,7 @@ public class Controller {
      * @param mouseEvent
      */
     @FXML
-    public void runAlgorithm(MouseEvent mouseEvent) {
+    public void runAlgorithm(MouseEvent mouseEvent) throws Exception {
         dataGraph.clearFitnessMarkers();
         Individual solution = algorithm.findBreakPoints();
         showFitness(solution, algorithm.getTimeSeries());
@@ -285,18 +286,17 @@ public class Controller {
 
     }
 
-    public void showFitness(Individual individual, TimeSeries timeSeries) {
+    public void showFitness(Individual individual, TimeSeries timeSeries) throws Exception {
 
         List<Integer> breakPointIndexes = findBreakPointIndexes(individual);
         for (int i = 0; i < breakPointIndexes.size() - 1; i++) {
             int startIndex = 1 + breakPointIndexes.get(i);
             int endIndex = breakPointIndexes.get(i + 1);
 
-            double[] values = timeSeries.getObservations();
 
-            double[] minAndMaxValues = getMinAndMaxInInterval(values, startIndex, endIndex);
-            double minValue = minAndMaxValues[0];
-            double maxValue = minAndMaxValues[1];
+            MinMax minMax = timeSeries.getMinMaxInIndexInterval(startIndex, endIndex);
+            double minValue = minMax.getMin();
+            double maxValue = minMax.getMax();
 
             FitnessRectangle fitnessRectangle = new FitnessRectangle(startIndex, endIndex, minValue, maxValue);
             Rectangle rectangle = new Rectangle();

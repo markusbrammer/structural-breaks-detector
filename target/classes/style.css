@@ -98,7 +98,6 @@ BUTTON
     -fx-border-color: grey;
     -fx-background-color: derive(#dfdfdf, 40%);
     -fx-background-insets: 2 2 2 2;
-    /*-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);*/
 }
 
 .button:hover {

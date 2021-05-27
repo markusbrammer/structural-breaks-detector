@@ -1,12 +1,11 @@
 import bp.BreakPointAlgorithm;
 import bp.Statics;
-import data.InvalidDimensionException;
 import data.TimeSeries;
 import ga.Individual;
 
 public class TestAlgorithm {
 
-    public static void main(String[] args) throws InvalidDimensionException {
+    public static void main(String[] args) throws Exception {
         // TimeSeries timeSeries = new TimeSeries("src/test/resources/1Breaks_1K.json");
         TimeSeries timeSeries = new TimeSeries("src/test/resources/1Breaks_1K.json");
         BreakPointAlgorithm algorithm = new BreakPointAlgorithm(timeSeries);

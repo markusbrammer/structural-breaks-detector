@@ -7,4 +7,7 @@ module Fagprojekt{
     opens sample to javafx.fxml;
     exports sample;
     exports data;
+    exports ga;
+    exports data_structures;
+    exports data_structures.list;
 }

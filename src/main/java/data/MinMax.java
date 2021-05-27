@@ -42,4 +42,8 @@ public class MinMax {
     public void setMax(double max) {
         this.max = max;
     }
+
+    public double getDifference() {
+        return max - min;
+    }
 }

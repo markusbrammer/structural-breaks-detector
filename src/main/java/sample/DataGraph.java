@@ -111,6 +111,7 @@ public class DataGraph<X, Y> extends LineChart {
      */
     private void readTimeSeriesPoints() {
 
+        getData().clear();
         assert timeSeries != null;
 
         XYChart.Series<Number, Number> graphPoints = new XYChart.Series<>();
@@ -133,7 +134,7 @@ public class DataGraph<X, Y> extends LineChart {
         for (int i = 0; i < noOfElementsInTimeSeries; i++) {
             if (z < noOfValuesPerPoint) {
                 x += timeSeriesTimes[i];
-                y += timeSeries.getObservations()[i];
+                y += timeSeries.getObservations().get(i);
                 z++;
             } else {
                 x /= noOfValuesPerPoint;

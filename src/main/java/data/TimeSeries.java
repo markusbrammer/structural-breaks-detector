@@ -1,7 +1,13 @@
 package data;
 
+import data_structures.RangeTree;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class TimeSeries {
 
@@ -35,7 +41,7 @@ public class TimeSeries {
 
         name = (String) fileReader.get("timeseries");
         readObservations();
-
+        rangeTree = new RangeTree(observations);
 
     }
 
@@ -59,8 +65,36 @@ public class TimeSeries {
         }
     }
 
-    public double[] getObservations() {
-        return observations;
+    public MinMax getMinMaxInIndexInterval(int startIndex, int endIndex) throws Exception {
+        return rangeTree.getMinMax(startIndex, endIndex);
+    }
+
+    private MinMax getMinAndMaxInIntervalSimple(int lowerBound, int upperBound) {
+        double min = observations[lowerBound];
+        double max = observations[lowerBound];
+        for (int i = lowerBound; i <= upperBound; i++) {
+            double value = observations[i];
+            if (value < min) {
+                min = value;
+            } else if (value > max) {
+                max = value;
+            }
+        }
+        return new MinMax(min, max);
+    }
+
+    public List<Double> getObservations() {
+        List<Double> obsList = new ArrayList<>();
+        Arrays.stream(observations).forEach(obsList::add);
+        return new ArrayList<>(Collections.unmodifiableList(obsList));
+    }
+
+    public double getValueAtIndex(int index) {
+        return observations[index];
+    }
+
+    public double getTimeAtIndex(int index) {
+        return times[index];
     }
 
     public int getLength() {
@@ -74,5 +108,7 @@ public class TimeSeries {
     public double[] getTimes() {
         return times;
     }
+
+
 
 }
