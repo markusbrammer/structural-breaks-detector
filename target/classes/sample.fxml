@@ -152,7 +152,7 @@
                   </HBox>
                   <HBox alignment="CENTER" layoutX="111.0" layoutY="220.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
                      <children>
-                        <Slider fx:id="maxBPSlider" blockIncrement="1.0" majorTickUnit="2.0" max="10.0" minorTickCount="1" prefHeight="16.0" prefWidth="100.0" value="3.0" />
+                        <Slider fx:id="maxBPSlider" blockIncrement="1.0" majorTickUnit="2.0" max="20.0" minorTickCount="1" prefHeight="16.0" prefWidth="100.0" value="3.0" />
                         <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                            <children>
                               <Text fx:id="maxBPVal" strokeType="OUTSIDE" strokeWidth="0.0" text="3" StackPane.alignment="CENTER" />
@@ -162,7 +162,7 @@
                   </HBox>
                   <HBox alignment="CENTER" layoutX="111.0" layoutY="255.0" GridPane.columnIndex="1" GridPane.rowIndex="18">
                      <children>
-                        <Slider fx:id="alphaInput" blockIncrement="0.05" majorTickUnit="0.25" max="1.0" minorTickCount="0" prefHeight="16.0" prefWidth="100.0" value="0.25" />
+                        <Slider fx:id="alphaInput" blockIncrement="0.01" majorTickUnit="0.25" max="1.0" minorTickCount="0" prefHeight="16.0" prefWidth="100.0" value="0.25" />
                         <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                            <children>
                               <Text fx:id="alphaVal" strokeType="OUTSIDE" strokeWidth="0.0" text="0.25" StackPane.alignment="CENTER" />

@@ -1,6 +1,7 @@
 package data_structures.list;
 
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 /**
  * A class to represent the doubly linked list data structure.
@@ -10,12 +11,14 @@ import java.util.Iterator;
  * @param <E> A comparable data type. Needed for sorting.
  */
 public class SortedDoublyLinkedList<E extends Comparable<E>>
-        implements Iterable<Node<E>>{
+        implements Iterable<E> {
 
+    int length;
     Node<E> head;
     Node<E> tail;
 
     public SortedDoublyLinkedList() {
+        length = 0;
         head = null;
         tail = null;
     }
@@ -24,15 +27,17 @@ public class SortedDoublyLinkedList<E extends Comparable<E>>
 
         Node<E> newNode = new Node<>(element);
 
-        // The new node is the only element in the list
         if (head == null) {
+            // The new node is the only element in the list
             head = newNode;
             tail = newNode;
-            return;
+        } else {
+            // Add the node to the list that already contains other nodes
+            addRec(newNode, head);
         }
 
-        // Add the node to the list that already contains other nodes
-        addRec(newNode, head);
+        length++;
+
     }
 
     /**
@@ -72,17 +77,79 @@ public class SortedDoublyLinkedList<E extends Comparable<E>>
 
     }
 
+    public void remove(E element) {
+        Node<E> node = firstNodeWithElement(element);
+        if (node != null) {
+
+            Node<E> prevNode = node.getPrev();
+            Node<E> nextNode = node.getNext();
+
+            if (prevNode != null) {
+                prevNode.setNext(nextNode);
+            } else {
+                head = nextNode;
+            }
+
+            if (nextNode != null) {
+                nextNode.setPrev(prevNode);
+            } else {
+                tail = prevNode;
+            }
+
+        }
+    }
+
+    public E getNextElement(E element) {
+        // Find node with the element
+        Node<E> node = firstNodeWithElement(element);
+        if (node != null) {
+            Node<E> nextNode = node.getNext();
+            return nextNode == null ? null : nextNode.getElement();
+        }
+
+        return null;
+    }
+
+    private Node<E> firstNodeWithElement(E element) {
+        Node<E> node = head;
+        while (node != null) {
+            if (node.getElement().compareTo(element) == 0) {
+                return node;
+            }
+            node = node.getNext();
+        }
+        return null;
+    }
+
+    public Stream<E> stream() {
+        Stream.Builder<E> builder = Stream.builder();
+        this.forEach(builder::add);
+        return builder.build();
+    }
+
+    public E getHeadElement() {
+        return head.getElement();
+    }
+
+    public E getTailElement() {
+        return tail.getElement();
+    }
+
+    public int getLength() {
+        return length;
+    }
+
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
-        for (Node<E> n : this) {
-            s.append(n).append(" ");
+        for (E e : this) {
+            s.append(e).append(" ");
         }
         return s.toString();
     }
 
     @Override
-    public Iterator<Node<E>> iterator() {
+    public Iterator<E> iterator() {
         return new ListIterator<>(head);
     }
 }

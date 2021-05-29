@@ -1,63 +1,76 @@
 package ga;
 
-import java.util.ArrayList;
+import data_structures.list.SortedDoublyLinkedList;
+import fitness.FitnessNode;
+
 import java.util.List;
+import java.util.Optional;
 
-public class Individual {
+public class Individual implements Comparable<Individual> {
 
+    private final SortedDoublyLinkedList<Allele> genome =
+            new SortedDoublyLinkedList<>();
 
+    private double fitness;
+    private List<FitnessNode> fitnessNodes;
 
-//    private SortedDoublyLinkedList<Allele> genome;
-//    private Fitness fitness;
-//
-//    public Individual() {}
-//
-//    public void addBreakPoint(int index, char breakPoint) {
-//        Allele allele = new Allele(index, breakPoint);
-//        genome.add(allele);
-//    }
+    public Individual() {}
 
-
-
-    private char[] genes;
-    public Individual(int length) {
-        /**
-         * Initialize an individual with a given length and only null allele at all positions.
-         */
-        genes = new char[length];
+    public Individual(Individual copyOf) {
+        for (Allele allele : copyOf.getGenome()) {
+            this.addBreakPoint(allele);
+        }
     }
 
-    public int getNoOfGenes() {
-        return genes.length;
+    public void addBreakPoint(int index, BreakPoint breakPoint) {
+        Allele allele = new Allele(index, breakPoint);
+        genome.add(allele);
     }
 
-    public void setAllele(int gene, char allele) {
-        genes[gene] = allele;
+    public void addBreakPoint(Allele allele) {
+        genome.add(allele);
     }
 
-    public char getAllele(int gene) {
-        return genes[gene];
+    public boolean breakPointAtIndex(int index) {
+        return genome.stream().anyMatch(allele -> allele.getIndex() == index);
     }
 
+    public SortedDoublyLinkedList<Allele> getGenome() {
+        return genome;
+    }
+
+    public double getFitness() {
+        return fitness;
+    }
+
+    public void setFitness(double fitness) {
+        this.fitness = fitness;
+    }
+
+    @Override
+    public int compareTo(Individual o) {
+        return fitness >= o.getFitness() ? 1 : -1;
+    }
+
+    @Override
     public String toString() {
-        StringBuilder s = new StringBuilder();
-        int maxCharsInString = 20;
-        int limit = (Math.min(genes.length, maxCharsInString));
-        for (int i = 0; i < limit; i++) {
-            s.append(genes[i]).append(" ");
-        }
-        return s.toString();
+        return genome.toString();
     }
 
-    public List<Integer> allIndexesOf(char c) {
-        List<Integer> indexes = new ArrayList<>();
-        for (int i = 0; i < getNoOfGenes() - 1; i++) {
-            if (genes[i] == c)
-                indexes.add(i);
-        }
-        return indexes;
+    public void removeBreakPoint(int index) {
+        Optional<Allele> allele = genome.stream().
+                filter(a -> a.getIndex() == index).findFirst();
+
+        allele.ifPresent(genome::remove);
     }
 
+    public void setFitnessNodes(List<FitnessNode> fitnessNodes) {
+        this.fitnessNodes = fitnessNodes;
+    }
+
+    public List<FitnessNode> getFitnessNodes() {
+        return fitnessNodes;
+    }
 }
 
 

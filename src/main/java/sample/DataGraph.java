@@ -1,104 +1,75 @@
 package sample;
 
-import data.TimeSeries;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.collections.FXCollections;
+        import data.MinMax;
+        import data.TimeSeries;
+import fitness.FitnessNode;
+import ga.Individual;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart;
+        import javafx.scene.chart.NumberAxis;
+        import javafx.scene.chart.XYChart;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataGraph<X, Y> extends LineChart {
+/**
+ * A lot of good stuff here:
+ *  - https://www.codesd.com/item/how-to-add-two-vertical-lines-with-javafx-linechart.html
+ *  - https://stackoverflow.com/questions/38871202/how-to-add-shapes-on-javafx-linechart
+ */
+public class DataGraph extends LineChart<Number, Number> {
 
-    // A lot of good stuff here: https://www.codesd.com/item/how-to-add-two-vertical-lines-with-javafx-linechart.html
-    // Also: https://stackoverflow.com/questions/38871202/how-to-add-shapes-on-javafx-linechart
-
-    private ObservableList<Data<X, Y>> fitnessNodeMarkersBackup =
-            FXCollections.observableArrayList(data -> new Observable[] {data.XValueProperty()});
-
-    private ObservableList<Data<Data<X, Y>, Data<X,Y>>> fitnessNodeMarkers =
-            FXCollections.observableArrayList(data -> new Observable[] {data.XValueProperty()});
-
+    private List<Data<Number, Number>> fitnessNodes = new ArrayList<>();
     private TimeSeries timeSeries;
-
-    private List<Shape> shapes = new ArrayList<>();
-
     private final int MAX_NO_OF_PLOT_POINTS = 1000;
+    private XYChart.Series<Number, Number> graphPoints = new Series<>();
 
     public static final String[] DISPLAY_MODES = {"Average", "Min and Max"};
     private String displayMode = DISPLAY_MODES[0];
+    AnchorPane anchorPane = new AnchorPane();
 
-    public DataGraph(Axis<X> xAxis, Axis<Y> yAxis) {
+
+    public DataGraph(Axis<Number> xAxis, Axis<Number> yAxis) {
         super(xAxis, yAxis);
-        getXAxis().setAutoRanging(true);
-        getYAxis().setAutoRanging(true);
-        fitnessNodeMarkers.addListener((InvalidationListener) observable -> layoutPlotChildren());
-        fitnessNodeMarkersBackup.addListener((InvalidationListener) observable -> layoutPlotChildren());
+        getXAxis().setAutoRanging(false);
+        getYAxis().setAutoRanging(false);
+        ((NumberAxis) getXAxis()).setForceZeroInRange(false);
+        ((NumberAxis) getYAxis()).setForceZeroInRange(false);
         this.setAnimated(false);
         this.setCreateSymbols(false);
+        getPlotChildren().add(anchorPane);
     }
 
-    public void setTimeSeries(TimeSeries timeSeries) {
+    public void setTimeSeries(TimeSeries timeSeries) throws Exception {
         this.timeSeries = timeSeries;
         readTimeSeriesPoints();
     }
 
-    public void clearFitnessMarkers() {
-        for (Data<Data<X, Y>, Data<X,Y>> fitnessMarker : fitnessNodeMarkers) {
-            Node node = fitnessMarker.getNode();
-            getPlotChildren().remove(node);
-        }
-        fitnessNodeMarkers.clear();
-    }
+    public void drawFitness(Individual individual) {
 
-    public void addRectangle(double xMin, double xMax, double yMin, double yMax) {
+        // Clear previous fitness markers
+        fitnessNodes.forEach(data -> getPlotChildren().remove(data.getNode()));
+        fitnessNodes.clear();
+        anchorPane.getChildren().clear();
 
-        Rectangle rectangle = new Rectangle();
-        Data<X, Y> upperLeft = (Data<X, Y>) new Data<>(xMin, yMax);
-        Data<X, Y> lowerRight = (Data<X, Y>) new Data<>(xMax, yMin);
-        Data<Data<X, Y>, Data<X,Y>> marker = (Data<Data<X, Y>, Data<X,Y>>) new Data<>(upperLeft, lowerRight);
-
-        rectangle.setId("chart-rectangle");
-
-        marker.setNode(rectangle);
-        shapes.add(rectangle);
-
-        getPlotChildren().add(rectangle);
-        fitnessNodeMarkers.add(marker);
-
-    }
-
-    @Override
-    public void layoutPlotChildren() {
-
-        super.layoutPlotChildren();
-
-        for (Data<Data<X, Y>, Data<X,Y>> fitnessMarker : fitnessNodeMarkers) {
-            Rectangle rectangle = (Rectangle) fitnessMarker.getNode();
-            Number xMin = (Number) fitnessMarker.getXValue().getXValue();
-            Number yMax = (Number) fitnessMarker.getXValue().getYValue();
-            Number xMax = (Number) fitnessMarker.getYValue().getXValue();
-            Number yMin = (Number) fitnessMarker.getYValue().getYValue();
-
-            rectangle.setX(getXAxis().getDisplayPosition(xMin));
-            rectangle.setY(getYAxis().getDisplayPosition(yMax));
-
-            double width = getXAxis().getDisplayPosition(xMax) - getXAxis().getDisplayPosition(xMin);
-            double height = getYAxis().getDisplayPosition(yMin) - getYAxis().getDisplayPosition(yMax);
-
-            rectangle.setWidth(width);
-            rectangle.setHeight(height);
-
+        // Add all the fitness break point markers to "plot children" list and
+        // fitnessNodes list
+        for (FitnessNode node : individual.getFitnessNodes()) {
+            Data<Number, Number> marker = new Data<>(node.getX(), node.getY());
+            Rectangle rectangle = (Rectangle) node.getVisual();
+            marker.setNode(rectangle);
+            marker.setExtraValue(node);
+            // getPlotChildren().add(rectangle);
+            fitnessNodes.add(marker);
         }
 
+        // Show the fitness break point markers
+        layoutPlotChildren();
     }
+
 
     /**
      * Read all points from the time series into a XYChart object. Add time
@@ -109,14 +80,16 @@ public class DataGraph<X, Y> extends LineChart {
      *
      * @author Markus B. Jensen (s183816)
      */
-    private void readTimeSeriesPoints() {
+    private void readTimeSeriesPoints() throws Exception {
 
+        System.out.println("Hello");
         getData().clear();
         assert timeSeries != null;
 
-        XYChart.Series<Number, Number> graphPoints = new XYChart.Series<>();
+        graphPoints = new XYChart.Series<>();
 
         double[] timeSeriesTimes = timeSeries.getTimes();
+        double[] values = timeSeries.getObservations();
         int noOfElementsInTimeSeries = timeSeries.getLength();
 
         // JavaFX' LineGraph becomes slow when showing too many points. With a
@@ -134,18 +107,29 @@ public class DataGraph<X, Y> extends LineChart {
         for (int i = 0; i < noOfElementsInTimeSeries; i++) {
             if (z < noOfValuesPerPoint) {
                 x += timeSeriesTimes[i];
-                y += timeSeries.getObservations().get(i);
+                y += values[i];
                 z++;
             } else {
                 x /= noOfValuesPerPoint;
                 y /= noOfValuesPerPoint;
-                graphPoints.getData().add(new XYChart.Data<Number, Number>(x, y));
+                graphPoints.getData().add(new XYChart.Data<>(x, y));
                 x = 0;
                 y = 0;
                 z = 0;
                 i--;
             }
         }
+
+        MinMax xMinMax = new MinMax(timeSeriesTimes[0], timeSeriesTimes[timeSeriesTimes.length - 1]);
+        ((NumberAxis) getXAxis()).setLowerBound(xMinMax.getMin() - xMinMax.getDifference() / 20.);
+        ((NumberAxis) getXAxis()).setUpperBound(xMinMax.getMax() + xMinMax.getDifference() / 20.);
+        ((NumberAxis) getXAxis()).setTickUnit(xMinMax.getDifference() / 5);
+
+        MinMax minMax = timeSeries.getMinMaxInIndexInterval(0, timeSeriesTimes.length - 1);
+        ((NumberAxis) getYAxis()).setLowerBound(minMax.getMin() - minMax.getDifference() / 20.);
+        ((NumberAxis) getYAxis()).setUpperBound(minMax.getMax() + minMax.getDifference() / 20.);
+        ((NumberAxis) getYAxis()).setTickUnit(minMax.getDifference() / 10.);
+
 
         String timeSeriesName = timeSeries.getName();
         graphPoints.setName(timeSeriesName);
@@ -154,7 +138,59 @@ public class DataGraph<X, Y> extends LineChart {
 
     }
 
-    public void setDisplayMode(String mode) {
+    @Override
+    public void layoutPlotChildren() {
+
+        super.layoutPlotChildren();
+        anchorPane.toFront();
+
+        if (!graphPoints.getData().isEmpty()) {
+            ObservableList<Data<Number, Number>> points = graphPoints.getData();
+
+            double xMin = (double) points.get(0).getXValue();
+            double xMax = (double) points.get(points.size() - 1).getXValue();
+            double xMinScreen = getXAxis().getDisplayPosition(xMin);
+            double xMaxScreen = getXAxis().getDisplayPosition(xMax);
+            double xScale = Math.abs((xMax - xMin) / (xMaxScreen - xMinScreen));
+
+            double yMin = (double) points.get(0).getYValue();
+            double yMax = yMin;
+            for (Data<Number, Number> data : points) {
+                double yVal = (double) data.getYValue();
+                if (yVal < yMin) {
+                    yMin = yVal;
+                } else if (yVal > yMax) {
+                    yMax = yVal;
+                }
+            }
+            double yMinScreen = getYAxis().getDisplayPosition(yMin);
+            double yMaxScreen = getYAxis().getDisplayPosition(yMax);
+            double yScale = Math.abs((yMax - yMin) / (yMaxScreen - yMinScreen));
+
+            for (Data<Number, Number> data : fitnessNodes) {
+
+                Rectangle node = (Rectangle) data.getNode();
+                FitnessNode fitnessNode = (FitnessNode) data.getExtraValue();
+
+                double height = fitnessNode.getHeight() / yScale;
+                double width = fitnessNode.getWidth() / xScale;
+
+                node.setX(getXAxis().getDisplayPosition(fitnessNode.getX()));
+                node.setY(getYAxis().getDisplayPosition(fitnessNode.getY()));
+                node.setHeight(height);
+                node.setWidth(width);
+
+                AnchorPane.setLeftAnchor(node, node.getX());
+                AnchorPane.setTopAnchor(node, node.getY());
+                if (!anchorPane.getChildren().contains(node))
+                    anchorPane.getChildren().add(node);
+
+            }
+        }
+
+    }
+
+    public void setDisplayMode(String mode) throws Exception {
         if (!displayMode.equals(mode)) {
             displayMode = mode;
             if (timeSeries != null)
@@ -162,5 +198,4 @@ public class DataGraph<X, Y> extends LineChart {
         }
     }
 }
-
 

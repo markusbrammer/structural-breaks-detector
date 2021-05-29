@@ -4,11 +4,6 @@ import data_structures.RangeTree;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 public class TimeSeries {
 
     private JsonDataFileReader fileReader;
@@ -83,10 +78,8 @@ public class TimeSeries {
         return new MinMax(min, max);
     }
 
-    public List<Double> getObservations() {
-        List<Double> obsList = new ArrayList<>();
-        Arrays.stream(observations).forEach(obsList::add);
-        return new ArrayList<>(Collections.unmodifiableList(obsList));
+    public double[] getObservations() {
+        return observations;
     }
 
     public double getValueAtIndex(int index) {

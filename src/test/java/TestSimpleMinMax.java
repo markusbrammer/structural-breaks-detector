@@ -13,7 +13,8 @@ public class TestSimpleMinMax {
 
         String filePath = "src/test/resources/1Breaks_1K.json";
         timeSeries = new TimeSeries(filePath);
-        algorithm = new BreakPointAlgorithm(timeSeries);
+        algorithm = new BreakPointAlgorithm();
+        algorithm.setTimeSeries(timeSeries);
 
         timer.start();
         algorithm.findBreakPoints();
@@ -25,7 +26,8 @@ public class TestSimpleMinMax {
     public void simpleMinMax_1MDataPoints() throws Exception {
         String filePath = "src/test/resources/5Breaks_1M.json";
         timeSeries = new TimeSeries(filePath);
-        algorithm = new BreakPointAlgorithm(timeSeries);
+        algorithm = new BreakPointAlgorithm();
+        algorithm.setTimeSeries(timeSeries);
 
         timer.start();
         algorithm.findBreakPoints();

@@ -1,25 +1,27 @@
 import bp.BreakPointAlgorithm;
-import bp.Statics;
 import data.TimeSeries;
 import ga.Individual;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestAlgorithm {
 
-    public static void main(String[] args) throws Exception {
-        // TimeSeries timeSeries = new TimeSeries("src/test/resources/1Breaks_1K.json");
-        TimeSeries timeSeries = new TimeSeries("src/test/resources/1Breaks_1K.json");
-        BreakPointAlgorithm algorithm = new BreakPointAlgorithm(timeSeries);
-        Individual individual = algorithm.findBreakPoints();
-        printBreakPointLocations(individual);
+    TimeSeries timeSeries;
+    BreakPointAlgorithm algorithm;
+
+    @Before
+    public void before() {
+        algorithm = new BreakPointAlgorithm();
     }
 
-    private static void printBreakPointLocations(Individual individual) {
-        String s = "";
-        for (int i = 0; i < individual.getNoOfGenes(); i++) {
-            if (individual.getAllele(i) == Statics.breakPointAllele)
-                s += (i + " ");
-        }
-        System.out.println(s);
+    @Test
+    public void test() throws Exception {
+        timeSeries = new TimeSeries("src/test/resources/1Breaks_1K.json");
+        algorithm.setTimeSeries(timeSeries);
+        algorithm.setMaxNoOfBreakPoints(2);
+        algorithm.setAlpha(0.35);
+        Individual individual = algorithm.findBreakPoints();
+        System.out.println(individual);
     }
 
 

@@ -1,34 +1,42 @@
-//import ga.Individual;
-//import data.TimeSeries;
-//import ga.Procedures;
-//
-//import java.util.Random;
-//
-//public class TestIndividual {
-//
-//    private static Random rand = new Random();
-//
-//    public static void main(String[] args) {
-//        Individual parent1 = individualWithBreakPoints(5, '*', '!');
-//        System.out.println(parent1);
-//        Individual parent2 = individualWithBreakPoints(5, '*', '!');
-//        System.out.println(parent2);
-//        Individual child1 = Procedures.mutate(parent1);
-//        System.out.println(child1);
-//        Individual child2 = Procedures.onePointCrossover(parent1, parent2);
-//        System.out.println(child2);
-//    }
-//
-//
-//    private static Individual individualWithBreakPoints(int length, char n, char bpAllele) {
-//        Individual individual = new Individual(length);
-//        double breakPointProb = 0.6;
-//        for (int i = 0; i < length; i++) {
-//            if (rand.nextDouble() < breakPointProb)
-//                individual.setAllele(i, bpAllele);
-//        }
-//        return individual;
-//    }
-//
-//
-//}
+import fitness.FitnessModel;
+import fitness.RectangleFitness;
+import ga.Individual;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Arrays;
+
+public class TestIndividual {
+
+    Individual individual;
+    FitnessModel fitnessModel;
+
+    @Before
+    public void before() {
+        fitnessModel = new RectangleFitness();
+        individual = new Individual();
+    }
+
+    @Test
+    public void initIndividualAndAddAFewBreakPoints() {
+        int[] indexes = {3, 10, 0};
+        for (int index : indexes)
+            individual.addBreakPoint(index, fitnessModel.newBreakPoint());
+
+        Assert.assertTrue(Arrays.stream(indexes)
+                .allMatch(i -> individual.breakPointAtIndex(i)));
+    }
+
+    @Test
+    public void breakPointNotInIndividual() {
+        int[] indexes = {3, 10, 0};
+        for (int index : indexes)
+            individual.addBreakPoint(index, fitnessModel.newBreakPoint());
+
+        indexes[0] = 2;
+        Assert.assertFalse(Arrays.stream(indexes)
+                .allMatch(i -> individual.breakPointAtIndex(i)));
+    }
+
+}

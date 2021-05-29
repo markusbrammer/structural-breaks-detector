@@ -1,36 +1,36 @@
-import bp.BreakPointAlgorithm;
-import bp.Statics;
-import data.InvalidDimensionException;
 import data.TimeSeries;
+import fitness.FitnessModel;
+import fitness.RectangleFitness;
 import ga.Individual;
 import ga.Population;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestInitPopulation {
 
-    public static void main(String[] args) throws InvalidDimensionException {
+    TimeSeries timeSeries;
+    Population population;
+    FitnessModel fitnessModel;
 
-        TimeSeries timeSeries =
-                new TimeSeries("src/test/resources/1Breaks_1K.json");
+    final int kMax = 3;
 
-        BreakPointAlgorithm algorithm = new BreakPointAlgorithm(timeSeries);
-        Population population = algorithm.getPopulation();
-        for (Individual individual : population.getIndividuals())
-            printBreakPoints(individual);
-
-
+    @Before
+    public void before() {
+        fitnessModel = new RectangleFitness();
+        fitnessModel.setMaxNoOfBreakPoints(kMax);
     }
 
-    private static void printBreakPoints(Individual individual) {
-
-        String s = "";
-        for (int i = 0; i < individual.getNoOfGenes(); i++) {
-            char allele = individual.getAllele(i);
-            if (allele == Statics.breakPointAllele)
-                s += (i + " ");
-        }
-        System.out.println(s);
-
+    @Test
+    public void testInit() throws Exception {
+        timeSeries = new TimeSeries("src/test/resources/1Breaks_1K.json");
+        population = new Population(10, timeSeries, fitnessModel);
+        System.out.println(population);
+        boolean b = true;
+        for (Individual i : population)
+            b = b && i.getGenome().getLength() - 2 <= kMax
+                    && i.getGenome().stream().allMatch(a -> a.getIndex() < timeSeries.getLength());
+        Assert.assertTrue(b);
     }
-
 
 }

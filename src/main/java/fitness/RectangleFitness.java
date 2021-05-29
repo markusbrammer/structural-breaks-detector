@@ -2,50 +2,84 @@ package fitness;
 
 import data.MinMax;
 import data.TimeSeries;
+import data_structures.list.SortedDoublyLinkedList;
+import fitness.rectangle.RectBreakPoint;
+import fitness.rectangle.RectangleNode;
+import ga.Allele;
+import ga.BreakPoint;
 import ga.Individual;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class RectangleFitness extends Fitness {
-
-    private char bPAllele = '!';
+public class RectangleFitness extends FitnessModel {
 
     @Override
-    public double getFitnessOfIndividual(Individual individual) throws Exception {
-
-        TimeSeries timeSeries = getTimeSeries();
+    public double calculateFitness(Individual individual,
+                                   TimeSeries timeSeries) throws Exception {
 
         // Calculate area of rectangle encapsulating the entire time series
         int tsLength = timeSeries.getLength();
         double timeSeriesArea = calculateArea(timeSeries, 0, tsLength - 1);
 
-        // Calculate area of rectangles between break points
-        List<Integer> breakPointIndexes = individual.allIndexesOf(bPAllele);
+        // Calculate area of the fitness rectangles
         double rectangleAreas = 0;
-        for (int i = 0; i < breakPointIndexes.size() - 1; i++) {
-            int startIndex = 1 + breakPointIndexes.get(i);
-            int lastIndex = breakPointIndexes.get(i + 1);
-            double rectangleArea =
-                    calculateArea(timeSeries, startIndex, lastIndex);
-            rectangleAreas += rectangleArea;
+        SortedDoublyLinkedList<Allele> genome = individual.getGenome();
+        for (Allele allele : genome) {
+            int index = allele.getIndex();
+            Allele nextAllele = genome.getNextElement(allele);
+            if (nextAllele != null) {
+                int nextIndex = nextAllele.getIndex() - 1;
+                rectangleAreas += calculateArea(timeSeries, index, nextIndex);
+            }
         }
 
         // Get the p(k) / penalty part. Penalty function is dependant on whether
         // or not a max. number of break points has been set.
         double alpha = this.getAlphaValue();
         int kMax = getMaxNoOfBreakPoints();
-        int k = breakPointIndexes.size() - 2; // subtracts first and last
+        int k = genome.getLength() - 2; // subtracts first and last
         double penalty;
         if (kMax > 0) {
-            penalty = Math.max(0, (kMax - k + 1) / kMax);
+            penalty = Math.max(0, (double) ((kMax - k + 1) / kMax));
         } else {
             penalty = 1 / Math.sqrt(k);
         }
 
         // Return fitness calculated from above values. Eq. (8) in the paper.
-        return (timeSeriesArea + rectangleAreas) / timeSeriesArea
+        return (timeSeriesArea - rectangleAreas) / timeSeriesArea
                 + alpha * penalty;
     }
+
+    @Override
+    public BreakPoint newBreakPoint() {
+        return new RectBreakPoint();
+    }
+
+    @Override
+    public String getModelCode() {
+        return "Rectangle";
+    }
+
+    @Override
+    public List<FitnessNode> getNodes(TimeSeries timeSeries,
+                                      Individual individual) {
+
+        List<FitnessNode> nodes = new ArrayList<>();
+
+        SortedDoublyLinkedList<Allele> genome = individual.getGenome();
+        for (Allele allele : genome) {
+            int index = allele.getIndex();
+            Allele nextAllele = genome.getNextElement(allele);
+            if (nextAllele != null) {
+                int nextIndex = nextAllele.getIndex() - 1;
+                nodes.add(new RectangleNode(index, nextIndex, timeSeries));
+            }
+        }
+
+        return nodes;
+    }
+
 
     /**
      * Calculate the area between two indexes in the time series. The indexes
@@ -65,11 +99,6 @@ public class RectangleFitness extends Fitness {
         MinMax minMax = ts.getMinMaxInIndexInterval(index0, index1);
         return (timeFinal - timeZero) * minMax.getDifference();
 
-    }
-
-    @Override
-    protected char getBPAllele() {
-        return bPAllele;
     }
 
 

@@ -1,12 +1,10 @@
 package sample;
 
 import bp.BreakPointAlgorithm;
-import bp.Statics;
 import data.InvalidDimensionException;
-import data.MinMax;
 import data.TimeSeries;
-import fitness.FitnessRectangle;
-import fitness.FitnessStringCodes;
+import fitness.FitnessModel;
+import fitness.RectangleFitness;
 import ga.Individual;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
@@ -15,13 +13,11 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -83,7 +79,8 @@ public class Controller {
     private BreakPointAlgorithm algorithm;
 
     // The actual Object which will show the time series and fitness
-    private DataGraph<Number, Number> dataGraph;
+    private DataGraph dataGraph;
+    FitnessModel fitnessModel = new RectangleFitness();
 
     public Controller() {
         algorithm = new BreakPointAlgorithm();
@@ -99,7 +96,7 @@ public class Controller {
         runAlgorithmBtn.setDisable(true);
 
         // Replace "Placeholder graph" with actual Data Graph Object
-        dataGraph = new DataGraph<>(new NumberAxis(), new NumberAxis());
+        dataGraph = new DataGraph(new NumberAxis(), new NumberAxis());
         AnchorPane.setLeftAnchor(dataGraph, AnchorPane.getLeftAnchor(graphPlaceHolder));
         AnchorPane.setTopAnchor(dataGraph, 0.);
         AnchorPane.setBottomAnchor(dataGraph, 0.);
@@ -111,18 +108,23 @@ public class Controller {
         displayModeChooser.getSelectionModel().selectedIndexProperty().addListener(
                 (obs, oldVal, newVal) -> {
                     String mode = DataGraph.DISPLAY_MODES[newVal.intValue()];
-                    dataGraph.setDisplayMode(mode);
+                    try {
+                        dataGraph.setDisplayMode(mode);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 });
         displayModeChooser.setValue(DataGraph.DISPLAY_MODES[0]);
 
         // Add fitness methods to drop-down menu.
-        fitnessMethodChooser.getItems().addAll(FitnessStringCodes.getAllCodes());
+        List<String> modelCodes = algorithm.getFitnessModelCodes();
+        fitnessMethodChooser.getItems().addAll(modelCodes);
         fitnessMethodChooser.getSelectionModel().selectedIndexProperty().addListener(
                 (obs, oldVal, newVal) -> {
-                    String code = FitnessStringCodes.getAllCodes()[newVal.intValue()];
-                    algorithm.setFitness(code);
+                    String code = modelCodes.get(newVal.intValue());
+                    algorithm.setFitnessModel(code);
                 });
-        fitnessMethodChooser.setValue(FitnessStringCodes.getAllCodes()[0]);
+        fitnessMethodChooser.setValue(modelCodes.get(0));
 
 
         // Add tooltips to buttons in the Left Menu.
@@ -134,7 +136,7 @@ public class Controller {
         // of Break Points.
         popSz.valueProperty().addListener((obs, oldVal, newVal) -> {
             popSizeVal.setText("" + newVal.intValue());
-            algorithm.setNoOfIndividuals(newVal.intValue());
+            algorithm.setPopulationSize(newVal.intValue());
         });
 
         maxBPSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -206,7 +208,7 @@ public class Controller {
                 algorithm.setTimeSeries(timeSeries);
 
                 dataGraph.getData().clear();
-                dataGraph.clearFitnessMarkers();
+                // dataGraph.clearFitnessMarkers();
                 dataGraph.setTimeSeries(timeSeries);
 
                 currentDataFile.setText("Current: " + dataFile.getName());
@@ -217,8 +219,9 @@ public class Controller {
 
             } catch (InvalidDimensionException e) {
                 showPopup("error", e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
 
         }
     }
@@ -260,9 +263,10 @@ public class Controller {
      */
     @FXML
     public void runAlgorithm(MouseEvent mouseEvent) throws Exception {
-        dataGraph.clearFitnessMarkers();
+        // dataGraph.clearFitnessMarkers();
         Individual solution = algorithm.findBreakPoints();
-        showFitness(solution, algorithm.getTimeSeries());
+        System.out.println(solution);
+        dataGraph.drawFitness(solution);
     }
 
     /**
@@ -284,52 +288,6 @@ public class Controller {
             chartAnchor += scrollPaneSettings.getPrefWidth();
         AnchorPane.setLeftAnchor(dataGraph, chartAnchor);
 
-    }
-
-    public void showFitness(Individual individual, TimeSeries timeSeries) throws Exception {
-
-        List<Integer> breakPointIndexes = findBreakPointIndexes(individual);
-        for (int i = 0; i < breakPointIndexes.size() - 1; i++) {
-            int startIndex = 1 + breakPointIndexes.get(i);
-            int endIndex = breakPointIndexes.get(i + 1);
-
-
-            MinMax minMax = timeSeries.getMinMaxInIndexInterval(startIndex, endIndex);
-            double minValue = minMax.getMin();
-            double maxValue = minMax.getMax();
-
-            FitnessRectangle fitnessRectangle = new FitnessRectangle(startIndex, endIndex, minValue, maxValue);
-            Rectangle rectangle = new Rectangle();
-            rectangle.setId("fitness-box");
-            dataGraph.addRectangle(fitnessRectangle.getxMin(), fitnessRectangle.getxMax(), fitnessRectangle.getyMin()
-                    , fitnessRectangle.getyMax());
-
-        }
-
-    }
-
-    private static ArrayList<Integer> findBreakPointIndexes(Individual individual) {
-        ArrayList<Integer> breakPointIndexes = new ArrayList<>();
-        for (int i = 0; i < individual.getNoOfGenes(); i++) {
-            char allele = individual.getAllele(i);
-            if (allele == Statics.breakPointAllele)
-                breakPointIndexes.add(i);
-        }
-        return breakPointIndexes;
-    }
-
-    private static double[] getMinAndMaxInInterval(double[] array, int lowerBound, int upperBound) {
-        double min = array[lowerBound];
-        double max = array[upperBound];
-        for (int i = lowerBound; i <= upperBound; i++) {
-            double value = array[i];
-            if (value < min) {
-                min = value;
-            } else if (value > max) {
-                max = value;
-            }
-        }
-        return new double[] {min, max};
     }
 
 

@@ -7,7 +7,7 @@ import java.util.Iterator;
  * https://dzone.com/articles/creating-a-custom-linked-list-implementation
  * @param <E>
  */
-public class ListIterator<E extends Comparable<E>> implements Iterator<Node<E>> {
+public class ListIterator<E extends Comparable<E>> implements Iterator<E> {
 
     private Node<E> node;
 
@@ -21,10 +21,10 @@ public class ListIterator<E extends Comparable<E>> implements Iterator<Node<E>> 
     }
 
     @Override
-    public Node<E> next() {
+    public E next() {
         Node<E> node1 = node;
         node = node.getNext();
-        return node1;
+        return node1.getElement();
     }
 
 }
