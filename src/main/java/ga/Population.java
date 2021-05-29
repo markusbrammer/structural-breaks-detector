@@ -20,7 +20,7 @@ public class Population implements Iterable<Individual> {
 
             // Place a break point at index 0 and last index of time series.
             individual.addBreakPoint(0, fitnessModel.newBreakPoint());
-            individual.addBreakPoint(timeSeries.getLength() - 1,
+            individual.addBreakPoint(timeSeries.getLength(),
                     fitnessModel.newBreakPoint());
 
             // Place noOfBPs ([1, kMax]) break points at random, unique indexes.
