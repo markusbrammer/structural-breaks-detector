@@ -1,11 +1,8 @@
 import data.TimeSeries;
 import fitness.FitnessModel;
 import fitness.RectangleFitness;
-import ga.Individual;
 import ga.Population;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 
 public class TestInitPopulation {
 
@@ -21,16 +18,16 @@ public class TestInitPopulation {
         fitnessModel.setMaxNoOfBreakPoints(kMax);
     }
 
-    @Test
-    public void testInit() throws Exception {
-        timeSeries = new TimeSeries("src/test/resources/1Breaks_1K.json");
-        population = new Population(10, timeSeries, fitnessModel);
-        System.out.println(population);
-        boolean b = true;
-        for (Individual i : population)
-            b = b && i.getGenome().getLength() - 2 <= kMax
-                    && i.getGenome().stream().allMatch(a -> a.getIndex() < timeSeries.getLength());
-        Assert.assertTrue(b);
-    }
+//    @Test
+//    public void testInit() throws Exception {
+//        timeSeries = new TimeSeries("src/test/resources/1Breaks_1K.json");
+//        population = new Population(10, timeSeries, fitnessModel);
+//        System.out.println(population);
+//        boolean b = true;
+//        for (Individual i : population)
+//            b = b && i.getGenome().getLength() - 2 <= kMax
+//                    && i.getGenome().stream().allMatch(a -> a.getIndex() < timeSeries.getLength());
+//        Assert.assertTrue(b);
+//    }
 
 }

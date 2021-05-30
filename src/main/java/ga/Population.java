@@ -5,99 +5,107 @@ import fitness.FitnessModel;
 
 import java.util.*;
 
-public class Population implements Iterable<Individual> {
+public class Population {
 
-    private final PriorityQueue<Individual> individuals = new PriorityQueue<>();
+    private final Individual[] individuals;
 
     private final Random RAND = new Random();
 
     public Population(int populationSize, TimeSeries timeSeries,
                       FitnessModel fitnessModel) throws Exception {
 
-        while (size() < populationSize) {
+        individuals = new Individual[populationSize];
+        for (int i = 0; i < individuals.length; i++) {
 
-            Individual individual = new Individual();
+            // Individual with break point at beginning and end
+            int endIndex = timeSeries.getLength();
+            Individual individual = new Individual(0, endIndex, fitnessModel);
 
-            // Place a break point at index 0 and last index of time series.
-            individual.addBreakPoint(0, fitnessModel.newBreakPoint());
-            individual.addBreakPoint(timeSeries.getLength(),
-                    fitnessModel.newBreakPoint());
-
-            // Place noOfBPs ([1, kMax]) break points at random, unique indexes.
+            // Place noOfBPs ([1, kMax]) break points at random indexes.
             int kMax = fitnessModel.getMaxNoOfBreakPoints();
             int noOfBPs = kMax > 0 ? 1 + RAND.nextInt(kMax) : 1;
-            int placedBPs = 0;
-            while (placedBPs < noOfBPs) {
-                int index = 1 + RAND.nextInt(timeSeries.getLength() - 1);
-                if (!individual.breakPointAtIndex(index)) {
-                    individual.addBreakPoint(index, fitnessModel.newBreakPoint());
-                    placedBPs++;
-                }
+            for (int j = 0; j < noOfBPs; j++) {
+                int index = 1 + RAND.nextInt(endIndex - 1);
+                BreakPoint breakPoint = fitnessModel.newBreakPoint();
+                individual.addBreakPoint(index, breakPoint);
             }
 
-            double fitnessVal = fitnessModel.calculateFitness(individual, timeSeries);
+            // Assign fitness value to the individual
+            double fitnessVal =
+                    fitnessModel.calculateFitness(individual, timeSeries);
             individual.setFitness(fitnessVal);
-            add(individual);
+
+            individuals[i] = individual;
         }
 
     }
 
-    public Individual selectRandomIndividual() throws Exception {
+    /**
+     * Select a random individual from the population. Weighted with the fitness
+     * of the individuals.
+     * @return A random Individual in the time series
+     */
+    public Individual selectRandomIndividual() {
 
+        // Calculate the total sum of squared fitness for all individuals
         double sumOfSquaredFitness = 0;
         for (Individual individual : individuals) {
             double fitnessVal = individual.getFitness();
             sumOfSquaredFitness += fitnessVal * fitnessVal;
         }
 
-
+        // Extract a random individual by adding squared fitnesses until a
+        // random threshold. The individual whose fitness, when added. crosses
+        // the threshold is returned.
         double threshold = RAND.nextDouble() * sumOfSquaredFitness;
         double squaredFitnessCounter = 0;
-        for (Individual individual : this) {
-            double fitness = individual.getFitness();
+        int i = -1;
+        while (squaredFitnessCounter < threshold) {
+            i++;
+            double fitness = individuals[i].getFitness();
             squaredFitnessCounter += fitness * fitness;
-            if (squaredFitnessCounter >= threshold)
-                return individual;
         }
+        return individuals[i];
 
-        return individuals.peek();
     }
 
+    /**
+     * Get the fittest individual in the population.
+     * @return An Individual with the highest fitness
+     */
     public Individual getFittest() {
-        // It is not possible to iterate over PriorityQueue in sorted order.
-        Individual fittest = individuals.peek();
-        for (Individual i : this) {
-            assert fittest != null;
-            if (fittest.getFitness() < i.getFitness())
-                fittest = i;
+        Individual fittest = individuals[0];
+        for (Individual individual : individuals) {
+            if (individual.getFitness() > fittest.getFitness())
+                fittest = individual;
         }
         return fittest;
     }
 
+    /**
+     * Replace the individual with the lowest fitness in the population with a
+     * new individual.
+     * @param replacement The individual to replace the least fit individual
+     */
     public void replaceLeastFit(Individual replacement) {
-        Individual leastFit = individuals.peek();
-        assert individuals.stream().allMatch(i -> i.getFitness() >= leastFit.getFitness());
-        individuals.remove(leastFit);
-        individuals.add(replacement);
+        int leastFitIndex = 0;
+        double lowestFitness = individuals[0].getFitness();
+        for (int i = 0; i < individuals.length; i++) {
+            double fitness = individuals[i].getFitness();
+            if (fitness < lowestFitness) {
+                lowestFitness = fitness;
+                leastFitIndex = i;
+            }
+        }
+        individuals[leastFitIndex] = replacement;
     }
 
-    public void add(Individual individual) {
-        individuals.add(individual);
-    }
-
-    public int size() {
-        return individuals.size();
-    }
-
-    @Override
-    public Iterator<Individual> iterator() {
-        return individuals.iterator();
-    }
 
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
-        this.forEach(i -> s.append(i).append("\n"));
+        for (Individual individual : individuals)
+            s.append(individual).append("\n");
         return s.toString();
     }
 }

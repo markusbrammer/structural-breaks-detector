@@ -1,6 +1,5 @@
 package sample;
 
-import bp.BreakPointAlgorithm;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,8 +9,6 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     private static Stage primaryStage;
-
-    private BreakPointAlgorithm algorithm;
 
     @Override
     public void start(Stage primaryStage) throws Exception{

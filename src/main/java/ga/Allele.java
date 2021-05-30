@@ -1,18 +1,13 @@
 package ga;
 
-public class Allele implements Comparable<Allele> {
+public class Allele {
 
-    private Integer index;
+    private int index;
     private BreakPoint methodBreakPoint;
 
     public Allele(int index, BreakPoint breakPoint) {
         this.index = index;
         this.methodBreakPoint = breakPoint;
-    }
-
-    @Override
-    public int compareTo(Allele allele) {
-        return index.compareTo(allele.getIndex());
     }
 
     @Override

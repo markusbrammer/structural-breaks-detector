@@ -142,7 +142,7 @@
                   </HBox>
                   <HBox alignment="CENTER" layoutX="111.0" layoutY="360.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
                      <children>
-                        <Slider fx:id="popSz" blockIncrement="1.0" majorTickUnit="1.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="100.0" snapToTicks="true" value="50.0" />
+                        <Slider fx:id="popSz" blockIncrement="1.0" majorTickUnit="1.0" min="2.0" minorTickCount="1" prefHeight="16.0" prefWidth="100.0" snapToTicks="true" value="50.0" />
                         <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                            <children>
                               <Text fx:id="popSizeVal" strokeType="OUTSIDE" strokeWidth="0.0" text="50" StackPane.alignment="CENTER" />

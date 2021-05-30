@@ -22,6 +22,7 @@ public abstract class FitnessModel {
     public abstract List<FitnessNode> getNodes(TimeSeries timeSeries,
                                                Individual individual);
 
+
     public void setAlphaValue(double alphaValue) {
         this.alphaValue = alphaValue;
     }

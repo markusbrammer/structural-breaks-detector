@@ -1,7 +1,6 @@
 package data_structures.list;
 
 import java.util.Iterator;
-import java.util.stream.Stream;
 
 /**
  * A class to represent the doubly linked list data structure.
@@ -78,7 +77,7 @@ public class SortedDoublyLinkedList<E extends Comparable<E>>
     }
 
     public void remove(E element) {
-        Node<E> node = firstNodeWithElement(element);
+        Node<E> node = firstNodeWithElement(element, head);
         if (node != null) {
 
             Node<E> prevNode = node.getPrev();
@@ -101,7 +100,7 @@ public class SortedDoublyLinkedList<E extends Comparable<E>>
 
     public E getNextElement(E element) {
         // Find node with the element
-        Node<E> node = firstNodeWithElement(element);
+        Node<E> node = lastNodeWithElement(element, head);
         if (node != null) {
             Node<E> nextNode = node.getNext();
             return nextNode == null ? null : nextNode.getElement();
@@ -110,21 +109,29 @@ public class SortedDoublyLinkedList<E extends Comparable<E>>
         return null;
     }
 
-    private Node<E> firstNodeWithElement(E element) {
-        Node<E> node = head;
-        while (node != null) {
-            if (node.getElement().compareTo(element) == 0) {
-                return node;
-            }
-            node = node.getNext();
+    private Node<E> lastNodeWithElement(E element, Node<E> node) {
+        if (node == null)
+            return null;
+
+        Node<E> nextNode = node.getNext();
+        if (node.getElement().compareTo(element) != 0 || (nextNode != node &&
+                nextNode.getElement().compareTo(element) == 0)) {
+            return lastNodeWithElement(element, nextNode);
+        } else {
+            return node;
         }
-        return null;
+
     }
 
-    public Stream<E> stream() {
-        Stream.Builder<E> builder = Stream.builder();
-        this.forEach(builder::add);
-        return builder.build();
+    private Node<E> firstNodeWithElement(E element, Node<E> node) {
+        if (node == null)
+            return null;
+
+        if (node.getElement().compareTo(element) == 0) {
+            return node;
+        } else {
+            return firstNodeWithElement(element, node.getNext());
+        }
     }
 
     public E getHeadElement() {

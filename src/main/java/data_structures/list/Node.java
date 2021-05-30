@@ -6,6 +6,7 @@ public class Node<E extends Comparable<E>> implements Comparable<Node<E>> {
     private E element;
     private Node<E> prev;
     private Node<E> next;
+    private int index;
 
     public Node(E element) {
         this.element = element;

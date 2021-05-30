@@ -2,6 +2,7 @@ package bp;
 
 import fitness.FitnessModel;
 import ga.Allele;
+import ga.Genome;
 import ga.Individual;
 
 import java.util.Random;
@@ -16,14 +17,19 @@ public class Procedures {
     /**
      * Takes an individual and returns a mutated individual.
      */
-    public static Individual mutate(Individual individual, double mutateProb,
-                                    double breakPointProb,
+    public static Individual mutate(Individual individual,
                                     FitnessModel fitnessModel) {
 
         Individual offspring = new Individual(individual);
+        Genome genome = offspring.getGenome();
 
-        int maxIndex = individual.getGenome().getTailElement().getIndex();
-        for (int i = 1; i < maxIndex - 1; i++) {
+        int T = offspring.getEndAllele().getIndex();
+
+        int noOfBreakPoints = offspring.getNoOfBreakPoints();
+        double mutateProb = 2. * noOfBreakPoints / T;
+        double breakPointProb = 0.6;
+
+        for (int i = 1; i < T - 1; i++) {
             if (RAND.nextDouble() < mutateProb) {
                 if (RAND.nextDouble() < breakPointProb) {
                     offspring.addBreakPoint(i, fitnessModel.newBreakPoint());
@@ -43,26 +49,40 @@ public class Procedures {
     public static Individual uniformCrossover(Individual parent1,
                                               Individual parent2) {
 
-        Individual offspring = new Individual();
+        Allele startAllele = parent1.getStartAllele();
+        Allele endAllele = parent1.getEndAllele();
+        Individual offspring = new Individual(startAllele, endAllele);
 
-        int headIndex = parent1.getGenome().getHeadElement().getIndex();
-        int tailIndex = parent1.getGenome().getTailElement().getIndex();
+        // Add all break points from parent1 with a 50-50 chance. Do not look
+        // at allele at gene 0 and gene (genome.size - 1)
+        Genome genome1 = parent1.getGenome();
+        Genome genome2 = parent2.getGenome();
+        int size = Math.max(genome1.size(), genome2.size());
+        int g1 = 1;
+        int g2 = 1;
+        while (g1 < genome1.size() - 1 || g2 < genome2.size() - 1) {
 
-        // Add all break points from parent1 with a 50-50 chance
-        for (Allele a : parent1.getGenome()) {
-            if (RAND.nextDouble() < 0.5 || a.getIndex().equals(headIndex)
-                || a.getIndex().equals(tailIndex))
-                offspring.addBreakPoint(a);
-        }
+            Allele a1 = genome1.get(g1);
+            Allele a2 = genome2.get(g2);
 
-        // Add all break point from parent2 with a 50-50 chance. If the two
-        // parents share a break point index, choose parent1's
-        // TODO change to pick random between shared break point indexes
-        for (Allele a : parent2.getGenome()) {
-            if (RAND.nextDouble() < 0.5) {
-                if (!offspring.breakPointAtIndex(a.getIndex()))
-                    offspring.addBreakPoint(a);
+            if (a1.getIndex() < a2.getIndex()) {
+                if (RAND.nextDouble() < 0.5)
+                    offspring.addBreakPoint(a1);
+                g1++;
+            } else if (a1.getIndex() > a2.getIndex()) {
+                if (RAND.nextDouble() < 0.5)
+                    offspring.addBreakPoint(a2);
+                g2++;
+            } else {
+                if (RAND.nextDouble() < 0.5) {
+                    offspring.addBreakPoint(a1);
+                } else {
+                    offspring.addBreakPoint(a2);
+                }
+                g1++;
+                g2++;
             }
+
         }
 
         return offspring;
@@ -79,15 +99,22 @@ public class Procedures {
     public static Individual onePointCrossover(int maxIndex, Individual parent1,
                                                Individual parent2) {
 
-        Individual offspring = new Individual();
+        Allele startAllele = parent1.getStartAllele();
+        Allele endAllele = parent1.getEndAllele();
+        Individual offspring = new Individual(startAllele, endAllele);
+
         int index = RAND.nextInt(maxIndex);
 
-        for (Allele a : parent1.getGenome()) {
+        Genome genome1 = parent1.getGenome();
+        for (int g = 1; g < genome1.size() - 1; g++) {
+            Allele a = genome1.get(g);
             if (a.getIndex() < index)
                 offspring.addBreakPoint(a);
         }
 
-        for (Allele a : parent2.getGenome()) {
+        Genome genome2 = parent2.getGenome();
+        for (int g = 1; g < genome2.size() - 1; g++) {
+            Allele a = genome2.get(g);
             if (a.getIndex() >= index)
                 offspring.addBreakPoint(a);
         }

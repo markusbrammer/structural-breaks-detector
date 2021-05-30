@@ -31,7 +31,7 @@ public class BreakPointAlgorithm {
     private double uniformCrossoverProb = 0.3;
     private double onePointCrossoverProb = 0.3;
     private double mutateProb = 1 - uniformCrossoverProb - onePointCrossoverProb;
-    private int iterationLimit = 10000;
+    private int iterationLimit = 800;
 
     private final Random RAND = new Random();
 
@@ -60,9 +60,9 @@ public class BreakPointAlgorithm {
             Individual offspring;
             double randomValue = RAND.nextDouble();
             if (randomValue < mutateProb) {
-                double mutateProb = 2. * (parent1.getGenome().getLength() - 2.)
+                double mutateProb = 2. * (parent1.getNoOfBreakPoints())
                         / (double) (timeSeries.getLength());
-                offspring = Procedures.mutate(parent1, mutateProb, 0.6, fitnessModel);
+                offspring = Procedures.mutate(parent1, fitnessModel);
             } else if (randomValue < mutateProb + uniformCrossoverProb) {
                 offspring = Procedures.uniformCrossover(parent1, parent2);
             } else if (randomValue < mutateProb

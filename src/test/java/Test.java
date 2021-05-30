@@ -1,19 +1,9 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class Test {
 
-    public static void main(String[] args) {
-
-        List<Integer> array = new ArrayList<>();
-        array.add(1);
-        // addTwo(array);
-        System.out.println(array.size());
-
+    @org.junit.Test
+    public void test() {
+        int test1 = 3;
+        int test2 = 4;
+        System.out.println(2. * test1 / test2);
     }
-
-    public static void addTwo(List<Integer> array) {
-        array.add(2);
-    }
-
 }

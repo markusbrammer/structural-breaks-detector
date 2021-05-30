@@ -2,11 +2,11 @@ package fitness;
 
 import data.MinMax;
 import data.TimeSeries;
-import data_structures.list.SortedDoublyLinkedList;
 import fitness.rectangle.RectBreakPoint;
 import fitness.rectangle.RectangleNode;
 import ga.Allele;
 import ga.BreakPoint;
+import ga.Genome;
 import ga.Individual;
 
 import java.util.ArrayList;
@@ -24,21 +24,19 @@ public class RectangleFitness extends FitnessModel {
 
         // Calculate area of the fitness rectangles
         double rectangleAreas = 0;
-        SortedDoublyLinkedList<Allele> genome = individual.getGenome();
-        for (Allele allele : genome) {
-            int index = allele.getIndex();
-            Allele nextAllele = genome.getNextElement(allele);
-            if (nextAllele != null) {
-                int nextIndex = nextAllele.getIndex() - 1;
-                rectangleAreas += calculateArea(timeSeries, index, nextIndex);
-            }
+        Genome genome = individual.getGenome();
+        for (int g = 0; g < genome.size() - 1; g++) {
+            Allele allele = genome.get(g);
+            int index = genome.get(g).getIndex();
+            int nextIndex = genome.get(g + 1).getIndex() - 1;
+            rectangleAreas += calculateArea(timeSeries, index, nextIndex);
         }
 
         // Get the p(k) / penalty part. Penalty function is dependant on whether
         // or not a max. number of break points has been set.
         double alpha = this.getAlphaValue();
         int kMax = getMaxNoOfBreakPoints();
-        int k = genome.getLength() - 2; // subtracts first and last
+        int k = genome.size() - 2; // subtracts first and last
         double penalty;
         if (kMax > 0) {
             penalty = Math.max(0, (double) ((kMax - k + 1) / kMax));
@@ -67,14 +65,15 @@ public class RectangleFitness extends FitnessModel {
 
         List<FitnessNode> nodes = new ArrayList<>();
 
-        SortedDoublyLinkedList<Allele> genome = individual.getGenome();
-        for (Allele allele : genome) {
-            int index = allele.getIndex();
-            Allele nextAllele = genome.getNextElement(allele);
-            if (nextAllele != null) {
-                int nextIndex = nextAllele.getIndex() - 1;
-                nodes.add(new RectangleNode(index, nextIndex, timeSeries));
-            }
+
+        // Calculate area of the fitness rectangles
+        double rectangleAreas = 0;
+        Genome genome = individual.getGenome();
+        for (int g = 0; g < genome.size() - 1; g++) {
+            Allele allele = genome.get(g);
+            int index = genome.get(g).getIndex();
+            int nextIndex = genome.get(g + 1).getIndex() - 1;
+            nodes.add(new RectangleNode(index, nextIndex, timeSeries));
         }
 
         return nodes;
