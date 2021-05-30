@@ -265,7 +265,6 @@ public class Controller {
     public void runAlgorithm(MouseEvent mouseEvent) throws Exception {
         // dataGraph.clearFitnessMarkers();
         Individual solution = algorithm.findBreakPoints();
-        System.out.println(solution);
         dataGraph.drawFitness(solution);
     }
 

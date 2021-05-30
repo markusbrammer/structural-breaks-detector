@@ -31,7 +31,7 @@ public class BreakPointAlgorithm {
     private double uniformCrossoverProb = 0.3;
     private double onePointCrossoverProb = 0.3;
     private double mutateProb = 1 - uniformCrossoverProb - onePointCrossoverProb;
-    private int iterationLimit = 800;
+    private int iterationLimit = 10000;
 
     private final Random RAND = new Random();
 
@@ -56,9 +56,6 @@ public class BreakPointAlgorithm {
             // Get two different parent individuals for mutation/crossover
             Individual parent1 = population.selectRandomIndividual();
             Individual parent2 = population.selectRandomIndividual();
-            while (parent1 == parent2)
-                parent2 = population.selectRandomIndividual();
-
 
             Individual offspring;
             double randomValue = RAND.nextDouble();
@@ -80,9 +77,12 @@ public class BreakPointAlgorithm {
 
             double fitness = fitnessModel.calculateFitness(offspring, timeSeries);
             offspring.setFitness(fitness);
+
+            // TODO implement probability here
             population.replaceLeastFit(offspring);
 
             double fittestFitness = population.getFittest().getFitness();
+
             if (prevFittestFitness != fittestFitness) {
                 i = 0;
             } else {
@@ -102,6 +102,7 @@ public class BreakPointAlgorithm {
         double prevAlpha = this.alpha;
         this.alpha = alpha;
         fitnessModel.setAlphaValue(alpha);
+        support.firePropertyChange("alpha", prevAlpha, alpha);
     }
 
     public void setMaxNoOfBreakPoints(int maxNoOfBreakPoints) {

@@ -22,7 +22,6 @@ public class Procedures {
 
         Individual offspring = new Individual(individual);
 
-
         int maxIndex = individual.getGenome().getTailElement().getIndex();
         for (int i = 1; i < maxIndex - 1; i++) {
             if (RAND.nextDouble() < mutateProb) {
@@ -81,14 +80,17 @@ public class Procedures {
                                                Individual parent2) {
 
         Individual offspring = new Individual();
-
         int index = RAND.nextInt(maxIndex);
-        parent1.getGenome().stream()
-                .filter(allele -> allele.getIndex() < index)
-                .forEach(offspring::addBreakPoint);
-        parent2.getGenome().stream()
-                .filter(allele -> allele.getIndex() >= index)
-                .forEach(offspring::addBreakPoint);
+
+        for (Allele a : parent1.getGenome()) {
+            if (a.getIndex() < index)
+                offspring.addBreakPoint(a);
+        }
+
+        for (Allele a : parent2.getGenome()) {
+            if (a.getIndex() >= index)
+                offspring.addBreakPoint(a);
+        }
 
         return offspring;
     }

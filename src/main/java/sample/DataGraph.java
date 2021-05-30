@@ -48,16 +48,21 @@ public class DataGraph extends LineChart<Number, Number> {
         readTimeSeriesPoints();
     }
 
-    public void drawFitness(Individual individual) {
+    public void drawFitness(Individual individual) throws Exception {
 
         // Clear previous fitness markers
         fitnessNodes.forEach(data -> getPlotChildren().remove(data.getNode()));
         fitnessNodes.clear();
         anchorPane.getChildren().clear();
 
+        List<FitnessNode> fitnessNodeList = individual.getFitnessNodes();
+        if (fitnessNodeList.size() > 20)
+            throw new TooManyBreakPointsException("Too many break points detected. " +
+                    "Tweak parameters to get fewer break points");
+
         // Add all the fitness break point markers to "plot children" list and
         // fitnessNodes list
-        for (FitnessNode node : individual.getFitnessNodes()) {
+        for (FitnessNode node : fitnessNodeList) {
             Data<Number, Number> marker = new Data<>(node.getX(), node.getY());
             Rectangle rectangle = (Rectangle) node.getVisual();
             marker.setNode(rectangle);

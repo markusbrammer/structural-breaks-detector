@@ -59,7 +59,8 @@ public class Population implements Iterable<Individual> {
             if (squaredFitnessCounter >= threshold)
                 return individual;
         }
-        throw new Exception("Something went wrong in Select");
+
+        return individuals.peek();
     }
 
     public Individual getFittest() {
@@ -75,6 +76,7 @@ public class Population implements Iterable<Individual> {
 
     public void replaceLeastFit(Individual replacement) {
         Individual leastFit = individuals.peek();
+        assert individuals.stream().allMatch(i -> i.getFitness() >= leastFit.getFitness());
         individuals.remove(leastFit);
         individuals.add(replacement);
     }
