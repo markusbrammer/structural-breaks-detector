@@ -17,28 +17,45 @@ public class Procedures {
     /**
      * Takes an individual and returns a mutated individual.
      */
-    public static Individual mutate(Individual individual,
+    public static Individual mutate(Individual parent,
                                     FitnessModel fitnessModel) {
 
-        Individual offspring = new Individual(individual);
-        Genome genome = offspring.getGenome();
+        Individual offspring = new Individual(parent);
 
-        int T = offspring.getEndAllele().getIndex();
+        int mutations = 1; // 2 * offspring.getNoOfBreakPoints();
+        int maxIndex = parent.getEndAllele().getIndex();
 
-        int noOfBreakPoints = offspring.getNoOfBreakPoints();
-        double mutateProb = 2. * noOfBreakPoints / T;
-        double breakPointProb = 0.6;
-
-        for (int i = 1; i < T - 1; i++) {
-            if (RAND.nextDouble() < mutateProb) {
-                if (RAND.nextDouble() < breakPointProb) {
-                    offspring.addBreakPoint(i, fitnessModel.newBreakPoint());
-                } else if (offspring.breakPointAtIndex(i)) {
-                    offspring.removeBreakPoint(i);
-                }
+        for (int m = 0; m < mutations; m++) {
+            int index = 1 + RAND.nextInt(maxIndex  - 1);
+            if (offspring.breakPointAtIndex(index)) {
+                offspring.removeBreakPoint(index);
+            } else {
+                offspring.addBreakPoint(index, fitnessModel.newBreakPoint());
             }
         }
-        return individual;
+
+        return offspring;
+
+
+//        Individual offspring = new Individual(individual);
+//        Genome genome = offspring.getGenome();
+//
+//        int T = offspring.getEndAllele().getIndex();
+//
+//        int noOfBreakPoints = offspring.getNoOfBreakPoints();
+//        double mutateProb = 2. * noOfBreakPoints / T;
+//        double breakPointProb = 0.6;
+//
+//        for (int i = 1; i < T - 1; i++) {
+//            if (RAND.nextDouble() < mutateProb) {
+//                if (RAND.nextDouble() < breakPointProb) {
+//                    offspring.addBreakPoint(i, fitnessModel.newBreakPoint());
+//                } else if (offspring.breakPointAtIndex(i)) {
+//                    offspring.removeBreakPoint(i);
+//                }
+//            }
+//        }
+//        return individual;
     }
 
     /**
@@ -57,7 +74,6 @@ public class Procedures {
         // at allele at gene 0 and gene (genome.size - 1)
         Genome genome1 = parent1.getGenome();
         Genome genome2 = parent2.getGenome();
-        int size = Math.max(genome1.size(), genome2.size());
         int g1 = 1;
         int g2 = 1;
         while (g1 < genome1.size() - 1 || g2 < genome2.size() - 1) {

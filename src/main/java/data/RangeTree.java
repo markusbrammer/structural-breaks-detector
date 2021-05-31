@@ -1,6 +1,4 @@
-package data_structures;
-
-import data.MinMax;
+package data;
 
 /**
  * Trees in Java, see this: https://stackoverflow.com/questions/8480284/storing-a-tree-structure-in-java

@@ -1,5 +1,7 @@
 package ga;
 
+import fitness.BreakPoint;
+
 public class Allele {
 
     private int index;

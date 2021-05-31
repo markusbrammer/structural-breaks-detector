@@ -1,5 +1,5 @@
 //import fitness.FitnessModel;
-//import fitness.RectangleFitness;
+//import fitness.rectangle.RectangleFitness;
 //import ga.Individual;
 //import org.junit.Assert;
 //import org.junit.Before;

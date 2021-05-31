@@ -1,6 +1,6 @@
 import data.TimeSeries;
 import fitness.FitnessModel;
-import fitness.RectangleFitness;
+import fitness.rectangle.RectangleFitness;
 import ga.Population;
 import org.junit.Before;
 

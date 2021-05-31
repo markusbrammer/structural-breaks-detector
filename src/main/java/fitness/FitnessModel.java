@@ -1,7 +1,6 @@
 package fitness;
 
 import data.TimeSeries;
-import ga.BreakPoint;
 import ga.Individual;
 
 import java.util.List;
@@ -10,10 +9,11 @@ public abstract class FitnessModel {
 
     private double alphaValue;
     private int maxNoOfBreakPoints;
+    private int minDistance;
     private List<FitnessNode> nodes;
 
-    public abstract double calculateFitness(Individual individual,
-                                            TimeSeries timeSeries) throws Exception;
+    public abstract double fitnessOf(Individual individual,
+                                     TimeSeries timeSeries) throws Exception;
 
     public abstract BreakPoint newBreakPoint();
 
@@ -39,6 +39,11 @@ public abstract class FitnessModel {
         return maxNoOfBreakPoints;
     }
 
+    public int getMinDistance() {
+        return minDistance;
+    }
 
-
+    public void setMinDistance(int minDistance) {
+        this.minDistance = minDistance;
+    }
 }

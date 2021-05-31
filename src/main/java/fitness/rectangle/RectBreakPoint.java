@@ -1,7 +1,6 @@
 package fitness.rectangle;
 
-import fitness.FitnessModel;
-import ga.BreakPoint;
+import fitness.BreakPoint;
 
 public class RectBreakPoint extends BreakPoint {
     char symbol = '!';
@@ -11,8 +10,4 @@ public class RectBreakPoint extends BreakPoint {
         return symbol + "";
     }
 
-    @Override
-    public FitnessModel getFitnessModel() {
-        return null;
-    }
 }

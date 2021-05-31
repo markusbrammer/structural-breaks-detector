@@ -1,11 +1,11 @@
-package fitness;
+package fitness.rectangle;
 
 import data.MinMax;
 import data.TimeSeries;
-import fitness.rectangle.RectBreakPoint;
-import fitness.rectangle.RectangleNode;
+import fitness.BreakPoint;
+import fitness.FitnessModel;
+import fitness.FitnessNode;
 import ga.Allele;
-import ga.BreakPoint;
 import ga.Genome;
 import ga.Individual;
 
@@ -15,21 +15,32 @@ import java.util.List;
 public class RectangleFitness extends FitnessModel {
 
     @Override
-    public double calculateFitness(Individual individual,
-                                   TimeSeries timeSeries) throws Exception {
+    public double fitnessOf(Individual individual,
+                            TimeSeries timeSeries) throws Exception {
 
         // Calculate area of rectangle encapsulating the entire time series
         int tsLength = timeSeries.getLength();
         double timeSeriesArea = calculateArea(timeSeries, 0, tsLength - 1);
 
         // Calculate area of the fitness rectangles
+        int violations = 0;
         double rectangleAreas = 0;
         Genome genome = individual.getGenome();
         for (int g = 0; g < genome.size() - 1; g++) {
-            Allele allele = genome.get(g);
             int index = genome.get(g).getIndex();
             int nextIndex = genome.get(g + 1).getIndex() - 1;
             rectangleAreas += calculateArea(timeSeries, index, nextIndex);
+            if (nextIndex - index < this.getMinDistance())
+                violations++;
+        }
+
+        // Penalty for having break points too close
+        int noOfBreakPoints = individual.getNoOfBreakPoints();
+        double vPenalty;
+        if (noOfBreakPoints > 0) {
+            vPenalty = 1. - violations / (double) noOfBreakPoints;
+        } else {
+            vPenalty = 1.;
         }
 
         // Get the p(k) / penalty part. Penalty function is dependant on whether
@@ -39,14 +50,14 @@ public class RectangleFitness extends FitnessModel {
         int k = genome.size() - 2; // subtracts first and last
         double penalty;
         if (kMax > 0) {
-            penalty = Math.max(0, (double) ((kMax - k + 1) / kMax));
+            penalty = Math.max(0., (kMax - k + 1.) / kMax);
         } else {
             penalty = 1 / Math.sqrt(k);
         }
 
         // Return fitness calculated from above values. Eq. (8) in the paper.
-        return (timeSeriesArea - rectangleAreas) / timeSeriesArea
-                + alpha * penalty;
+        return vPenalty * ((timeSeriesArea - rectangleAreas) / timeSeriesArea
+                + alpha * penalty);
     }
 
     @Override

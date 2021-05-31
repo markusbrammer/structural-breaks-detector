@@ -1,5 +1,6 @@
 package ga;
 
+import fitness.BreakPoint;
 import fitness.FitnessModel;
 import fitness.FitnessNode;
 

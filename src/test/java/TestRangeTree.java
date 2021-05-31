@@ -1,5 +1,5 @@
 import data.MinMax;
-import data_structures.RangeTree;
+import data.RangeTree;
 import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;

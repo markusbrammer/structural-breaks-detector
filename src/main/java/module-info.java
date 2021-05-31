@@ -10,7 +10,5 @@ module Fagprojekt{
     exports ga;
     exports fitness;
     exports fitness.rectangle;
-    exports data_structures;
-    exports data_structures.list;
     exports bp;
 }

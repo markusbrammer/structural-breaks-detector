@@ -1,6 +1,7 @@
 package ga;
 
 import data.TimeSeries;
+import fitness.BreakPoint;
 import fitness.FitnessModel;
 
 import java.util.*;
@@ -23,7 +24,8 @@ public class Population {
 
             // Place noOfBPs ([1, kMax]) break points at random indexes.
             int kMax = fitnessModel.getMaxNoOfBreakPoints();
-            int noOfBPs = kMax > 0 ? 1 + RAND.nextInt(kMax) : 1;
+            int noOfBPs = kMax > 0 ? 1 + RAND.nextInt(kMax) :
+                    2 + RAND.nextInt(19);
             for (int j = 0; j < noOfBPs; j++) {
                 int index = 1 + RAND.nextInt(endIndex - 1);
                 BreakPoint breakPoint = fitnessModel.newBreakPoint();
@@ -32,7 +34,7 @@ public class Population {
 
             // Assign fitness value to the individual
             double fitnessVal =
-                    fitnessModel.calculateFitness(individual, timeSeries);
+                    fitnessModel.fitnessOf(individual, timeSeries);
             individual.setFitness(fitnessVal);
 
             individuals[i] = individual;
@@ -58,8 +60,9 @@ public class Population {
         // random threshold. The individual whose fitness, when added. crosses
         // the threshold is returned.
         double threshold = RAND.nextDouble() * sumOfSquaredFitness;
-        double squaredFitnessCounter = 0;
-        int i = -1;
+        int i = 0;
+        double firstFitness = individuals[i].getFitness();
+        double squaredFitnessCounter = firstFitness * firstFitness;
         while (squaredFitnessCounter < threshold) {
             i++;
             double fitness = individuals[i].getFitness();

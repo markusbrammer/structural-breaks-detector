@@ -3,7 +3,7 @@ package bp;
 import data.TimeSeries;
 import fitness.FitnessModel;
 import fitness.FitnessNode;
-import fitness.RectangleFitness;
+import fitness.rectangle.RectangleFitness;
 import ga.Individual;
 import ga.Population;
 
@@ -27,6 +27,7 @@ public class BreakPointAlgorithm {
     // Statics
     private int populationSize = 50;
     private int maxNoOfBreakPoints = 3;
+    private int minDistance = 450;
     private double alpha = 0.25;
     private double uniformCrossoverProb = 0.3;
     private double onePointCrossoverProb = 0.3;
@@ -60,8 +61,6 @@ public class BreakPointAlgorithm {
             Individual offspring;
             double randomValue = RAND.nextDouble();
             if (randomValue < mutateProb) {
-                double mutateProb = 2. * (parent1.getNoOfBreakPoints())
-                        / (double) (timeSeries.getLength());
                 offspring = Procedures.mutate(parent1, fitnessModel);
             } else if (randomValue < mutateProb + uniformCrossoverProb) {
                 offspring = Procedures.uniformCrossover(parent1, parent2);
@@ -75,7 +74,7 @@ public class BreakPointAlgorithm {
 
             double prevFittestFitness = population.getFittest().getFitness();
 
-            double fitness = fitnessModel.calculateFitness(offspring, timeSeries);
+            double fitness = fitnessModel.fitnessOf(offspring, timeSeries);
             offspring.setFitness(fitness);
 
             // TODO implement probability here
@@ -134,6 +133,12 @@ public class BreakPointAlgorithm {
         fitnessModel = fitnessModels.get(fitnessModelCode);
         fitnessModel.setAlphaValue(alpha);
         fitnessModel.setMaxNoOfBreakPoints(maxNoOfBreakPoints);
+        fitnessModel.setMinDistance(minDistance);
+    }
+
+    public void setMinDistance(int minDistance) {
+        this.minDistance = minDistance;
+        fitnessModel.setMinDistance(minDistance);
     }
 
     public List<String> getFitnessModelCodes() {

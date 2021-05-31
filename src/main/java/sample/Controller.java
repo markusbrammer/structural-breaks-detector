@@ -4,7 +4,7 @@ import bp.BreakPointAlgorithm;
 import data.InvalidDimensionException;
 import data.TimeSeries;
 import fitness.FitnessModel;
-import fitness.RectangleFitness;
+import fitness.rectangle.RectangleFitness;
 import ga.Individual;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
@@ -52,6 +52,7 @@ public class Controller {
     // Sliders
     @FXML private Slider popSz;
     @FXML private Slider maxBPSlider;
+    @FXML private Slider minDistanceSlider;
     @FXML private Slider mutationProbInput;
     @FXML private Slider onePointCrossInput;
     @FXML private Slider uniCrossInput;
@@ -60,6 +61,7 @@ public class Controller {
     // Text fields showing the values of their respective sliders
     @FXML private Text popSizeVal;
     @FXML private Text maxBPVal;
+    @FXML private Text minDistanceVal;
     @FXML private Text mutationProbVal;
     @FXML private Text onePointCrossVal;
     @FXML private Text uniCrossVal;
@@ -140,8 +142,14 @@ public class Controller {
         });
 
         maxBPSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            maxBPVal.setText("" + newVal.intValue());
+            String text = newVal.intValue() > 0 ? "" + newVal.intValue() : "?";
+            maxBPVal.setText(text);
             algorithm.setMaxNoOfBreakPoints(newVal.intValue());
+        });
+
+        minDistanceSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            minDistanceVal.setText("" + newVal.intValue());
+            algorithm.setMinDistance(newVal.intValue());
         });
 
         // When moving the slider for Mutation Probability, the text showing the
