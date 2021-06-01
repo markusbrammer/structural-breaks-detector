@@ -33,7 +33,7 @@ public class TimeSeries {
         if (noOfDimensions != 1)
             throw new InvalidDimensionException("Only data files with one value dimension are allowed.");
 
-        name = (String) fileReader.get("timeseries");
+        name = (String) fileReader.get("timeseres");
         readObservations();
         rangeTree = new RangeTree(observations);
 
@@ -59,8 +59,17 @@ public class TimeSeries {
         }
     }
 
-    public MinMax getMinMaxInIndexInterval(int startIndex, int endIndex) throws Exception {
+    public MinMax getMinMax(int startIndex, int endIndex) throws Exception {
         return rangeTree.getMinMax(startIndex, endIndex);
+    }
+
+    public MinMax getMinMax() {
+        try {
+            return rangeTree.getMinMax(0, getLength() - 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private MinMax getMinAndMaxInIntervalSimple(int lowerBound, int upperBound) {

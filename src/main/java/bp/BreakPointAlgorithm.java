@@ -51,7 +51,14 @@ public class BreakPointAlgorithm {
         Population population = new Population(populationSize, timeSeries,
                 fitnessModel);
 
+        // TODO The algorithm will sometimes run for a long time if a new,
+        //  better solution is found often. Perhaps implement a upper ceiling
+        //  of a maximum number of iterations.
+        // No, the algorithm becomes slow become the solution strings have so
+        // many break points that the algorithm itself becomes slow. 
+
         int i = 0;
+        int iTotal = 0;
         while (i < iterationLimit) {
 
             // Get two different parent individuals for mutation/crossover
@@ -78,7 +85,9 @@ public class BreakPointAlgorithm {
             offspring.setFitness(fitness);
 
             // TODO implement probability here
-            population.replaceLeastFit(offspring);
+            double leastFitFitness = population.leastFitFitness();
+            if (RAND.nextDouble() < fitness / (fitness + leastFitFitness))
+                population.replaceLeastFit(offspring);
 
             double fittestFitness = population.getFittest().getFitness();
 
@@ -87,6 +96,8 @@ public class BreakPointAlgorithm {
             } else {
                 i++;
             }
+
+            iTotal++;
 
         }
 

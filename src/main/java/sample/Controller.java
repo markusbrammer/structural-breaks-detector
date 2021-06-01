@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.util.List;
@@ -106,17 +107,18 @@ public class Controller {
         anchorPaneRoot.getChildren().add(dataGraph);
         anchorPaneRoot.getChildren().remove(graphPlaceHolder);
 
-        displayModeChooser.getItems().addAll(DataGraph.DISPLAY_MODES);
+        String[] displayModeList = dataGraph.getDisplayModeList();
+        displayModeChooser.getItems().addAll(displayModeList);
         displayModeChooser.getSelectionModel().selectedIndexProperty().addListener(
                 (obs, oldVal, newVal) -> {
-                    String mode = DataGraph.DISPLAY_MODES[newVal.intValue()];
+                    String mode = displayModeList[newVal.intValue()];
                     try {
                         dataGraph.setDisplayMode(mode);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-        displayModeChooser.setValue(DataGraph.DISPLAY_MODES[0]);
+        displayModeChooser.setValue(displayModeList[0]);
 
         // Add fitness methods to drop-down menu.
         List<String> modelCodes = algorithm.getFitnessModelCodes();
@@ -225,6 +227,9 @@ public class Controller {
                 runAlgorithmBtn.setDisable(false);
                 runSmallBtn.setDisable(false);
 
+                minDistanceSlider.setMax(Math.min(timeSeries.getLength()
+                        , 10000));
+
             } catch (InvalidDimensionException e) {
                 showPopup("error", e.getMessage());
             } catch (Exception e) {
@@ -260,20 +265,44 @@ public class Controller {
         hBox.getChildren().addAll(label, button);
 
         popup.getContent().add(hBox);
+
+        Stage stage = Main.getPrimaryStage();
+
+
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            double widthFix = (newVal.doubleValue() - popup.getWidth()) / 2.;
+            popup.setAnchorX(stage.getX() + widthFix);
+        });
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            double heightFix = (newVal.doubleValue() - popup.getHeight()) / 4.;
+            popup.setAnchorY(stage.getY() + heightFix);
+        });
+
         popup.show(Main.getPrimaryStage());
 
         anchorPaneRoot.setDisable(true);
+
+        double halfWidth = (stage.getWidth() - popup.getWidth()) / 2.;
+        popup.setAnchorX(stage.getX() + halfWidth);
+
+        double halfHeight = (stage.getHeight() - popup.getHeight()) / 4.;
+        popup.setAnchorY(stage.getY() + halfHeight);
     }
+
 
     /**
      * Run the algorithm on press of a button.
      * @param mouseEvent
      */
     @FXML
-    public void runAlgorithm(MouseEvent mouseEvent) throws Exception {
+    public void runAlgorithm(MouseEvent mouseEvent) {
         // dataGraph.clearFitnessMarkers();
-        Individual solution = algorithm.findBreakPoints();
-        dataGraph.drawFitness(solution);
+        try {
+            Individual solution = algorithm.findBreakPoints();
+            dataGraph.drawFitness(solution);
+        } catch (Exception e) {
+            showPopup("error", e.getMessage());
+        }
     }
 
     /**

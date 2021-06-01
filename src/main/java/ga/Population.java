@@ -4,7 +4,7 @@ import data.TimeSeries;
 import fitness.BreakPoint;
 import fitness.FitnessModel;
 
-import java.util.*;
+import java.util.Random;
 
 public class Population {
 
@@ -91,6 +91,15 @@ public class Population {
      * @param replacement The individual to replace the least fit individual
      */
     public void replaceLeastFit(Individual replacement) {
+        int leastFitIndex = leastFitIndex();
+        individuals[leastFitIndex] = replacement;
+    }
+
+    public double leastFitFitness() {
+        return individuals[leastFitIndex()].getFitness();
+    }
+
+    private int leastFitIndex() {
         int leastFitIndex = 0;
         double lowestFitness = individuals[0].getFitness();
         for (int i = 0; i < individuals.length; i++) {
@@ -100,9 +109,8 @@ public class Population {
                 leastFitIndex = i;
             }
         }
-        individuals[leastFitIndex] = replacement;
+        return leastFitIndex;
     }
-
 
     @Override
     public String toString() {

@@ -106,7 +106,7 @@ public class RectangleFitness extends FitnessModel {
 
         double timeZero = ts.getTimeAtIndex(index0);
         double timeFinal = ts.getTimeAtIndex(index1);
-        MinMax minMax = ts.getMinMaxInIndexInterval(index0, index1);
+        MinMax minMax = ts.getMinMax(index0, index1);
         return (timeFinal - timeZero) * minMax.getDifference();
 
     }

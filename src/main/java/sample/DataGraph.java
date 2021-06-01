@@ -1,14 +1,12 @@
 package sample;
 
         import data.MinMax;
-        import data.TimeSeries;
+import data.TimeSeries;
 import fitness.FitnessNode;
 import ga.Individual;
-import javafx.collections.ObservableList;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
-        import javafx.scene.chart.NumberAxis;
-        import javafx.scene.chart.XYChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 
@@ -24,11 +22,11 @@ public class DataGraph extends LineChart<Number, Number> {
 
     private List<Data<Number, Number>> fitnessNodes = new ArrayList<>();
     private TimeSeries timeSeries;
-    private final int MAX_NO_OF_PLOT_POINTS = 1000;
-    private XYChart.Series<Number, Number> graphPoints = new Series<>();
 
-    public static final String[] DISPLAY_MODES = {"Average", "Min and Max"};
-    private String displayMode = DISPLAY_MODES[0];
+    private final String DISPLAY_AVERAGE = "Average";
+    private final String DISPLAY_MINMAX = "Min and Max";
+    public final String[] DISPLAY_MODES = {DISPLAY_AVERAGE, DISPLAY_MINMAX};
+    private String displayMode;
     AnchorPane anchorPane = new AnchorPane();
 
 
@@ -41,6 +39,7 @@ public class DataGraph extends LineChart<Number, Number> {
         this.setAnimated(false);
         this.setCreateSymbols(false);
         getPlotChildren().add(anchorPane);
+        displayMode = DISPLAY_MODES[0];
     }
 
     public void setTimeSeries(TimeSeries timeSeries) throws Exception {
@@ -56,7 +55,7 @@ public class DataGraph extends LineChart<Number, Number> {
         anchorPane.getChildren().clear();
 
         List<FitnessNode> fitnessNodeList = individual.getFitnessNodes();
-        if (fitnessNodeList.size() > 20)
+        if (fitnessNodeList.size() > 60)
             throw new TooManyBreakPointsException("Too many break points detected. " +
                     "Tweak parameters to get fewer break points");
 
@@ -83,63 +82,98 @@ public class DataGraph extends LineChart<Number, Number> {
      * Important: This can only be called, when the TimeSeries field for a
      * DataGraph is not null.
      *
-     * @author Markus B. Jensen (s183816)
      */
     private void readTimeSeriesPoints() throws Exception {
 
-        System.out.println("Hello");
+        int maxNoOfPoints = 1000;
+
+        // Clear previous fitness markers
+        fitnessNodes.forEach(data -> getPlotChildren().remove(data.getNode()));
+        fitnessNodes.clear();
+        anchorPane.getChildren().clear();
+
         getData().clear();
-        assert timeSeries != null;
 
-        graphPoints = new XYChart.Series<>();
-
-        double[] timeSeriesTimes = timeSeries.getTimes();
+        // Get time series parameters and arrays
+        double[] times = timeSeries.getTimes();
         double[] values = timeSeries.getObservations();
-        int noOfElementsInTimeSeries = timeSeries.getLength();
+        int length = timeSeries.getLength();
 
-        // JavaFX' LineGraph becomes slow when showing too many points. With a
-        // lot of values, the average of a number of values is plotted.
-        int noOfValuesPerPoint;
-        if (noOfElementsInTimeSeries > MAX_NO_OF_PLOT_POINTS) {
-            noOfValuesPerPoint = noOfElementsInTimeSeries / MAX_NO_OF_PLOT_POINTS;
-        } else {
-            noOfValuesPerPoint = 1;
-        }
+        // Determine number of time series points per point on chart
+        int valuesPerPoint = (int) Math.ceil(length / (double) maxNoOfPoints);
 
-        int z = 0;
-        double x = 0;
-        double y = 0;
-        for (int i = 0; i < noOfElementsInTimeSeries; i++) {
-            if (z < noOfValuesPerPoint) {
-                x += timeSeriesTimes[i];
-                y += values[i];
-                z++;
-            } else {
-                x /= noOfValuesPerPoint;
-                y /= noOfValuesPerPoint;
-                graphPoints.getData().add(new XYChart.Data<>(x, y));
-                x = 0;
-                y = 0;
-                z = 0;
-                i--;
+        if (valuesPerPoint > 1 && displayMode.equals(DISPLAY_AVERAGE)) {
+            int i = 0;
+            Series<Number, Number> points = new Series<>();
+            points.setName(timeSeries.getName() + " (average)");
+            while (i < times.length - valuesPerPoint) {
+                int next = Math.min(i + valuesPerPoint, times.length - 1);
+                double sum = 0;
+                for (int j = i; j < next; j++) {
+                    sum += values[j];
+                }
+                double average = sum / valuesPerPoint;
+                double time = times[i];
+                points.getData().add(new Data<>(time, average));
+                i += valuesPerPoint;
             }
+            getData().add(points);
+        } else if (valuesPerPoint > 1 && displayMode.equals(DISPLAY_MINMAX)) {
+            int i = 0;
+            Series<Number, Number> minSeries = new Series<>();
+            minSeries.setName(timeSeries.getName() + " (min)");
+            Series<Number, Number> maxSeries = new Series<>();
+            maxSeries.setName(timeSeries.getName() + " (max)");
+            while (i < times.length - valuesPerPoint) {
+
+                int next = Math.min(i + valuesPerPoint, times.length - 1);
+                MinMax minMax = timeSeries.getMinMax(i, next);
+
+                double time = times[i];
+                minSeries.getData().add(new Data<>(time, minMax.getMin()));
+                maxSeries.getData().add(new Data<>(time, minMax.getMax()));
+
+                i += valuesPerPoint;
+            }
+            getData().add(minSeries);
+            getData().add(maxSeries);
+        } else {
+            Series<Number, Number> points = new Series<>();
+            points.setName(timeSeries.getName());
+            for (int i = 0; i < times.length; i++) {
+                points.getData().add(new Data<>(times[i], values[i]));
+            }
+            getData().add(points);
         }
 
-        MinMax xMinMax = new MinMax(timeSeriesTimes[0], timeSeriesTimes[timeSeriesTimes.length - 1]);
-        ((NumberAxis) getXAxis()).setLowerBound(xMinMax.getMin() - xMinMax.getDifference() / 20.);
-        ((NumberAxis) getXAxis()).setUpperBound(xMinMax.getMax() + xMinMax.getDifference() / 20.);
-        ((NumberAxis) getXAxis()).setTickUnit(xMinMax.getDifference() / 5);
-
-        MinMax minMax = timeSeries.getMinMaxInIndexInterval(0, timeSeriesTimes.length - 1);
-        ((NumberAxis) getYAxis()).setLowerBound(minMax.getMin() - minMax.getDifference() / 20.);
-        ((NumberAxis) getYAxis()).setUpperBound(minMax.getMax() + minMax.getDifference() / 20.);
-        ((NumberAxis) getYAxis()).setTickUnit(minMax.getDifference() / 10.);
+        MinMax xMinMax = new MinMax(times[0], times[times.length - 1]);
+        setTickUnit((NumberAxis) getXAxis(), xMinMax);
 
 
-        String timeSeriesName = timeSeries.getName();
-        graphPoints.setName(timeSeriesName);
+        MinMax minMax = timeSeries.getMinMax();
+        setTickUnit((NumberAxis) getYAxis(), minMax);
 
-        getData().add(graphPoints);
+        this.updateLegend();
+
+    }
+
+    private void setTickUnit(NumberAxis axis, MinMax minMax) {
+
+        double min = minMax.getMin();
+        double max = minMax.getMax();
+        double range = Math.abs(minMax.getDifference());
+
+        double factor = Math.floor(Math.log10(range));
+        double tens = Math.pow(10, factor);
+        double multiplier = range / tens;
+
+        double tickUnit = multiplier < 4 ? tens / 4 : tens / 2;
+        double lowerBound = Math.floor(min / tickUnit) * tickUnit;
+        double upperBound = Math.ceil(max / tickUnit) * tickUnit;
+
+        axis.setTickUnit(tickUnit);
+        axis.setLowerBound(lowerBound);
+        axis.setUpperBound(upperBound);
 
     }
 
@@ -149,28 +183,19 @@ public class DataGraph extends LineChart<Number, Number> {
         super.layoutPlotChildren();
         anchorPane.toFront();
 
-        if (!graphPoints.getData().isEmpty()) {
-            ObservableList<Data<Number, Number>> points = graphPoints.getData();
+        if (timeSeries != null) {
 
-            double xMin = (double) points.get(0).getXValue();
-            double xMax = (double) points.get(points.size() - 1).getXValue();
+            double xMin = timeSeries.getTimeAtIndex(0);
+            double xMax = timeSeries.getTimeAtIndex(timeSeries.getLength() - 1);
             double xMinScreen = getXAxis().getDisplayPosition(xMin);
             double xMaxScreen = getXAxis().getDisplayPosition(xMax);
             double xScale = Math.abs((xMax - xMin) / (xMaxScreen - xMinScreen));
 
-            double yMin = (double) points.get(0).getYValue();
-            double yMax = yMin;
-            for (Data<Number, Number> data : points) {
-                double yVal = (double) data.getYValue();
-                if (yVal < yMin) {
-                    yMin = yVal;
-                } else if (yVal > yMax) {
-                    yMax = yVal;
-                }
-            }
-            double yMinScreen = getYAxis().getDisplayPosition(yMin);
-            double yMaxScreen = getYAxis().getDisplayPosition(yMax);
-            double yScale = Math.abs((yMax - yMin) / (yMaxScreen - yMinScreen));
+            MinMax minMax = timeSeries.getMinMax();
+            double yMinScreen = getYAxis().getDisplayPosition(minMax.getMin());
+            double yMaxScreen = getYAxis().getDisplayPosition(minMax.getMax());
+            double yScale = Math.abs((minMax.getDifference()) /
+                    (yMaxScreen - yMinScreen));
 
             for (Data<Number, Number> data : fitnessNodes) {
 
@@ -201,6 +226,10 @@ public class DataGraph extends LineChart<Number, Number> {
             if (timeSeries != null)
                 readTimeSeriesPoints();
         }
+    }
+
+    public String[] getDisplayModeList() {
+        return DISPLAY_MODES;
     }
 }
 

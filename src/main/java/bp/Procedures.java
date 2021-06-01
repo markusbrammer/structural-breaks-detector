@@ -22,7 +22,7 @@ public class Procedures {
 
         Individual offspring = new Individual(parent);
 
-        int mutations = 1; // 2 * offspring.getNoOfBreakPoints();
+        int mutations = Math.max(2 * offspring.getNoOfBreakPoints(), 1);
         int maxIndex = parent.getEndAllele().getIndex();
 
         for (int m = 0; m < mutations; m++) {

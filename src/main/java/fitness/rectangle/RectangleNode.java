@@ -24,7 +24,7 @@ public class RectangleNode extends FitnessNode {
 
         MinMax minMax = null;
         try {
-            minMax = timeSeries.getMinMaxInIndexInterval(bpIndex0, bpIndex1);
+            minMax = timeSeries.getMinMax(bpIndex0, bpIndex1);
             setY(minMax.getMax());
             setHeight(Math.abs(minMax.getMax() - minMax.getMin()));
         } catch (Exception e) {
