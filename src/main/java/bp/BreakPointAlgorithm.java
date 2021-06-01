@@ -55,7 +55,9 @@ public class BreakPointAlgorithm {
         //  better solution is found often. Perhaps implement a upper ceiling
         //  of a maximum number of iterations.
         // No, the algorithm becomes slow become the solution strings have so
-        // many break points that the algorithm itself becomes slow. 
+        // many break points that the algorithm itself becomes slow.
+        // Currently solved by settings the fitness of individuals with more
+        // than 100 break points to 0. 
 
         int i = 0;
         int iTotal = 0;

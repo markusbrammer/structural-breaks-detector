@@ -18,6 +18,9 @@ public class RectangleFitness extends FitnessModel {
     public double fitnessOf(Individual individual,
                             TimeSeries timeSeries) throws Exception {
 
+        if (individual.getNoOfBreakPoints() > 100)
+            return 0;
+
         // Calculate area of rectangle encapsulating the entire time series
         int tsLength = timeSeries.getLength();
         double timeSeriesArea = calculateArea(timeSeries, 0, tsLength - 1);
