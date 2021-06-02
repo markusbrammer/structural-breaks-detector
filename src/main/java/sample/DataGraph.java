@@ -28,6 +28,7 @@ public class DataGraph extends LineChart<Number, Number> {
     public final String[] DISPLAY_MODES = {DISPLAY_AVERAGE, DISPLAY_MINMAX};
     private String displayMode;
     AnchorPane anchorPane = new AnchorPane();
+    private final int MAX_POINTS = 1000;
 
 
     public DataGraph(Axis<Number> xAxis, Axis<Number> yAxis) {
@@ -49,15 +50,12 @@ public class DataGraph extends LineChart<Number, Number> {
 
     public void drawFitness(Individual individual) throws Exception {
 
-        // Clear previous fitness markers
-        fitnessNodes.forEach(data -> getPlotChildren().remove(data.getNode()));
-        fitnessNodes.clear();
-        anchorPane.getChildren().clear();
-
         List<FitnessNode> fitnessNodeList = individual.getFitnessNodes();
-        if (fitnessNodeList.size() > 60)
+        if (fitnessNodeList.size() > 200)
             throw new TooManyBreakPointsException("Too many break points detected. " +
                     "Tweak parameters to get fewer break points");
+
+        clearFitnessNodes();
 
         // Add all the fitness break point markers to "plot children" list and
         // fitnessNodes list
@@ -84,14 +82,6 @@ public class DataGraph extends LineChart<Number, Number> {
      *
      */
     private void readTimeSeriesPoints() throws Exception {
-
-        int maxNoOfPoints = 1000;
-
-        // Clear previous fitness markers
-        fitnessNodes.forEach(data -> getPlotChildren().remove(data.getNode()));
-        fitnessNodes.clear();
-        anchorPane.getChildren().clear();
-
         getData().clear();
 
         // Get time series parameters and arrays
@@ -100,7 +90,7 @@ public class DataGraph extends LineChart<Number, Number> {
         int length = timeSeries.getLength();
 
         // Determine number of time series points per point on chart
-        int valuesPerPoint = (int) Math.ceil(length / (double) maxNoOfPoints);
+        int valuesPerPoint = (int) Math.ceil(length / (double) MAX_POINTS);
 
         if (valuesPerPoint > 1 && displayMode.equals(DISPLAY_AVERAGE)) {
             int i = 0;
@@ -155,6 +145,13 @@ public class DataGraph extends LineChart<Number, Number> {
 
         this.updateLegend();
 
+    }
+
+    public void clearFitnessNodes() {
+        // Clear previous fitness markers
+        fitnessNodes.forEach(data -> getPlotChildren().remove(data.getNode()));
+        fitnessNodes.clear();
+        anchorPane.getChildren().clear();
     }
 
     private void setTickUnit(NumberAxis axis, MinMax minMax) {
@@ -223,7 +220,7 @@ public class DataGraph extends LineChart<Number, Number> {
     public void setDisplayMode(String mode) throws Exception {
         if (!displayMode.equals(mode)) {
             displayMode = mode;
-            if (timeSeries != null)
+            if (timeSeries != null && timeSeries.getLength() > MAX_POINTS)
                 readTimeSeriesPoints();
         }
     }

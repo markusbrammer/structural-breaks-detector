@@ -57,15 +57,17 @@ public class BreakPointAlgorithm {
         // No, the algorithm becomes slow become the solution strings have so
         // many break points that the algorithm itself becomes slow.
         // Currently solved by settings the fitness of individuals with more
-        // than 100 break points to 0. 
+        // than 100 break points to 0.
 
         int i = 0;
-        int iTotal = 0;
         while (i < iterationLimit) {
 
             // Get two different parent individuals for mutation/crossover
             Individual parent1 = population.selectRandomIndividual();
             Individual parent2 = population.selectRandomIndividual();
+
+            if (mutateProb + uniformCrossoverProb + onePointCrossoverProb != 1)
+                throw new Exception("Something is wrong with the probs");
 
             Individual offspring;
             double randomValue = RAND.nextDouble();
@@ -73,12 +75,8 @@ public class BreakPointAlgorithm {
                 offspring = Procedures.mutate(parent1, fitnessModel);
             } else if (randomValue < mutateProb + uniformCrossoverProb) {
                 offspring = Procedures.uniformCrossover(parent1, parent2);
-            } else if (randomValue < mutateProb
-                    + uniformCrossoverProb + onePointCrossoverProb) {
-                offspring = Procedures.onePointCrossover(timeSeries.getLength(),
-                        parent1, parent2);
             } else {
-                throw new Exception("The probabilities are incorrect");
+                offspring = Procedures.onePointCrossover(parent1, parent2);
             }
 
             double prevFittestFitness = population.getFittest().getFitness();
@@ -86,7 +84,6 @@ public class BreakPointAlgorithm {
             double fitness = fitnessModel.fitnessOf(offspring, timeSeries);
             offspring.setFitness(fitness);
 
-            // TODO implement probability here
             double leastFitFitness = population.leastFitFitness();
             if (RAND.nextDouble() < fitness / (fitness + leastFitFitness))
                 population.replaceLeastFit(offspring);
@@ -98,9 +95,6 @@ public class BreakPointAlgorithm {
             } else {
                 i++;
             }
-
-            iTotal++;
-
         }
 
         Individual fittest = population.getFittest();

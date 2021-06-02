@@ -20,42 +20,23 @@ public class Procedures {
     public static Individual mutate(Individual parent,
                                     FitnessModel fitnessModel) {
 
+        double mutateProb = 0.6;
         Individual offspring = new Individual(parent);
 
-        int mutations = Math.max(2 * offspring.getNoOfBreakPoints(), 1);
+        int mutations = 1;
         int maxIndex = parent.getEndAllele().getIndex();
 
         for (int m = 0; m < mutations; m++) {
             int index = 1 + RAND.nextInt(maxIndex  - 1);
-            if (offspring.breakPointAtIndex(index)) {
-                offspring.removeBreakPoint(index);
-            } else {
+            if (RAND.nextDouble() < mutateProb) {
                 offspring.addBreakPoint(index, fitnessModel.newBreakPoint());
+            } else if (offspring.breakPointAtIndex(index)) {
+                offspring.removeBreakPoint(index);
             }
         }
 
         return offspring;
 
-
-//        Individual offspring = new Individual(individual);
-//        Genome genome = offspring.getGenome();
-//
-//        int T = offspring.getEndAllele().getIndex();
-//
-//        int noOfBreakPoints = offspring.getNoOfBreakPoints();
-//        double mutateProb = 2. * noOfBreakPoints / T;
-//        double breakPointProb = 0.6;
-//
-//        for (int i = 1; i < T - 1; i++) {
-//            if (RAND.nextDouble() < mutateProb) {
-//                if (RAND.nextDouble() < breakPointProb) {
-//                    offspring.addBreakPoint(i, fitnessModel.newBreakPoint());
-//                } else if (offspring.breakPointAtIndex(i)) {
-//                    offspring.removeBreakPoint(i);
-//                }
-//            }
-//        }
-//        return individual;
     }
 
     /**
@@ -106,17 +87,16 @@ public class Procedures {
 
     /**
      * Performs uniform crossover between two individuals.
-     * @param maxIndex The maximum index for the split. This is most likely the
-     *                 length of the time series.
      * @param parent1 An individual
      * @param parent2 Another individual
      * @return An offspring being a combination of the two parents.
      */
-    public static Individual onePointCrossover(int maxIndex, Individual parent1,
+    public static Individual onePointCrossover(Individual parent1,
                                                Individual parent2) {
 
         Allele startAllele = parent1.getStartAllele();
         Allele endAllele = parent1.getEndAllele();
+        int maxIndex = endAllele.getIndex();
         Individual offspring = new Individual(startAllele, endAllele);
 
         int index = RAND.nextInt(maxIndex);

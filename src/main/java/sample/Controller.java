@@ -219,6 +219,7 @@ public class Controller {
 
                 dataGraph.getData().clear();
                 // dataGraph.clearFitnessMarkers();
+                dataGraph.clearFitnessNodes();
                 dataGraph.setTimeSeries(timeSeries);
 
                 currentDataFile.setText("Current: " + dataFile.getName());
@@ -227,8 +228,9 @@ public class Controller {
                 runAlgorithmBtn.setDisable(false);
                 runSmallBtn.setDisable(false);
 
-                minDistanceSlider.setMax(Math.min(timeSeries.getLength()
-                        , 10000));
+                int length = timeSeries.getLength();
+                minDistanceSlider.setMax(Math.min(length, 10000));
+                minDistanceSlider.setMin(Math.max(length / 200, 1));
 
             } catch (InvalidDimensionException e) {
                 showPopup("error", e.getMessage());
