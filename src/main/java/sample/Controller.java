@@ -1,10 +1,9 @@
 package sample;
 
 import bp.BreakPointAlgorithm;
+import bp.InitValues;
 import data.InvalidDimensionException;
 import data.TimeSeries;
-import fitness.FitnessModel;
-import fitness.rectangle.RectangleFitness;
 import ga.Individual;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
@@ -83,7 +82,6 @@ public class Controller {
 
     // The actual Object which will show the time series and fitness
     private DataGraph dataGraph;
-    FitnessModel fitnessModel = new RectangleFitness();
 
     public Controller() {
         algorithm = new BreakPointAlgorithm();
@@ -107,15 +105,21 @@ public class Controller {
         anchorPaneRoot.getChildren().add(dataGraph);
         anchorPaneRoot.getChildren().remove(graphPlaceHolder);
 
+        // Add tooltips to buttons in the Left Menu.
+        loadTimeSeriesSmallBtn.setTooltip(new Tooltip("Load time series data file"));
+        btnSettingsPane.setTooltip(new Tooltip("Parameter settings (open/close)"));
+        runSmallBtn.setTooltip(new Tooltip("Run algorithm"));
+
+        // Fill display mode chooser with options and add listener
         String[] displayModeList = dataGraph.getDisplayModeList();
         displayModeChooser.getItems().addAll(displayModeList);
-        displayModeChooser.getSelectionModel().selectedIndexProperty().addListener(
-                (obs, oldVal, newVal) -> {
+        displayModeChooser.getSelectionModel()
+                .selectedIndexProperty().addListener((obs, oldVal, newVal) -> {
                     String mode = displayModeList[newVal.intValue()];
                     try {
                         dataGraph.setDisplayMode(mode);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        showPopup("error", e.getMessage());
                     }
                 });
         displayModeChooser.setValue(displayModeList[0]);
@@ -130,29 +134,26 @@ public class Controller {
                 });
         fitnessMethodChooser.setValue(modelCodes.get(0));
 
-
-        // Add tooltips to buttons in the Left Menu.
-        loadTimeSeriesSmallBtn.setTooltip(new Tooltip("Load time series data file"));
-        btnSettingsPane.setTooltip(new Tooltip("Parameter settings (open/close)"));
-        runSmallBtn.setTooltip(new Tooltip("Run algorithm"));
-
         // Update value next to sliders for Population Size and Maximum Number
         // of Break Points.
         popSz.valueProperty().addListener((obs, oldVal, newVal) -> {
             popSizeVal.setText("" + newVal.intValue());
             algorithm.setPopulationSize(newVal.intValue());
         });
+        popSz.adjustValue(InitValues.POP_SIZE);
 
         maxBPSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             String text = newVal.intValue() > 0 ? "" + newVal.intValue() : "?";
             maxBPVal.setText(text);
             algorithm.setMaxNoOfBreakPoints(newVal.intValue());
         });
+        maxBPSlider.setValue(InitValues.MAX_BP);
 
         minDistanceSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             minDistanceVal.setText("" + newVal.intValue());
             algorithm.setMinDistance(newVal.intValue());
         });
+        minDistanceSlider.adjustValue(InitValues.MIN_DIST);
 
         // When moving the slider for Mutation Probability, the text showing the
         // value changes, and the slider for the two other probabilities becomes
@@ -197,6 +198,7 @@ public class Controller {
             alphaVal.setText(String.format(Locale.US, "%.2f", newVal.doubleValue()));
             algorithm.setAlpha(newVal.doubleValue());
         });
+        alphaInput.adjustValue(InitValues.ALPHA);
 
         // Setup file chooser to look for JSON files (time series data files)
         fileChooser = new FileChooser();
@@ -210,6 +212,7 @@ public class Controller {
     @FXML
     public void openFileChooser(MouseEvent mouseEvent) {
 
+        // Get the data path from the file chooser
         File dataFile = fileChooser.showOpenDialog(Main.getPrimaryStage());
         if (dataFile != null) {
             try {
@@ -217,17 +220,16 @@ public class Controller {
                 TimeSeries timeSeries = new TimeSeries(dataFile.getAbsolutePath());
                 algorithm.setTimeSeries(timeSeries);
 
-                dataGraph.getData().clear();
-                // dataGraph.clearFitnessMarkers();
                 dataGraph.clearFitnessNodes();
                 dataGraph.setTimeSeries(timeSeries);
 
                 currentDataFile.setText("Current: " + dataFile.getName());
 
-                // Activate Run Algorithm buttons
+                // Activate Run Algorithm buttons (disabled on boot)
                 runAlgorithmBtn.setDisable(false);
                 runSmallBtn.setDisable(false);
 
+                // Fix min. distance slider for large time series
                 int length = timeSeries.getLength();
                 minDistanceSlider.setMax(Math.min(length, 10000));
                 minDistanceSlider.setMin(Math.max(length / 200, 1));
@@ -256,6 +258,7 @@ public class Controller {
         Label label = new Label(message);
         label.setId(popupStyle + "-popup-label");
 
+        // A button to close the popup
         Button button = new Button();
         button.setId("popup-button");
         button.getStyleClass().add(popupStyle + "-popup-button");
@@ -267,10 +270,16 @@ public class Controller {
         hBox.getChildren().addAll(label, button);
 
         popup.getContent().add(hBox);
+        popup.show(Main.getPrimaryStage());
 
+        // Place the popup in the horizontal center and vertical top of scene
         Stage stage = Main.getPrimaryStage();
+        double halfWidth = (stage.getWidth() - popup.getWidth()) / 2.;
+        popup.setAnchorX(stage.getX() + halfWidth);
+        double halfHeight = (stage.getHeight() - popup.getHeight()) / 4.;
+        popup.setAnchorY(stage.getY() + halfHeight);
 
-
+        // Make sure the popup stays at the specified position
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
             double widthFix = (newVal.doubleValue() - popup.getWidth()) / 2.;
             popup.setAnchorX(stage.getX() + widthFix);
@@ -280,15 +289,9 @@ public class Controller {
             popup.setAnchorY(stage.getY() + heightFix);
         });
 
-        popup.show(Main.getPrimaryStage());
-
         anchorPaneRoot.setDisable(true);
 
-        double halfWidth = (stage.getWidth() - popup.getWidth()) / 2.;
-        popup.setAnchorX(stage.getX() + halfWidth);
 
-        double halfHeight = (stage.getHeight() - popup.getHeight()) / 4.;
-        popup.setAnchorY(stage.getY() + halfHeight);
     }
 
 
@@ -308,7 +311,7 @@ public class Controller {
     }
 
     /**
-     * Help from here: https://stackoverflow.com/questions/28558165/javafx-setvisible-hides-the-element-but-doesnt-rearrange-adjacent-nodes
+     * Help from here: https://stackoverflow.com/q/28558165
      * @param mouseEvent
      */
     @FXML

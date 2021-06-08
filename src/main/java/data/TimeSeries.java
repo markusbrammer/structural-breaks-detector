@@ -22,7 +22,7 @@ public class TimeSeries {
      * Inspiration and code snippets from:
      * https://howtodoinjava.com/java/library/json-simple-read-write-json-examples/
      */
-    public TimeSeries(String filePath) throws InvalidDimensionException {
+    public TimeSeries(String filePath) throws Exception {
 
 
         fileReader = new JsonDataFileReader(filePath);
@@ -88,10 +88,6 @@ public class TimeSeries {
 
     public double[] getObservations() {
         return observations;
-    }
-
-    public double getValueAtIndex(int index) {
-        return observations[index];
     }
 
     public double getTimeAtIndex(int index) {

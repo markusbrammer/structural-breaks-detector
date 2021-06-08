@@ -7,16 +7,9 @@ import fitness.rectangle.RectangleFitness;
 import ga.Individual;
 import ga.Population;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.*;
 
 public class BreakPointAlgorithm {
-
-    PropertyChangeSupport support = new PropertyChangeSupport(this);
-    public void addObserver(PropertyChangeListener listener) {
-        support.addPropertyChangeListener(listener);
-    }
 
     private FitnessModel fitnessModel;
     private TimeSeries timeSeries;
@@ -25,14 +18,14 @@ public class BreakPointAlgorithm {
     private final Map<String, FitnessModel> fitnessModels = new HashMap<>();
 
     // Statics
-    private int populationSize = 50;
-    private int maxNoOfBreakPoints = 3;
-    private int minDistance = 450;
-    private double alpha = 0.25;
-    private double uniformCrossoverProb = 0.3;
-    private double onePointCrossoverProb = 0.3;
-    private double mutateProb = 1 - uniformCrossoverProb - onePointCrossoverProb;
-    private int iterationLimit = 800;
+    private int populationSize = InitValues.POP_SIZE;
+    private int maxNoOfBreakPoints = InitValues.MAX_BP;
+    private int minDistance = InitValues.MIN_DIST;
+    private double alpha = InitValues.ALPHA;
+    private double uniformCrossoverProb = InitValues.UNI_PROB;
+    private double onePointCrossoverProb = InitValues.ONE_POINT_PROB;
+    private double mutateProb = InitValues.MUTATE_PROB;
+    private int iterationLimit = InitValues.ITERATIONS;
 
     private final Random RAND = new Random();
 
@@ -79,22 +72,23 @@ public class BreakPointAlgorithm {
                 offspring = Procedures.onePointCrossover(parent1, parent2);
             }
 
+            // Store the (in a moment) previously highest fitness
             double prevFittestFitness = population.getFittest().getFitness();
 
+            // Calculate the fitness of the offspring and (perhaps) add it to
+            // the population, replacing the least fit.
+            // Reset iteration counter if offspring the new fittest
             double fitness = fitnessModel.fitnessOf(offspring, timeSeries);
             offspring.setFitness(fitness);
-
             double leastFitFitness = population.leastFitFitness();
-            if (RAND.nextDouble() < fitness / (fitness + leastFitFitness))
+            if (RAND.nextDouble() < fitness / (fitness + leastFitFitness)) {
                 population.replaceLeastFit(offspring);
-
-            double fittestFitness = population.getFittest().getFitness();
-
-            if (prevFittestFitness != fittestFitness) {
-                i = 0;
-            } else {
-                i++;
+                if (prevFittestFitness < fitness)
+                    i = 0;
             }
+
+            i++;
+
         }
 
         Individual fittest = population.getFittest();
@@ -105,10 +99,8 @@ public class BreakPointAlgorithm {
     }
 
     public void setAlpha(double alpha) {
-        double prevAlpha = this.alpha;
         this.alpha = alpha;
         fitnessModel.setAlphaValue(alpha);
-        support.firePropertyChange("alpha", prevAlpha, alpha);
     }
 
     public void setMaxNoOfBreakPoints(int maxNoOfBreakPoints) {

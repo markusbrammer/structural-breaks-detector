@@ -1,7 +1,8 @@
 package data;
 
-import javafx.util.Pair;
-
+/**
+ * A simple object for storing minimum and maximum values
+ */
 public class MinMax {
 
     private double min;
@@ -10,8 +11,15 @@ public class MinMax {
     public MinMax(double min, double max) {
         this.min = min;
         this.max = max;
+        assert min <= max : "MinMax assertion";
     }
 
+    /**
+     * Get the combined minimum and maximum from two MinMax objects
+     * @param a MinMax object
+     * @param b Another MinMax Object
+     * @return A MinMax object. A combination of the two.
+     */
     public static MinMax combine(MinMax a, MinMax b) {
         double min = Math.min(a.getMin(), b.getMin());
         double max = Math.max(a.getMax(), b.getMax());
@@ -23,24 +31,12 @@ public class MinMax {
         return "Min: " + min + ", max: " + max;
     }
 
-    public Pair<Double, Double> toPair() {
-        return new Pair<>(min, max);
-    }
-
     public double getMin() {
         return min;
     }
 
-    public void setMin(double min) {
-        this.min = min;
-    }
-
     public double getMax() {
         return max;
-    }
-
-    public void setMax(double max) {
-        this.max = max;
     }
 
     public double getDifference() {

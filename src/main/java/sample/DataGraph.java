@@ -93,9 +93,13 @@ public class DataGraph extends LineChart<Number, Number> {
         int valuesPerPoint = (int) Math.ceil(length / (double) MAX_POINTS);
 
         if (valuesPerPoint > 1 && displayMode.equals(DISPLAY_AVERAGE)) {
+            // BIG DATA SERIES WITH AVERAGE SETTING
+
             int i = 0;
             Series<Number, Number> points = new Series<>();
             points.setName(timeSeries.getName() + " (average)");
+
+            // Take the average of each valuesPerPoint points
             while (i < times.length - valuesPerPoint) {
                 int next = Math.min(i + valuesPerPoint, times.length - 1);
                 double sum = 0;
@@ -108,12 +112,17 @@ public class DataGraph extends LineChart<Number, Number> {
                 i += valuesPerPoint;
             }
             getData().add(points);
+
         } else if (valuesPerPoint > 1 && displayMode.equals(DISPLAY_MINMAX)) {
+            // BIG TIME SERIES WITH MIN AND MAX SETTING
+            // Draws two graphs, one for min another for max
             int i = 0;
             Series<Number, Number> minSeries = new Series<>();
             minSeries.setName(timeSeries.getName() + " (min)");
             Series<Number, Number> maxSeries = new Series<>();
             maxSeries.setName(timeSeries.getName() + " (max)");
+
+            // Get the min and max for each valuesPerPoint observations
             while (i < times.length - valuesPerPoint) {
 
                 int next = Math.min(i + valuesPerPoint, times.length - 1);
@@ -125,9 +134,12 @@ public class DataGraph extends LineChart<Number, Number> {
 
                 i += valuesPerPoint;
             }
+
             getData().add(minSeries);
             getData().add(maxSeries);
+
         } else {
+            // SMALL TIME SERIES - DISPLAY MODE DOES NOT MATTER
             Series<Number, Number> points = new Series<>();
             points.setName(timeSeries.getName());
             for (int i = 0; i < times.length; i++) {
@@ -136,10 +148,9 @@ public class DataGraph extends LineChart<Number, Number> {
             getData().add(points);
         }
 
+        // Fix graph ticks and upper and lower bound
         MinMax xMinMax = new MinMax(times[0], times[times.length - 1]);
         setTickUnit((NumberAxis) getXAxis(), xMinMax);
-
-
         MinMax minMax = timeSeries.getMinMax();
         setTickUnit((NumberAxis) getYAxis(), minMax);
 
@@ -182,6 +193,8 @@ public class DataGraph extends LineChart<Number, Number> {
 
         if (timeSeries != null) {
 
+            // Get the scale of the time series on the graph compared to the
+            // actual screen size of the objects for both x and y direction.
             double xMin = timeSeries.getTimeAtIndex(0);
             double xMax = timeSeries.getTimeAtIndex(timeSeries.getLength() - 1);
             double xMinScreen = getXAxis().getDisplayPosition(xMin);
@@ -194,6 +207,7 @@ public class DataGraph extends LineChart<Number, Number> {
             double yScale = Math.abs((minMax.getDifference()) /
                     (yMaxScreen - yMinScreen));
 
+            // Display all fitness nodes on the anchorpane
             for (Data<Number, Number> data : fitnessNodes) {
 
                 Rectangle node = (Rectangle) data.getNode();
