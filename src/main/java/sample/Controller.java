@@ -192,6 +192,10 @@ public class Controller {
             algorithm.setUniformCrossoverProb(newVal.intValue() / 100.);
         });
 
+        // Adjust probability slider to init value
+        mutationProbInput.adjustValue(InitValues.MUTATE_PROB * 100);
+        onePointCrossInput.adjustValue(InitValues.ONE_POINT_PROB * 100);
+
         // Update the value text for the alpha parameter when the slider is
         // moved. Show two decimal places.
         alphaInput.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -301,7 +305,6 @@ public class Controller {
      */
     @FXML
     public void runAlgorithm(MouseEvent mouseEvent) {
-        // dataGraph.clearFitnessMarkers();
         try {
             Individual solution = algorithm.findBreakPoints();
             dataGraph.drawFitness(solution);
