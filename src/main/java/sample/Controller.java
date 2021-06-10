@@ -110,21 +110,16 @@ public class Controller {
         btnSettingsPane.setTooltip(new Tooltip("Parameter settings (open/close)"));
         runSmallBtn.setTooltip(new Tooltip("Run algorithm"));
 
-        // Fill display mode chooser with options and add listener
+        // Set up display mode drop-down menu
         String[] displayModeList = dataGraph.getDisplayModeList();
         displayModeChooser.getItems().addAll(displayModeList);
-        displayModeChooser.getSelectionModel()
-                .selectedIndexProperty().addListener((obs, oldVal, newVal) -> {
-                    String mode = displayModeList[newVal.intValue()];
-                    try {
-                        dataGraph.setDisplayMode(mode);
-                    } catch (Exception e) {
-                        showPopup("error", e.getMessage());
-                    }
-                });
+        displayModeChooser.getSelectionModel().selectedIndexProperty().addListener((obs, oldVal, newVal) -> {
+            String mode = displayModeList[newVal.intValue()];
+            dataGraph.setDisplayMode(mode);
+        });
         displayModeChooser.setValue(displayModeList[0]);
 
-        // Add fitness methods to drop-down menu.
+        // Setup fitness method drop-down menu
         List<String> modelCodes = algorithm.getFitnessModelCodes();
         fitnessMethodChooser.getItems().addAll(modelCodes);
         fitnessMethodChooser.getSelectionModel().selectedIndexProperty().addListener(
@@ -134,8 +129,7 @@ public class Controller {
                 });
         fitnessMethodChooser.setValue(modelCodes.get(0));
 
-        // Update value next to sliders for Population Size and Maximum Number
-        // of Break Points.
+        // Setup sliders. Shows values in text and updates value in algorithm
         popSz.valueProperty().addListener((obs, oldVal, newVal) -> {
             popSizeVal.setText("" + newVal.intValue());
             algorithm.setPopulationSize(newVal.intValue());
@@ -155,9 +149,7 @@ public class Controller {
         });
         minDistanceSlider.adjustValue(InitValues.MIN_DIST);
 
-        // When moving the slider for Mutation Probability, the text showing the
-        // value changes, and the slider for the two other probabilities becomes
-        // half of the Mutation Probability.
+        // Setup mutation prob slider. Adjust two other prob. sliders so sum is 1.
         mutationProbInput.valueProperty().addListener((obs, oldVal, newVal) -> {
             int roundedVal = newVal.intValue();
             mutationProbVal.setText(roundedVal + "%");
@@ -170,9 +162,8 @@ public class Controller {
             algorithm.setMutateProb(newVal.intValue() / 100.);
         });
 
-        // When moving the slider for One Point Crossover Probability, the text
-        // showing the value is updated, and the slider for Uniform Crossover
-        // Probability is moved in the reverse direction.
+        // Setup one point crossover slider. Adjusts uniform prob. so sum is 1
+        // between all three probabilities.
         onePointCrossInput.valueProperty().addListener((obs, oldVal, newVal) -> {
             onePointCrossVal.setText(newVal.intValue() + "%");
             int diff = 100 - ((int) mutationProbInput.getValue()) - newVal.intValue();
@@ -182,22 +173,18 @@ public class Controller {
             algorithm.setOnePointCrossoverProb(newVal.intValue() / 100.);
         });
 
-        // The slider for Uniform Crossover Probability is never enabled and can
-        // thus only be updated through the two other Probability Sliders. When
-        // the slider moves (from the other slider), the text with the value is
-        // updated.
+        // Uniform crossover prob. slider is disabled. Moved by the two other slider.
         uniCrossInput.setDisable(true);
         uniCrossInput.valueProperty().addListener((obs, oldVal, newVal) -> {
             uniCrossVal.setText(newVal.intValue() + "%");
             algorithm.setUniformCrossoverProb(newVal.intValue() / 100.);
         });
 
-        // Adjust probability slider to init value
+        // Adjust probability sliders to initial value
         mutationProbInput.adjustValue(InitValues.MUTATE_PROB * 100);
         onePointCrossInput.adjustValue(InitValues.ONE_POINT_PROB * 100);
 
-        // Update the value text for the alpha parameter when the slider is
-        // moved. Show two decimal places.
+        // Setup alpha parameter slider.
         alphaInput.valueProperty().addListener((obs, oldVal, newVal) -> {
             alphaVal.setText(String.format(Locale.US, "%.2f", newVal.doubleValue()));
             algorithm.setAlpha(newVal.doubleValue());

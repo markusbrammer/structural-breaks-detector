@@ -101,6 +101,7 @@ public class DataGraph extends LineChart<Number, Number> {
 
             // Take the average of each valuesPerPoint points
             while (i < times.length - valuesPerPoint) {
+
                 int next = Math.min(i + valuesPerPoint, times.length - 1);
                 double sum = 0;
                 for (int j = i; j < next; j++) {
@@ -231,11 +232,16 @@ public class DataGraph extends LineChart<Number, Number> {
 
     }
 
-    public void setDisplayMode(String mode) throws Exception {
+    public void setDisplayMode(String mode) {
         if (!displayMode.equals(mode)) {
             displayMode = mode;
-            if (timeSeries != null && timeSeries.getLength() > MAX_POINTS)
-                readTimeSeriesPoints();
+            if (timeSeries != null && timeSeries.getLength() > MAX_POINTS) {
+                try {
+                    readTimeSeriesPoints();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

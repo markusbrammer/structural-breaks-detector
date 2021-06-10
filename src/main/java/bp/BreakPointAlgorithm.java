@@ -59,9 +59,6 @@ public class BreakPointAlgorithm {
             Individual parent1 = population.selectRandomIndividual();
             Individual parent2 = population.selectRandomIndividual();
 
-            if (mutateProb + uniformCrossoverProb + onePointCrossoverProb != 1)
-                throw new Exception("Something is wrong with the probs");
-
             Individual offspring;
             double randomValue = RAND.nextDouble();
             if (randomValue < mutateProb) {
