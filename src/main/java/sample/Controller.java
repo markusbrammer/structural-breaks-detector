@@ -122,11 +122,10 @@ public class Controller {
         // Setup fitness method drop-down menu
         List<String> modelCodes = algorithm.getFitnessModelCodes();
         fitnessMethodChooser.getItems().addAll(modelCodes);
-        fitnessMethodChooser.getSelectionModel().selectedIndexProperty().addListener(
-                (obs, oldVal, newVal) -> {
-                    String code = modelCodes.get(newVal.intValue());
-                    algorithm.setFitnessModel(code);
-                });
+        fitnessMethodChooser.getSelectionModel().selectedIndexProperty().addListener((obs, oldVal, newVal) -> {
+            String code = modelCodes.get(newVal.intValue());
+            algorithm.setFitnessModel(code);
+        });
         fitnessMethodChooser.setValue(modelCodes.get(0));
 
         // Setup sliders. Shows values in text and updates value in algorithm

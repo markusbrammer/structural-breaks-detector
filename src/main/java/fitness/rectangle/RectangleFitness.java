@@ -5,7 +5,6 @@ import data.TimeSeries;
 import fitness.BreakPoint;
 import fitness.FitnessModel;
 import fitness.FitnessNode;
-import ga.Allele;
 import ga.Genome;
 import ga.Individual;
 
@@ -75,13 +74,8 @@ public class RectangleFitness extends FitnessModel {
                                       Individual individual) {
 
         List<FitnessNode> nodes = new ArrayList<>();
-
-
-        // Calculate area of the fitness rectangles
-        double rectangleAreas = 0;
         Genome genome = individual.getGenome();
         for (int g = 0; g < genome.size() - 1; g++) {
-            Allele allele = genome.get(g);
             int index = genome.get(g).getIndex();
             int nextIndex = genome.get(g + 1).getIndex() - 1;
             nodes.add(new RectangleNode(index, nextIndex, timeSeries));

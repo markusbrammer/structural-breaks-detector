@@ -6,7 +6,7 @@ import fitness.FitnessNode;
 
 import java.util.List;
 
-public class Individual{
+public class Individual {
 
     private Genome genome = new Genome();
 

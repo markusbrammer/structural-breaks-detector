@@ -8,10 +8,6 @@ import ga.Individual;
 import java.util.Random;
 
 public class Procedures {
-
-    private static double pm = 0.2;
-    private static double pb = 0.2;
-
     private static final Random RAND = new Random();
 
     /**

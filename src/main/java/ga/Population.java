@@ -26,8 +26,7 @@ public class Population {
 
             // Place noOfBPs ([1, kMax]) break points at random indexes.
             int kMax = fitnessModel.getMaxNoOfBreakPoints();
-            int noOfBPs = kMax > 0 ? 1 + RAND.nextInt(kMax) :
-                    2 + RAND.nextInt(19);
+            int noOfBPs = kMax > 0 ? 1 + RAND.nextInt(kMax) : 2 + RAND.nextInt(19);
             for (int j = 0; j < noOfBPs; j++) {
                 int index = 1 + RAND.nextInt(endIndex - 1);
                 BreakPoint breakPoint = fitnessModel.newBreakPoint();
@@ -35,8 +34,7 @@ public class Population {
             }
 
             // Assign fitness value to the individual
-            double fitnessVal =
-                    fitnessModel.fitnessOf(individual, timeSeries);
+            double fitnessVal = fitnessModel.fitnessOf(individual, timeSeries);
             individual.setFitness(fitnessVal);
 
             individuals[i] = individual;
