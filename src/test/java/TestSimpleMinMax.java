@@ -1,4 +1,4 @@
-import bp.BreakPointAlgorithm;
+import breakpointalgorithm.BreakPointAlgorithm;
 import data.TimeSeries;
 import org.junit.Test;
 

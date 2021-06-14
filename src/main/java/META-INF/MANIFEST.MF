@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Main-Class: gui.Main
+Class-Path: javafx-base-15.0.1-mac.jar javafx-swing-11.0.2-mac.jar javaf
+ x-media-11.0.2-mac.jar jfoenix-9.0.10.jar javafx-web-11.0.2-mac.jar jav
+ afx-swing-11.0.2.jar javafx-base-15.0.1.jar javafx-fxml-15.0.1-mac.jar 
+ annotations-21.0.0.jar javafx-media-11.0.2.jar javafx-fxml-15.0.1.jar j
+ avafx-controls-15.0.1-mac.jar javafx-graphics-15.0.1.jar junit-4.10.jar
+  javafx-graphics-15.0.1-mac.jar controlsfx-11.0.1.jar javafx-web-11.0.2
+ .jar json-simple-1.1.1.jar javafx-controls-15.0.1.jar
+

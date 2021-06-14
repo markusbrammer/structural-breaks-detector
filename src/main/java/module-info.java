@@ -4,11 +4,11 @@ module Fagprojekt{
     requires json.simple;
     requires java.desktop;
     requires org.controlsfx.controls;
-    opens sample to javafx.fxml;
-    exports sample;
+    opens gui to javafx.fxml;
+    exports gui;
     exports data;
-    exports ga;
+    exports genetic;
     exports fitness;
     exports fitness.rectangle;
-    exports bp;
+    exports breakpointalgorithm;
 }

@@ -1,7 +1,7 @@
 import data.TimeSeries;
 import fitness.FitnessModel;
 import fitness.rectangle.RectangleFitness;
-import ga.Population;
+import genetic.Population;
 import org.junit.Before;
 
 public class TestInitPopulation {

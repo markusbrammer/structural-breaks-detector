@@ -5,8 +5,8 @@ import data.TimeSeries;
 import fitness.BreakPoint;
 import fitness.FitnessModel;
 import fitness.FitnessNode;
-import ga.Genome;
-import ga.Individual;
+import genetic.Genome;
+import genetic.Individual;
 
 import java.util.ArrayList;
 import java.util.List;

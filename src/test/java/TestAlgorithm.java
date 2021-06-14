@@ -1,6 +1,6 @@
-import bp.BreakPointAlgorithm;
+import breakpointalgorithm.BreakPointAlgorithm;
 import data.TimeSeries;
-import ga.Individual;
+import genetic.Individual;
 import org.junit.Before;
 import org.junit.Test;
 

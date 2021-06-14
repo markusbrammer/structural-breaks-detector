@@ -1,7 +1,7 @@
 package fitness;
 
 import data.TimeSeries;
-import ga.Individual;
+import genetic.Individual;
 
 import java.util.List;
 
