@@ -6,6 +6,7 @@ import fitness.FitnessNode;
 import fitness.rectangle.RectangleFitness;
 import genetic.Individual;
 import genetic.Population;
+import genetic.Procedures;
 
 import java.util.*;
 
