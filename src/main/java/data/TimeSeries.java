@@ -39,10 +39,11 @@ public class TimeSeries {
 
     }
 
-    private void readObservations() {
+    private void readObservations() throws Exception {
 
         JSONArray jsonObservations = (JSONArray) fileReader.get("observations");
         noOfObservations = jsonObservations.size();
+
         observations = new double[noOfObservations];
         times = new double[noOfObservations];
         for (int i = 0; i < noOfObservations; i++) {

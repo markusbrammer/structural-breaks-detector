@@ -2,9 +2,7 @@ package gui;
 
 import breakpointalgorithm.BreakPointAlgorithm;
 import breakpointalgorithm.InitValues;
-import data.InvalidDimensionException;
 import data.TimeSeries;
-import genetic.Genome;
 import genetic.Individual;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
@@ -225,10 +223,8 @@ public class Controller {
                 minDistanceSlider.setMax(Math.min(length, 10000));
                 minDistanceSlider.setMin(Math.max(length / 200, 1));
 
-            } catch (InvalidDimensionException e) {
-                showPopup("error", e.getMessage());
             } catch (Exception e) {
-                e.printStackTrace();
+                showPopup("error", e.getMessage());
             }
 
         }
@@ -295,22 +291,10 @@ public class Controller {
         try {
             Individual solution = algorithm.findBreakPoints();
             dataGraph.drawFitness(solution);
-            printBreakPointLocations(solution);
+//            printBreakPointLocations(solution);
         } catch (Exception e) {
             showPopup("error", e.getMessage());
         }
-    }
-
-    /**
-     * Print the location of all break points for an individual
-     */
-    private static void printBreakPointLocations(Individual individual) {
-        StringBuilder s = new StringBuilder("Break point locations: ");
-        Genome genome = individual.getGenome();
-        for (int i = 1; i <= individual.getNoOfBreakPoints(); i++) {
-            s.append(genome.get(i).getIndex().toString()).append(" ");
-        }
-        System.out.println(s);
     }
 
     /**
@@ -333,6 +317,18 @@ public class Controller {
         AnchorPane.setLeftAnchor(dataGraph, chartAnchor);
 
     }
+
+//    /**
+//     * Print the location of all break points for an individual
+//     */
+//    private static void printBreakPointLocations(Individual individual) {
+//        StringBuilder s = new StringBuilder("Break point locations: ");
+//        Genome genome = individual.getGenome();
+//        for (int i = 1; i <= individual.getNoOfBreakPoints(); i++) {
+//            s.append(genome.get(i).getIndex().toString()).append(" ");
+//        }
+//        System.out.println(s);
+//    }
 
 
 }

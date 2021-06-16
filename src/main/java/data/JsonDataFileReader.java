@@ -4,6 +4,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * A class for reading data files using the JSON-Simple package.
@@ -20,8 +22,15 @@ public class JsonDataFileReader {
 
         parser = new JSONParser();
         reader = new FileReader(pathToJsonFile);
-        jsonFile = (JSONObject) parser.parse(reader);
 
+        // File size must not be larger than 120 MB
+        long fileSzInBytes = Files.size(Paths.get(pathToJsonFile));
+        long fileSzInMB = fileSzInBytes / (1000 * 1024);
+        System.out.println(fileSzInMB);
+        if (fileSzInMB > 120)
+            throw new Exception("Error: File size must not exceed 120 MB");
+
+        jsonFile = (JSONObject) parser.parse(reader);
     }
 
     public Object get(String objectKey) {

@@ -10,7 +10,6 @@ public abstract class FitnessModel {
     private double alphaValue;
     private int maxNoOfBreakPoints;
     private int minDistance;
-    private List<FitnessNode> nodes;
 
     public abstract double fitnessOf(Individual individual,
                                      TimeSeries timeSeries) throws Exception;

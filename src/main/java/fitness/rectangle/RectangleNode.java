@@ -8,13 +8,6 @@ import javafx.scene.shape.Shape;
 
 public class RectangleNode extends FitnessNode {
 
-    public RectangleNode(double xMin, double xMax, double yMin, double yMax) {
-        setX(xMin);
-        setY(yMax);
-        setWidth(Math.abs(xMax - xMin));
-        setHeight(Math.abs(yMax - yMin));
-    }
-
     public RectangleNode(int bpIndex0, int bpIndex1, TimeSeries timeSeries) {
 
         double time0 = timeSeries.getTimeAtIndex(bpIndex0);

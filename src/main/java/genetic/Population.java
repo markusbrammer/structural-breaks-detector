@@ -9,10 +9,7 @@ import java.util.Random;
 public class Population {
 
     private final Individual[] individuals;
-
     private final Random RAND = new Random();
-
-    public int test = 0;
 
     public Population(int populationSize, TimeSeries timeSeries,
                       FitnessModel fitnessModel) throws Exception {
@@ -92,14 +89,6 @@ public class Population {
      */
     public void replaceLeastFit(Individual replacement) {
         int leastFitIndex = leastFitIndex();
-        int leastFitBPs =
-                individuals[leastFitIndex].getNoOfBreakPoints();
-        int replaceBPs = replacement.getNoOfBreakPoints();
-        if (leastFitBPs <= 60 && replaceBPs > 60) {
-            test++;
-        } else if (leastFitBPs > 60 && replaceBPs <= 60) {
-            test--;
-        }
         individuals[leastFitIndex] = replacement;
     }
 
