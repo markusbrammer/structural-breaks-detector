@@ -26,7 +26,6 @@ public class JsonDataFileReader {
         // File size must not be larger than 120 MB
         long fileSzInBytes = Files.size(Paths.get(pathToJsonFile));
         long fileSzInMB = fileSzInBytes / (1000 * 1024);
-        System.out.println(fileSzInMB);
         if (fileSzInMB > 120)
             throw new Exception("Error: File size must not exceed 120 MB");
 

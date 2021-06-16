@@ -73,19 +73,24 @@ public class TimeSeries {
         return null;
     }
 
-    private MinMax getMinAndMaxInIntervalSimple(int lowerBound, int upperBound) {
-        double min = observations[lowerBound];
-        double max = observations[lowerBound];
-        for (int i = lowerBound; i <= upperBound; i++) {
-            double value = observations[i];
-            if (value < min) {
-                min = value;
-            } else if (value > max) {
-                max = value;
-            }
-        }
-        return new MinMax(min, max);
-    }
+    // UNCOMMENT FOR TESTING SPEED GAINS
+//    public MinMax getMinMax() {
+//        return getMinMax(0, getLength() - 1);
+//    }
+//
+//    public MinMax getMinMax(int lowerBound, int upperBound) {
+//        double min = observations[lowerBound];
+//        double max = observations[lowerBound];
+//        for (int i = lowerBound; i <= upperBound; i++) {
+//            double value = observations[i];
+//            if (value < min) {
+//                min = value;
+//            } else if (value > max) {
+//                max = value;
+//            }
+//        }
+//        return new MinMax(min, max);
+//    }
 
     public double[] getObservations() {
         return observations;
