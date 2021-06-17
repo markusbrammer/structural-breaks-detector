@@ -3,7 +3,7 @@ module Fagprojekt{
     requires javafx.fxml;
     requires json.simple;
     requires java.desktop;
-    requires org.controlsfx.controls;
+    // requires org.controlsfx.controls;
     opens gui to javafx.fxml;
     exports gui;
     exports data;
